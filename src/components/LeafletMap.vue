@@ -5,7 +5,9 @@
 <script>
 import { onMounted, ref } from 'vue'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
 import L from 'leaflet'
+import 'leaflet.markercluster' // Import MarkerCluster script
 
 export default {
   name: 'LeafletMap',
@@ -58,8 +60,21 @@ export default {
         }
       })
 
-      layer1.addTo(map.value)
-      layer2.addTo(map.value)
+      // plain FeatureGroups
+      // layer1.addTo(map.value)
+      // layer2.addTo(map.value)
+
+      // Create a MarkerClusterGroup
+      const markers = L.markerClusterGroup()
+
+      // Transfer markers from FeatureGroup to MarkerClusterGroup
+      layer2.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+          markers.addLayer(layer)
+        }
+      })
+      map.value.addLayer(markers)
+
       console.log('bounds per default')
       let bounds = [53.55, 9.95]
 
