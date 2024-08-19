@@ -4,6 +4,7 @@
 
 <script>
 import { onMounted, ref } from 'vue'
+import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
 import L from 'leaflet'
@@ -25,10 +26,107 @@ export default {
       loadJSONData()
     })
 
+    const markerclusterSettings = {
+      maxClusterRadius: 0,
+      showCoverageOnHover: false,
+      animate: true,
+      /*
+      iconCreateFunction: function (cluster) {
+        // TDO
+        let layer_color = ''
+        let data_id = 1
+
+        console.log('Cluster: Zigzgag', cluster.getChildCount())
+        console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
+        if (cluster.getAllChildMarkers()[0].data) {
+          console.log('Cluster: Childmarker Data', cluster.getAllChildMarkers()[0].data.color)
+        }
+        // TODO: add color from data
+        // TODO: build array of colors of all Childmarkers
+        let childmarker_colors = []
+        cluster.getAllChildMarkers().forEach(function (marker) {
+          if (marker.data) {
+            childmarker_colors.push(marker.data.color)
+          }
+        })
+        // check if all values of childmarker_colors are the same
+        let check_all_same = childmarker_colors.every((val, i, arr) => val === arr[0])
+        console.log('All colors are the same: ', check_all_same)
+        let cluster_color
+        if (childmarker_colors.length > 0 && check_all_same) {
+          cluster_color = childmarker_colors[0]
+        }
+        let cluster_viz = cluster_small(cluster_color)
+        if (cluster.getChildCount() >= 10) {
+          cluster_viz = cluster_xlarge(cluster_color)
+        } else if (cluster.getChildCount() >= 6) {
+          cluster_viz = cluster_large(cluster_color)
+        } else if (cluster.getChildCount() >= 3) {
+          cluster_viz = cluster_medium(cluster_color)
+        }
+        if (layer_color && layer_color.length > 0) {
+          cluster_viz = cluster_viz.replace(/rgba\(255, 0, 153, 0.8\)/g, layer_color)
+        }
+
+        let rnd_rotate = Math.floor(Math.random() * 25) * 15;
+
+        return L.Icon.Default
+        return L.divIcon({
+          html:
+            '<div class="marker-cluster marker-cluster-small marker-cluster-layer-' +
+            data_id +
+            '" style="transform: rotate(' +
+            rnd_rotate +
+            'deg);">' +
+            cluster_viz +
+            '</div>',
+          className: 'leaflet-data-markercluster',
+          iconAnchor: [15, 15],
+          iconSize: [30, 30],
+          popupAnchor: [0, -28]
+        })
+      },
+      */
+      spiderLegPolylineOptions: { weight: 0, color: '#efefef', opacity: 0.5 },
+      elementsPlacementStrategy: 'clock',
+      helpingCircles: true,
+      clockHelpingCircleOptions: {
+        weight: 40,
+        opacity: 0,
+        color: '#000000',
+        fill: '#333',
+        fillOpacity: 0.2
+      },
+
+      spiderfyDistanceSurplus: 28,
+      spiderfyDistanceMultiplier: 1,
+
+      spiderfiedClassName: 'spiderfied-places',
+
+      elementsMultiplier: 1.4,
+      firstCircleElements: 10,
+      spiderfyShapePositions: function (count, centerPt) {
+        var distanceFromCenter = 50,
+          markerDistance = 105,
+          lineLength = markerDistance * (count - 1),
+          lineStart = centerPt.y - lineLength / 4,
+          res = [],
+          i
+
+        res.length = count
+
+        for (i = count - 1; i >= 0; i--) {
+          res[i] = new Point(centerPt.x + distanceFromCenter, lineStart + markerDistance * i)
+        }
+
+        return res
+      }
+    }
+
     const loadJSONData = async () => {
       try {
         const response = await fetch(
-          'http://127.0.0.1:3000/public/maps/queer-places-in-hamburg/layers/15.geojson'
+          'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
         )
         const data = await response.json()
         addDataToMap(data)
@@ -39,13 +137,13 @@ export default {
 
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
-      const markers = L.markerClusterGroup()
+      const markers = L.markerClusterGroup(markerclusterSettings)
       // Create Metalayer object
       const featureGroups = {}
       // Create layers and add data to the map
       console.log(data)
       data.map.layer.forEach((layer) => {
-        let layer_group = L.markerClusterGroup()
+        let layer_group = L.markerClusterGroup(markerclusterSettings)
 
         layer.places.forEach((place) => {
           const marker = L.marker([place.lat, place.lon])
