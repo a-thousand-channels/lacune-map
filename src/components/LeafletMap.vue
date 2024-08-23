@@ -161,6 +161,35 @@ export default {
       }
     }
 
+    const FormatDate = (DateString) => {
+      let date = new Date(DateString)
+      console.log('Date:', date)
+      let day = date.getDate()
+      let month = date.getMonth() + 1
+      let year = date.getFullYear()
+      let printed_date = day + '.' + month + '.' + year
+      if (day == 1 && month == 1) {
+        return year
+      } else if (day == 31 && month == 12) {
+        return year
+      } else if (day == 1) {
+        return month + '.' + year
+      } else {
+        return printed_date
+      }
+    }
+    const FormatDateRange = (StartDateString, EndDateString) => {
+      if (StartDateString == EndDateString) {
+        return FormatDate(StartDateString)
+      } else {
+        if (FormatDate(StartDateString) == FormatDate(EndDateString)) {
+          return FormatDate(StartDateString)
+        } else {
+          return FormatDate(StartDateString) + ' &mdash; ' + FormatDate(EndDateString)
+        }
+      }
+    }
+
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
       const markers = L.markerClusterGroup(markerclusterSettings)
@@ -185,12 +214,11 @@ export default {
           //
 
           const popupContent = `
+              <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-layer" style="background-color: ${layer.color}">${layer.title}</p>
               <p class="place-address">${place.location} ${place.address} ${place.city}</p>
               <h3>${place.title}</h3>
               <p>${place.teaser}</p>
-              <p>${place.text}</p>
-
             `
 
           marker.bindPopup(popupContent)
