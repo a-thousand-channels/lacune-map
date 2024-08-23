@@ -17,6 +17,7 @@
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
+    "leaflet.markercluster.placementstrategies": "^0.2.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"

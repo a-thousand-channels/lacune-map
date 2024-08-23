@@ -18,7 +18,7 @@ export default {
 
 <style scoped>
 header {
-  line-height: 1.5;
+  line-height: 1;
   padding: 5px;
   height: 5vh;
 }

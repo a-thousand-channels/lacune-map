@@ -22,4 +22,5 @@ a {
 #map {
   width: 100%;
   height: 94vh;
+  font-family: unset;
 }

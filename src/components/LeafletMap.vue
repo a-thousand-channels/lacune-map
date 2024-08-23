@@ -1,24 +1,45 @@
 <template>
+  <div>
+    <button
+      id="mapcontrol-center"
+      title="Karte zentrieren"
+      class="mapcontrol-button"
+      @click="centerMap"
+    >
+      <CenterMapIcon />
+    </button>
+  </div>
   <div id="map"></div>
 </template>
 
 <script>
 import { onMounted, ref } from 'vue'
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
+import { LargeMarkerIcon } from '@/helpers/marker'
+import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
 import L from 'leaflet'
 import 'leaflet.markercluster' // Import MarkerCluster script
+import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
 
 export default {
   name: 'LeafletMap',
+  components: {
+    CenterMapIcon
+  },
   setup() {
     const map = ref(null)
-
+    const centerCoordinates = [53.58, 9.999]
+    const zoomLevel = 12
     onMounted(() => {
       map.value = L.map('map')
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      })
+
+      L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map.value)
 
@@ -26,11 +47,17 @@ export default {
       loadJSONData()
     })
 
+    const centerMap = () => {
+      console.log('Call centerMap')
+      if (map.value) {
+        map.value.setView(centerCoordinates, zoomLevel)
+      }
+    }
     const markerclusterSettings = {
       maxClusterRadius: 0,
       showCoverageOnHover: false,
       animate: true,
-      /*
+
       iconCreateFunction: function (cluster) {
         // TDO
         let layer_color = ''
@@ -68,9 +95,8 @@ export default {
           cluster_viz = cluster_viz.replace(/rgba\(255, 0, 153, 0.8\)/g, layer_color)
         }
 
-        let rnd_rotate = Math.floor(Math.random() * 25) * 15;
+        let rnd_rotate = Math.floor(Math.random() * 25) * 15
 
-        return L.Icon.Default
         return L.divIcon({
           html:
             '<div class="marker-cluster marker-cluster-small marker-cluster-layer-' +
@@ -86,7 +112,6 @@ export default {
           popupAnchor: [0, -28]
         })
       },
-      */
       spiderLegPolylineOptions: { weight: 0, color: '#efefef', opacity: 0.5 },
       elementsPlacementStrategy: 'clock',
       helpingCircles: true,
@@ -129,6 +154,7 @@ export default {
           'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
         )
         const data = await response.json()
+
         addDataToMap(data)
       } catch (error) {
         console.error('Error loading JSON data:', error)
@@ -146,13 +172,25 @@ export default {
         let layer_group = L.markerClusterGroup(markerclusterSettings)
 
         layer.places.forEach((place) => {
-          const marker = L.marker([place.lat, place.lon])
+          let mtype = 'place'
+          if (layer.title === 'Biografisches') {
+            mtype = 'biography'
+          } else if (layer.title === 'Hintergrund Informationen') {
+            mtype = 'information'
+          }
+
+          const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
+          const marker = L.marker([place.lat, place.lon], { icon: icon })
+
+          //
 
           const popupContent = `
-              <p class="place-layer">${layer.title}</p>
+              <p class="place-layer" style="background-color: ${layer.color}">${layer.title}</p>
               <p class="place-address">${place.location} ${place.address} ${place.city}</p>
               <h3>${place.title}</h3>
               <p>${place.teaser}</p>
+              <p>${place.text}</p>
+
             `
 
           marker.bindPopup(popupContent)
@@ -178,16 +216,17 @@ export default {
 
       // featureGroups['All layers'] = markers
 
-      console.log(bounds)
+      console.log('bounds', bounds)
       const padding = 0.1 // 10% padding
       const paddedBounds = bounds.pad(padding)
       map.value.fitBounds(paddedBounds)
+      map.value.setView(centerCoordinates, zoomLevel)
 
       const layerControl = L.control.layers(null, featureGroups, { collapsed: true })
       layerControl.addTo(map.value)
     }
 
-    return { map }
+    return { map, centerMap }
   }
 }
 </script>
@@ -197,16 +236,27 @@ export default {
 
 h3 {
   font-weight: bold;
+  font-size: 22px;
+  line-height: 1.1;
 }
 
 p.place-layer {
   display: inline-block;
   background-color: lightsalmon;
-  padding: 2px 5px;
-  margin: 0;
-  border-radius: 5px;
+  padding: 2px 11px;
+  margin: 0 0 10px 0;
+  border-radius: 2px;
+  color: white;
+  font-weight: bold;
 }
 p.place-address {
   margin: 3px 0;
+}
+
+#mapcontrol-center {
+  left: 20px;
+  position: absolute;
+  bottom: 40px;
+  z-index: 999999;
 }
 </style>
