@@ -30,10 +30,18 @@ export default {
   },
   setup() {
     const map = ref(null)
-    const centerCoordinates = [53.58, 9.999]
-    const zoomLevel = 12
+    // Create Metalayer object
+    const overlayLayers = ref({})
+    const defaultCenter = [53.55, 9.95]
+    const defaultzoom = 12
+    const savedCenter = localStorage.getItem('mapCenter')
+    const savedZoom = localStorage.getItem('mapZoom')
+    let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
+    const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
+    const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultzoom
+
     onMounted(() => {
-      map.value = L.map('map')
+      map.value = L.map('map').setView(centerCoordinates, zoomLevel)
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -46,6 +54,29 @@ export default {
       // Load JSON data and add layers here
       loadJSONData()
     })
+
+    const saveMapState = () => {
+      console.log('saveMapState called')
+      const newCenter = map.value.getCenter()
+      const newZoom = map.value.getZoom()
+      const visibleLayers = {}
+
+      Object.keys(overlayLayers.value).forEach((layerName) => {
+        visibleLayers[layerName] = false
+      })
+      // Check which layers are currently visible
+      map.value.eachLayer((layer) => {
+        Object.keys(overlayLayers.value).forEach((layerName) => {
+          if (layer === overlayLayers.value[layerName]) {
+            visibleLayers[layerName] = true
+          }
+        })
+      })
+
+      localStorage.setItem('mapCenter', JSON.stringify([newCenter.lat, newCenter.lng]))
+      localStorage.setItem('mapZoom', newZoom.toString())
+      localStorage.setItem('mapLayers', JSON.stringify(visibleLayers))
+    }
 
     const centerMap = () => {
       console.log('Call centerMap')
@@ -64,9 +95,9 @@ export default {
         let data_id = 1
 
         console.log('Cluster: Zigzgag', cluster.getChildCount())
-        console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
+        // console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
         if (cluster.getAllChildMarkers()[0].data) {
-          console.log('Cluster: Childmarker Data', cluster.getAllChildMarkers()[0].data.color)
+          // console.log('Cluster: Childmarker Data', cluster.getAllChildMarkers()[0].data.color)
         }
         // TODO: add color from data
         // TODO: build array of colors of all Childmarkers
@@ -78,7 +109,7 @@ export default {
         })
         // check if all values of childmarker_colors are the same
         let check_all_same = childmarker_colors.every((val, i, arr) => val === arr[0])
-        console.log('All colors are the same: ', check_all_same)
+        // console.log('All colors are the same: ', check_all_same)
         let cluster_color
         if (childmarker_colors.length > 0 && check_all_same) {
           cluster_color = childmarker_colors[0]
@@ -163,7 +194,6 @@ export default {
 
     const FormatDate = (DateString) => {
       let date = new Date(DateString)
-      console.log('Date:', date)
       let day = date.getDate()
       let month = date.getMonth() + 1
       let year = date.getFullYear()
@@ -193,8 +223,7 @@ export default {
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
       const markers = L.markerClusterGroup(markerclusterSettings)
-      // Create Metalayer object
-      const featureGroups = {}
+
       // Create layers and add data to the map
       console.log(data)
       data.map.layer.forEach((layer) => {
@@ -210,9 +239,6 @@ export default {
 
           const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon })
-
-          //
-
           const popupContent = `
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-layer" style="background-color: ${layer.color}">${layer.title}</p>
@@ -232,9 +258,8 @@ export default {
             markers.addLayer(layer)
           }
         })
-        // map.value.addLayer(markers)
-        featureGroups[layer.title] = layer_group
-        map.value.addLayer(layer_group)
+        overlayLayers.value[layer.title] = layer_group
+        // map.value.addLayer(layer_group)
       })
 
       console.log('bounds per default')
@@ -242,18 +267,36 @@ export default {
 
       bounds = L.latLngBounds(markers.getBounds())
 
-      // featureGroups['All layers'] = markers
-
       console.log('bounds', bounds)
       const padding = 0.1 // 10% padding
       const paddedBounds = bounds.pad(padding)
-      map.value.fitBounds(paddedBounds)
-      map.value.setView(centerCoordinates, zoomLevel)
+      // map.value.fitBounds(paddedBounds)
+      // map.value.setView(centerCoordinates, zoomLevel)
 
-      const layerControl = L.control.layers(null, featureGroups, { collapsed: true })
+      const layerControl = L.control.layers(null, overlayLayers.value, { collapsed: true })
       layerControl.addTo(map.value)
-    }
 
+      // check for savedlayers and make them visible
+      // savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
+      console.log('savedLayers', savedLayers, Object.keys(savedLayers).length)
+      if (Object.keys(savedLayers).length > 0) {
+        Object.keys(savedLayers).forEach((layerName) => {
+          console.log('layer name check?', layerName, savedLayers[layerName])
+          if (
+            savedLayers[layerName] &&
+            savedLayers[layerName] === true &&
+            overlayLayers.value[layerName]
+          ) {
+            overlayLayers.value[layerName].addTo(map.value)
+          }
+        })
+      } else {
+        Object.keys(overlayLayers.value).forEach((layerName) => {
+          overlayLayers.value[layerName].addTo(map.value)
+        })
+      }
+      map.value.on('overlayadd overlayremove moveend', saveMapState)
+    }
     return { map, centerMap }
   }
 }
