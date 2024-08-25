@@ -1,0 +1,40 @@
+name: Testing and deployment
+
+on: [push]
+
+jobs:
+  deploy-run:
+    runs-on: ${{ matrix.os }}
+    name: Deploy
+    needs: cypress-e2e
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [20]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup node env
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Print node-version
+        run: node -v
+
+      - name: Install dependencies 📦
+        run: yarn
+
+      - name: Generate 🔩
+        run: yarn run generate
+        env:
+          PUBLIC_PATH: '/lacune/'
+
+      - name: Deploy 🏁
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

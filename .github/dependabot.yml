@@ -1,0 +1,33 @@
+version: 2
+updates:
+# Fetch and update latest `npm` packages
+- package-ecosystem: npm
+  directory: '/'
+  schedule:
+    interval: daily
+    time: '00:00'
+  open-pull-requests-limit: 10
+  reviewers:
+    - ut
+  assignees:
+    - ut
+  commit-message:
+    prefix: fix
+    prefix-development: chore
+    include: scope
+  ignore:
+    - dependency-name: "swiper"
+      # stick with ^5.4.1
+      update-types: ["version-update:semver-major"]    
+    - dependency-name: "@nuxt/content"
+      # stick with ^1.15.1
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "@nuxtjs/tailwindcss"
+      # stick with ^4.2.0
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "nuxtjs"
+      # stick with ^2.15.7
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "cypress"
+      # stick with ^11.2
+      update-types: ["version-update:semver-major"]
