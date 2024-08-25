@@ -6,7 +6,6 @@ jobs:
   deploy-run:
     runs-on: ${{ matrix.os }}
     name: Deploy
-    needs: cypress-e2e
 
     strategy:
       matrix:
