@@ -30,7 +30,7 @@ jobs:
       - name: Generate 🔩
         run: npm run build
         env:
-          PUBLIC_PATH: '/lacune/'
+          PUBLIC_PATH: '/lacune-map/'
 
       - name: Deploy 🏁
         uses: peaceiris/actions-gh-pages@v3
