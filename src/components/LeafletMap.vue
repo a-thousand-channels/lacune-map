@@ -32,8 +32,8 @@ export default {
     const map = ref(null)
     // Create Metalayer object
     const overlayLayers = ref({})
-    const defaultCenter = [53.55, 9.95]
-    const defaultzoom = 12
+    const defaultCenter = [53.56, 10.01]
+    const defaultZoom = 12
     const savedCenter = localStorage.getItem('mapCenter')
     const savedZoom = localStorage.getItem('mapZoom')
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
@@ -48,8 +48,9 @@ export default {
       })
 
       L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
       }).addTo(map.value)
+      map.value.attributionControl.setPrefix("");
 
       // Load JSON data and add layers here
       loadJSONData()
@@ -81,7 +82,7 @@ export default {
     const centerMap = () => {
       console.log('Call centerMap')
       if (map.value) {
-        map.value.setView(centerCoordinates, zoomLevel)
+        map.value.setView(defaultCenter, defaultZoom)
       }
     }
     const markerclusterSettings = {
@@ -335,9 +336,14 @@ p.place-address {
 }
 
 #mapcontrol-center {
-  left: 20px;
+  left: 12px;
   position: absolute;
   bottom: 40px;
   z-index: 999999;
+  background-color: #333;
+  border: 2px solid #111;
+}
+#mapcontrol-center svg path.path-content {
+  fill: silver;
 }
 </style>

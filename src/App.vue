@@ -1,7 +1,11 @@
 <template>
-  <header>Lacune</header>
+  <header>
+    <h1>Lacune</h1>
+    <div class="nav">
+      <a href="#">Info</a>  
+    </div>
+  </header>
   <LeafletMap />
-  <RouterView />
 </template>
 
 <script>
@@ -19,8 +23,20 @@ export default {
 <style scoped>
 header {
   line-height: 1;
-  padding: 5px;
-  height: 5vh;
+  height: 7vh;
+  padding: 0.45rem 1rem 0;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+}
+header h1 {
+  line-height: 1;
+  font-size: 20px;
+}
+header div.nav {
+  line-height: 1;
+  font-size: 20px;
 }
 
 nav {
