@@ -38,7 +38,7 @@ export default {
     const savedZoom = localStorage.getItem('mapZoom')
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
-    const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultzoom
+    const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
 
     onMounted(() => {
       map.value = L.map('map').setView(centerCoordinates, zoomLevel)
