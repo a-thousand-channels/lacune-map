@@ -23,13 +23,20 @@ export default {
 <style scoped>
 header {
   line-height: 1;
-  height: 7vh;
-  padding: 0.45rem 1rem 0;
+  height: 5vh;
+  padding: 0.55rem 1rem 0;
   font-size: 16px;
   letter-spacing: 0.05em;
   display: flex;
   justify-content: space-between;
 }
+@media (min-width: 768px) {
+  header {
+    height: 7vh;
+  }
+}
+
+
 header h1 {
   line-height: 1;
   font-size: 20px;

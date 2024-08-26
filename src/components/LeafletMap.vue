@@ -40,17 +40,31 @@ export default {
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
 
+    let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+      })
+      
+
+    let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1980-1990',
+      transparent: true,
+      minZoom: 9,
+      maxZoom: 20,     
+      attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
+      })
+      
+      
     onMounted(() => {
       map.value = L.map('map').setView(centerCoordinates, zoomLevel)
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       })
+      // map.value.attributionControl.setPrefix("");
+      wmsLayerHamburg1980s.addTo(map.value)    
+      document.body.classList.remove('dark-mode');
 
-      L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-      }).addTo(map.value)
-      map.value.attributionControl.setPrefix("");
+    
 
       // Load JSON data and add layers here
       loadJSONData()
@@ -225,6 +239,8 @@ export default {
       // Create a MarkerClusterGroup
       const markers = L.markerClusterGroup(markerclusterSettings)
 
+
+
       // Create layers and add data to the map
       console.log(data)
       data.map.layer.forEach((layer) => {
@@ -278,8 +294,11 @@ export default {
       const paddedBounds = bounds.pad(padding)
       // map.value.fitBounds(paddedBounds)
       // map.value.setView(centerCoordinates, zoomLevel)
-
-      const layerControl = L.control.layers(null, overlayLayers.value, { collapsed: true })
+      let basemaps = {
+        'Dunkle OSM Karte (Alidade Smooth Dark)': alidade_smooth_dark,
+        'Historische Karte 1980er': wmsLayerHamburg1980s
+      }
+      const layerControl = L.control.layers(basemaps, overlayLayers.value, { collapsed: true })
       layerControl.addTo(map.value)
 
       // check for savedlayers and make them visible
@@ -340,10 +359,20 @@ p.place-address {
   position: absolute;
   bottom: 40px;
   z-index: 999999;
-  background-color: #333;
-  border: 2px solid #111;
+  background-color: white;
+  padding: 3px 6px;
+  border: none;
+  border-radius: 6px;
+  box-shadow: none;
 }
+body.dark-mode #mapcontrol-center {
+  background-color: #333;
+}
+
 #mapcontrol-center svg path.path-content {
+  fill: #666;
+}
+body.dark-mode #mapcontrol-center svg path.path-content {
   fill: silver;
 }
 </style>
