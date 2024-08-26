@@ -236,14 +236,19 @@ export default {
           } else if (layer.title === 'Hintergrund Informationen') {
             mtype = 'information'
           }
+          let darkcolor = layer.color;
+          if ( layer.color == '#b1f075') {
+            darkcolor = '#92c460';
+          }
 
           const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon })
           const popupContent = `
+              <p class="place-layer" style="background-color: ${darkcolor}">${layer.title}</p>
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
-              <p class="place-layer" style="background-color: ${layer.color}">${layer.title}</p>
-              <p class="place-address">${place.location} ${place.address} ${place.city}</p>
+              <p class="place-address">${place.location} ${place.address}, ${place.city}</p>
               <h3>${place.title}</h3>
+              <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
             `
 
@@ -307,17 +312,22 @@ export default {
 
 h3 {
   font-weight: bold;
-  font-size: 22px;
+  font-size: 25px;
   line-height: 1.1;
+  color: #c6c600;
 }
 
 p.place-layer {
   display: inline-block;
   background-color: lightsalmon;
   padding: 2px 11px;
-  margin: 0 0 10px 0;
+  margin: 0 0 6px -11px;
   border-radius: 2px;
   color: white;
+  font-weight: bold;
+}
+p.place-dates {
+  margin: 0;
   font-weight: bold;
 }
 p.place-address {

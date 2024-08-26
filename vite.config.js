@@ -15,7 +15,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/lacune-map/',
+  base: process.env.PUBLIC_PATH || '/',
   build: {
     outDir: 'dist', // Output directory
   }

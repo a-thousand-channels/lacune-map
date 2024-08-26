@@ -1,5 +1,5 @@
 <template>
-  <header>A 10000 Channels Multilayer Map</header>
+  <header>Lacune</header>
   <LeafletMap />
   <RouterView />
 </template>
