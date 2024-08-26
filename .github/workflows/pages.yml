@@ -11,6 +11,10 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [20]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
     steps:
       - name: Checkout
@@ -42,8 +46,4 @@ jobs:
       - name: Deploy to GitHub Pages 🏁
         id: deployment
         uses: actions/deploy-pages@v4
-        permissions:
-          contents: read
-          pages: write
-          id-token: write
 
