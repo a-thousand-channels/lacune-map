@@ -55,6 +55,8 @@ export default {
       
       
     onMounted(() => {
+
+    
       map.value = L.map('map').setView(centerCoordinates, zoomLevel)
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -68,6 +70,8 @@ export default {
 
       // Load JSON data and add layers here
       loadJSONData()
+
+        
     })
 
     const saveMapState = () => {
@@ -207,6 +211,12 @@ export default {
       }
     }
 
+    const focusMarker = (marker) => {
+  
+      map.value.setView(marker.getLatLng(), 15);
+      // Öffne das Popup
+      marker.openPopup();
+    };
     const FormatDate = (DateString) => {
       let date = new Date(DateString)
       let day = date.getDate()
@@ -237,7 +247,8 @@ export default {
 
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
-      const markers = L.markerClusterGroup(markerclusterSettings)
+      // const markers = L.markerClusterGroup(markerclusterSettings)
+      const allMarkers = [];
 
 
 
@@ -259,12 +270,12 @@ export default {
           }
 
           const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
-          const marker = L.marker([place.lat, place.lon], { icon: icon })
+          const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">${layer.title}</p>
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-address">${place.location} ${place.address}, ${place.city}</p>
-              <h3>${place.title}</h3>
+              <h3 title="Place ID ${place.id}">${place.title}</h3>
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
             `
@@ -277,7 +288,8 @@ export default {
         // Transfer markers from FeatureGroup to MarkerClusterGroup
         layer_group.eachLayer((layer) => {
           if (layer instanceof L.Marker) {
-            markers.addLayer(layer)
+            // markers.addLayer(layer)
+            allMarkers.push(layer);
           }
         })
         overlayLayers.value[layer.title] = layer_group
@@ -285,15 +297,18 @@ export default {
       })
 
       console.log('bounds per default')
+
+      /*
       let bounds = [53.55, 9.95]
-
       bounds = L.latLngBounds(markers.getBounds())
-
       console.log('bounds', bounds)
       const padding = 0.1 // 10% padding
       const paddedBounds = bounds.pad(padding)
       // map.value.fitBounds(paddedBounds)
       // map.value.setView(centerCoordinates, zoomLevel)
+      */ 
+
+
       let basemaps = {
         'Dunkle OSM Karte (Alidade Smooth Dark)': alidade_smooth_dark,
         'Historische Karte 1980er': wmsLayerHamburg1980s
@@ -320,9 +335,20 @@ export default {
           overlayLayers.value[layerName].addTo(map.value)
         })
       }
+      const urlParams = new URLSearchParams(window.location.search);
+      const markerId = urlParams.get('marker');
+      console.log("markers",allMarkers);
+      console.log("markerId",markerId);
+      if (markerId) {
+        const marker = allMarkers.find(m => m.options.id === parseInt(markerId));
+        if (marker) {
+          console.log("focus marker", marker);
+          focusMarker(marker);
+        }
+      }         
       map.value.on('overlayadd overlayremove moveend', saveMapState)
     }
-    return { map, centerMap }
+    return { map, centerMap, focusMarker }
   }
 }
 </script>

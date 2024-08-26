@@ -2,7 +2,7 @@
   <header>
     <h1>Lacune</h1>
     <div class="nav">
-      <a href="#">Info</a>  
+      <a href="?marker=968">Info</a>  
     </div>
   </header>
   <LeafletMap />
