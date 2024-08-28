@@ -2,7 +2,7 @@
   <header>
     <h1> <router-link to="/">Lacune</router-link></h1>
     <div class="nav">
-      <a href="/?marker=968" title="Über das Projekt">Info</a>  
+      <a href="?marker=968" title="Über das Projekt">Info</a>  
       <router-link to="/about">About</router-link>
     </div>
   </header>
