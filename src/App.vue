@@ -1,21 +1,24 @@
 <template>
   <header>
-    <h1>Lacune</h1>
+    <h1> <router-link to="/">Lacune</router-link></h1>
     <div class="nav">
-      <a href="?marker=968">Info</a>  
+      <a href="/?marker=968" title="Über das Projekt">Info</a>  
+      <router-link to="/about">About</router-link>
     </div>
   </header>
-  <LeafletMap />
+  <router-view></router-view>
 </template>
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-import LeafletMap from './components/LeafletMap.vue'
+import HomeView from './views/HomeView.vue'
+import AboutView from './views/AboutView.vue';
 
 export default {
   name: 'App',
   components: {
-    LeafletMap
+    HomeView,
+    AboutView
   }
 }
 </script>
@@ -23,7 +26,7 @@ export default {
 <style scoped>
 header {
   line-height: 1;
-  height: 5vh;
+  height: 8vh;
   padding: 0.55rem 1rem 0;
   font-size: 16px;
   letter-spacing: 0.05em;
@@ -40,6 +43,10 @@ header {
 header h1 {
   line-height: 1;
   font-size: 20px;
+}
+header h1 a {
+  color: #666;
+  text-decoration: none;
 }
 header div.nav {
   line-height: 1;
@@ -61,10 +68,9 @@ nav a.router-link-exact-active:hover {
   background-color: transparent;
 }
 
-nav a {
+.nav a {
   display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  padding: 0 0 0 1rem;
 }
 
 nav a:first-of-type {

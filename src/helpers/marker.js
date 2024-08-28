@@ -39,7 +39,7 @@ export var LargeMarkerIcon = {
     var defaultParams = {
       marker_size: 30,
       color: 'black',
-      opacity: 0.7,
+      opacity: 0.76,
       stroke: 'transparent',
       stroke_width: 0,
       stroke_opacity: 0,

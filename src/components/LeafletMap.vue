@@ -9,24 +9,34 @@
       <CenterMapIcon />
     </button>
   </div>
+  <TimeSlider 
+      v-model="selectedYear"
+      :min="1900"
+      :max="2024"
+      :step="1"
+    />
   <div id="map"></div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { onMounted, computed, watch, ref } from 'vue'
+import TimeSlider from './TimeSlider.vue'
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
 import { LargeMarkerIcon } from '@/helpers/marker'
 import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
+
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
 import L from 'leaflet'
 import 'leaflet.markercluster' // Import MarkerCluster script
 import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
 
+
 export default {
   name: 'LeafletMap',
   components: {
-    CenterMapIcon
+    CenterMapIcon,
+    TimeSlider
   },
   setup() {
     const map = ref(null)
@@ -39,6 +49,7 @@ export default {
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
+    const selectedYear = ref(1900) // initial value
 
     let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -52,7 +63,14 @@ export default {
       maxZoom: 20,     
       attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
       })
-      
+    const formattedYear = computed(() => {
+      console.log('Computing formatted year:', selectedYear.value)
+      if (typeof selectedYear.value !== 'number' || isNaN(selectedYear.value)) {
+        console.warn('Selected year is not a valid number:', selectedYear.value)
+        return 'Invalid Year'
+      }
+      return selectedYear.value.toString()
+    })   
       
     onMounted(() => {
 
@@ -348,7 +366,7 @@ export default {
       }         
       map.value.on('overlayadd overlayremove moveend', saveMapState)
     }
-    return { map, centerMap, focusMarker }
+    return { map, centerMap, focusMarker, selectedYear, formattedYear }
   }
 }
 </script>
@@ -357,13 +375,18 @@ export default {
 @import 'leaflet/dist/leaflet.css';
 
 h3 {
-  font-weight: bold;
-  font-size: 25px;
+  font-weight: normal;
+  font-size: 26px;
+  word-break: break-word;
   line-height: 1.1;
   color: #c6c600;
-}
+  margin: 0.75rem 0 0.5rem 0;
 
-p.place-layer {
+}
+#map.leaflet-container .leaflet-popup-content p {
+  margin: 0 0 1rem 0;
+}
+#map.leaflet-container .leaflet-popup-content p.place-layer {
   display: inline-block;
   background-color: lightsalmon;
   padding: 2px 11px;
@@ -372,27 +395,27 @@ p.place-layer {
   color: white;
   font-weight: bold;
 }
-p.place-dates {
+#map.leaflet-container .leaflet-popup-content p.place-dates {
   margin: 0;
   font-weight: bold;
 }
-p.place-address {
+#map.leaflet-container .leaflet-popup-content p.place-address {
   margin: 3px 0;
 }
 
 #mapcontrol-center {
   left: 12px;
   position: absolute;
-  bottom: 40px;
+  bottom: 50px;
   z-index: 999999;
   background-color: white;
-  padding: 3px 6px;
+  padding: 5px 5px 1px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   box-shadow: none;
 }
 body.dark-mode #mapcontrol-center {
-  background-color: #333;
+  background-color: #555;
 }
 
 #mapcontrol-center svg path.path-content {
