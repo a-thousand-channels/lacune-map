@@ -21,6 +21,8 @@
 <script>
 import { onMounted, computed, watch, ref } from 'vue'
 import TimeSlider from './TimeSlider.vue'
+import { summarize } from '@/helpers/summarize'
+import { filter_and_update } from '@/helpers/filter_and_update'
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
 import { LargeMarkerIcon } from '@/helpers/marker'
 import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
@@ -222,8 +224,16 @@ export default {
           'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
         )
         const data = await response.json()
-
-        addDataToMap(data)
+        
+        const summary = await summarize(data);
+        console.log(summary);
+      
+        let selectedYear = addDataToMap(data)
+        if ( summary.minYear ) {
+          selectedYear = summary.minYear
+        }
+        // const filteredData = 
+        filter_and_update(map, data, summary.minYear, summary.maxYear, selectedYear)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -268,8 +278,6 @@ export default {
       // const markers = L.markerClusterGroup(markerclusterSettings)
       const allMarkers = [];
 
-
-
       // Create layers and add data to the map
       console.log(data)
       data.map.layer.forEach((layer) => {
@@ -297,9 +305,7 @@ export default {
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
             `
-
           marker.bindPopup(popupContent)
-
           layer_group.addLayer(marker)
         })
 
@@ -366,7 +372,9 @@ export default {
       }         
       map.value.on('overlayadd overlayremove moveend', saveMapState)
     }
-    return { map, centerMap, focusMarker, selectedYear, formattedYear }
+    console.log('addDataToMap map', map)
+    console.log('addDataToMap selectedYear', selectedYear)
+    return { selectedYear }
   }
 }
 </script>

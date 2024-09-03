@@ -19,7 +19,7 @@ import L from 'leaflet'
 export var LargeMarkerIcon = {
   CustomLargeIcon: L.Icon.extend({
     options: {
-      iconSize: [40, 40],
+      iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -15]
     }
@@ -31,7 +31,7 @@ export var LargeMarkerIcon = {
     } else if (params.mtype === 'information') {
       svg = `<svg height="${params.marker_size}" width="${params.marker_width}" xmlns="http://www.w3.org/2000/svg" ><path fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" d="M0.5,25.6c-0.3-0.3-0.3-0.9,0-1.2L11.4,3.5c0.3-0.3,0.9-0.3,1.2,0l10.9,20.9c0.3,0.3,0.3,0.9,0,1.2"></path></svg>`
     } else {
-      svg = `<svg height="${params.marker_size}-5" width="${params.marker_size}-5" xmlns="http://www.w3.org/2000/svg">${params.defs_with_gradient}<circle class="cls-1" cx="${params.marker_size / 2}" cy="${params.marker_size / 2}" r="${params.marker_size / 2}" fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" shape-rendering="geometricPrecision"></circle></svg>`
+      svg = `<svg height="${params.marker_size}" width="${params.marker_size}" xmlns="http://www.w3.org/2000/svg">${params.defs_with_gradient}<circle class="cls-1" cx="${params.marker_size / 2}" cy="${params.marker_size / 2}" r="${params.marker_size / 2}" fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" shape-rendering="geometricPrecision"></circle></svg>`
     }
     return encodeURI('data:image/svg+xml,' + svg).replace(new RegExp('#', 'g'), '%23')
   },
