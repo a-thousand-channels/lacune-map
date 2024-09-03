@@ -56,7 +56,11 @@ export default {
     let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
       })
-      
+    
+    let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
+        attribution: 'Map by UT/3+x, Geodata by <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+      })
+    
 
     let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1980-1990',
@@ -334,6 +338,7 @@ export default {
 
 
       let basemaps = {
+        'Hamburg Darkmode': hamburg_dark_mode,
         'Dunkle OSM Karte (Alidade Smooth Dark)': alidade_smooth_dark,
         'Historische Karte 1980er': wmsLayerHamburg1980s
       }
