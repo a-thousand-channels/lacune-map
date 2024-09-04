@@ -52,6 +52,7 @@ export default {
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
     const selectedYear = ref(1900) // initial value
+    const allMarkers = [];
 
     let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -232,12 +233,12 @@ export default {
         const summary = await summarize(data);
         console.log(summary);
       
-        let selectedYear = addDataToMap(data)
+        let selectedYear = await addDataToMap(data)
         if ( summary.minYear ) {
           selectedYear = summary.minYear
         }
         // const filteredData = 
-        filter_and_update(map, data, summary.minYear, summary.maxYear, selectedYear)
+        await filter_and_update(map, data, allMarkers, overlayLayers,summary.minYear, summary.maxYear, selectedYear)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -280,7 +281,7 @@ export default {
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
       // const markers = L.markerClusterGroup(markerclusterSettings)
-      const allMarkers = [];
+      
 
       // Create layers and add data to the map
       console.log(data)
@@ -301,6 +302,7 @@ export default {
 
           const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
+          
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">${layer.title}</p>
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
