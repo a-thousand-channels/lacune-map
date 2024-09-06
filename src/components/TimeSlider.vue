@@ -18,6 +18,7 @@
   
   <script>
   import { computed } from 'vue'
+  import { filter_and_update } from '@/helpers/filter_and_update'
   
   export default {
     props: {
@@ -57,6 +58,7 @@
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
+        filter_and_update(map,data,overlayLayers,selectedYear)
       }
   
       return {

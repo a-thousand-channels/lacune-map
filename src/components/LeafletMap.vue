@@ -142,16 +142,12 @@ export default {
         let layer_color = ''
         let data_id = 1
 
-        console.log('Cluster: Zigzgag', cluster.getChildCount())
-        console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
+        // console.log('Cluster: Zigzgag', cluster.getChildCount())
+        // console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
         // TODO: add color from data
-        // TODO: build array of colors of all Childmarkers
         let childmarker_colors = []
         cluster.getAllChildMarkers().forEach(function (marker) {
-          console.log('Cluster: Childmarker Data', marker)          
-          console.log('Cluster: Childmarker Data Color', marker.data)
-          console.log('Cluster: Childmarker Data Color', marker.data.color)
-
+          // console.log('Cluster: Childmarker Data Color', marker.data.color)
           if (marker.data) {
             childmarker_colors.push(marker.data.color)
           }
@@ -243,7 +239,7 @@ export default {
           selectedYear = summary.minYear
         }
         // const filteredData = 
-        await filter_and_update(map, data, allMarkers, overlayLayers,summary.minYear, summary.maxYear, selectedYear)
+        await filter_and_update(map,data,overlayLayers,selectedYear)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -305,7 +301,7 @@ export default {
             darkcolor = '#92c460';
           }
           
-
+          
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
 
@@ -314,12 +310,24 @@ export default {
           marker.data = [];
           marker.data.title = place.title;
           marker.data.color = darkcolor;
+          marker.data.mtype = mtype;
           marker.data.layer_id = layer.id;
           if ( place.startdate && !place.enddate ) {
             place.enddate = parseInt(place.startdate.substring(0, 4))+"-12-31T00:00:00.000Z";
             console.log("Set enddate with startdate", place.startdate,place.enddate);
           }
-          
+          if ( place.startdate && place.enddate ) {
+            marker.data = setFromToYears(place.startdate,place.enddate); 
+          }
+          function setFromToYears (startdate,enddate) {
+            var startYear = parseInt(startdate.substring(0, 4));
+            var endYear = parseInt(enddate.substring(0, 4));
+            return {
+                fromYear: startYear,
+                endYear: endYear
+            };
+
+          }          
           
           
           const popupContent = `
