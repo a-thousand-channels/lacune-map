@@ -28,7 +28,7 @@ import { LargeMarkerIcon } from '@/helpers/marker'
 import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
 
 import 'leaflet/dist/leaflet.css'
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
+// import 'leaflet.markercluster/dist/MarkerCluster.Default.css' // Import MarkerCluster CSS
 import L from 'leaflet'
 import 'leaflet.markercluster' // Import MarkerCluster script
 import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
@@ -59,7 +59,8 @@ export default {
       })
     
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
-        attribution: 'Map by UT/3+x, Geodata by <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+        attribution: 'Map by UT/3+x, Geodata by <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+        maxZoom: 17
       })
     
 
@@ -115,6 +116,9 @@ export default {
             visibleLayers[layerName] = true
           }
         })
+        if (layer instanceof L.MarkerClusterGroup) {
+          layer.refreshClusters();
+        }        
       })
 
       localStorage.setItem('mapCenter', JSON.stringify([newCenter.lat, newCenter.lng]))
@@ -139,14 +143,15 @@ export default {
         let data_id = 1
 
         console.log('Cluster: Zigzgag', cluster.getChildCount())
-        // console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
-        if (cluster.getAllChildMarkers()[0].data) {
-          // console.log('Cluster: Childmarker Data', cluster.getAllChildMarkers()[0].data.color)
-        }
+        console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
         // TODO: add color from data
         // TODO: build array of colors of all Childmarkers
         let childmarker_colors = []
         cluster.getAllChildMarkers().forEach(function (marker) {
+          console.log('Cluster: Childmarker Data', marker)          
+          console.log('Cluster: Childmarker Data Color', marker.data)
+          console.log('Cluster: Childmarker Data Color', marker.data.color)
+
           if (marker.data) {
             childmarker_colors.push(marker.data.color)
           }
@@ -299,9 +304,23 @@ export default {
           if ( layer.color == '#b1f075') {
             darkcolor = '#92c460';
           }
+          
 
-          const icon = LargeMarkerIcon.create({ color: layer.color, mtype: mtype })
+          const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
+
+
+
+          marker.data = [];
+          marker.data.title = place.title;
+          marker.data.color = darkcolor;
+          marker.data.layer_id = layer.id;
+          if ( place.startdate && !place.enddate ) {
+            place.enddate = parseInt(place.startdate.substring(0, 4))+"-12-31T00:00:00.000Z";
+            console.log("Set enddate with startdate", place.startdate,place.enddate);
+          }
+          
+          
           
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">${layer.title}</p>

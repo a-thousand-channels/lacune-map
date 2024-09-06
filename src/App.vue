@@ -35,7 +35,7 @@ header {
 }
 @media (min-width: 768px) {
   header {
-    height: 7vh;
+    height: 5vh;
   }
 }
 
@@ -45,7 +45,7 @@ header h1 {
   font-size: 20px;
 }
 header h1 a {
-  color: #666;
+  color: #444;
   text-decoration: none;
 }
 header div.nav {
