@@ -63,6 +63,8 @@ export default {
     const selectedYear = ref(1900) // initial value
     const allMarkers = [];
 
+    L.Browser.retina = false
+
     let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
       })
@@ -70,7 +72,8 @@ export default {
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
         attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
         maxZoom: 17,
-        detectRetina: false
+        detectRetina: false,
+        tileSize: 256
       })
     
 
