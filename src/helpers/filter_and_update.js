@@ -1,6 +1,6 @@
 import { LargeMarkerIcon } from '@/helpers/marker'
 
-export function filter_and_update(map,data,overlayLayers,selectedYear) {
+export function filter_and_update(map,overlayLayers,selectedYear) {
   
   selectedYear == '' ? 1900 : selectedYear;
   console.log("Timeline: filterMarkers",selectedYear);

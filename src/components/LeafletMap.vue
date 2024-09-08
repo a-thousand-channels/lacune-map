@@ -11,9 +11,14 @@
   </div>
   <TimeSlider 
       v-model="selectedYear"
+      v-if="map && overlayLayers && selectedYear"
       :min="1900"
       :max="2024"
       :step="1"
+      :map="map"
+      :data="data"
+      :overlayLayers="overlayLayers"
+      :selectedYear="selectedYear"      
     />
   <div id="map"></div>
 </template>
@@ -32,6 +37,7 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet.markercluster' // Import MarkerCluster script
 import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
+// import { defaultTo } from 'cypress/types/lodash'
 
 
 export default {
@@ -42,13 +48,16 @@ export default {
   },
   setup() {
     const map = ref(null)
+    const data = ref([]);
     // Create Metalayer object
     const overlayLayers = ref({})
+    const basemaps = ref({})
     const defaultCenter = [53.56, 10.01]
     const defaultZoom = 12
     const savedCenter = localStorage.getItem('mapCenter')
     const savedZoom = localStorage.getItem('mapZoom')
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
+    let savedBasemap = localStorage.getItem('basemap') || ''
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
     const selectedYear = ref(1900) // initial value
@@ -60,7 +69,8 @@ export default {
     
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
         attribution: 'Map by UT/3+x, Geodata by <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
-        maxZoom: 17
+        maxZoom: 17,
+        detectRetina: false
       })
     
 
@@ -71,6 +81,8 @@ export default {
       maxZoom: 20,     
       attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
       })
+
+
     const formattedYear = computed(() => {
       console.log('Computing formatted year:', selectedYear.value)
       if (typeof selectedYear.value !== 'number' || isNaN(selectedYear.value)) {
@@ -84,46 +96,61 @@ export default {
 
     
       map.value = L.map('map').setView(centerCoordinates, zoomLevel)
+      map.value.attributionControl.setPrefix("");
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      })
-      // map.value.attributionControl.setPrefix("");
-      wmsLayerHamburg1980s.addTo(map.value)    
-      document.body.classList.remove('dark-mode');
-
+      if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
+        alidade_smooth_dark.addTo(map.value)
+        document.body.classList.add('dark-mode');
+      } else if (savedBasemap === 'Hamburg Darkmode') {
+        hamburg_dark_mode.addTo(map.value)
+        document.body.classList.remove('dark-mode');
+      } else {
+        wmsLayerHamburg1980s.addTo(map.value)    
+        document.body.classList.add('light-mode');
+      }
     
 
       // Load JSON data and add layers here
       loadJSONData()
 
-        
     })
 
     const saveMapState = () => {
       console.log('saveMapState called')
       const newCenter = map.value.getCenter()
       const newZoom = map.value.getZoom()
-      const visibleLayers = {}
+      const visibleOverlayLayers = {}
+      let visibleBasemap = ''
 
       Object.keys(overlayLayers.value).forEach((layerName) => {
-        visibleLayers[layerName] = false
+        visibleOverlayLayers[layerName] = false
       })
+    
       // Check which layers are currently visible
       map.value.eachLayer((layer) => {
         Object.keys(overlayLayers.value).forEach((layerName) => {
+          console.log('overlayLayers', layerName);
           if (layer === overlayLayers.value[layerName]) {
-            visibleLayers[layerName] = true
+            visibleOverlayLayers[layerName] = true
           }
         })
         if (layer instanceof L.MarkerClusterGroup) {
           layer.refreshClusters();
-        }        
+        } 
+        console.log('basemaps', basemaps.value);
+        Object.keys(basemaps.value).forEach((layerName) => {
+          console.log('basemaps', layerName);
+          if (layer === basemaps.value[layerName]) {
+            visibleBasemap = layerName
+          }
+        })               
       })
 
       localStorage.setItem('mapCenter', JSON.stringify([newCenter.lat, newCenter.lng]))
       localStorage.setItem('mapZoom', newZoom.toString())
-      localStorage.setItem('mapLayers', JSON.stringify(visibleLayers))
+      localStorage.setItem('mapLayers', JSON.stringify(visibleOverlayLayers))
+      localStorage.setItem('basemap', visibleBasemap)
+      console.log('saveMapState mapZoom', newZoom);
     }
 
     const centerMap = () => {
@@ -229,17 +256,21 @@ export default {
         const response = await fetch(
           'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
         )
-        const data = await response.json()
+        const fetchedData = await response.json()
+        data.value = fetchedData;        
         
-        const summary = await summarize(data);
+        const summary = await summarize(data.value);
         console.log(summary);
       
-        let selectedYear = await addDataToMap(data)
+        const result = await addDataToMap(data.value);
+        map.value = result.map;
+        overlayLayers.value = result.overlayLayers;
+        // selectedYear.value = result.selectedYear;        
         if ( summary.minYear ) {
-          selectedYear = summary.minYear
+          selectedYear.yalue = summary.minYear
         }
         // const filteredData = 
-        await filter_and_update(map,data,overlayLayers,selectedYear)
+        await filter_and_update(map,overlayLayers,selectedYear)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -285,7 +316,6 @@ export default {
       
 
       // Create layers and add data to the map
-      console.log(data)
       data.map.layer.forEach((layer) => {
         let layer_group = L.markerClusterGroup(markerclusterSettings)
 
@@ -366,16 +396,15 @@ export default {
       */ 
 
 
-      let basemaps = {
+      basemaps.value = {
         'Hamburg Darkmode': hamburg_dark_mode,
         'Dunkle OSM Karte (Alidade Smooth Dark)': alidade_smooth_dark,
         'Historische Karte 1980er': wmsLayerHamburg1980s
       }
-      const layerControl = L.control.layers(basemaps, overlayLayers.value, { collapsed: true })
+      const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
       layerControl.addTo(map.value)
 
       // check for savedlayers and make them visible
-      // savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
       console.log('savedLayers', savedLayers, Object.keys(savedLayers).length)
       if (Object.keys(savedLayers).length > 0) {
         Object.keys(savedLayers).forEach((layerName) => {
@@ -393,6 +422,9 @@ export default {
           overlayLayers.value[layerName].addTo(map.value)
         })
       }
+      
+
+      
       const urlParams = new URLSearchParams(window.location.search);
       const markerId = urlParams.get('marker');
       console.log("markers",allMarkers);
@@ -405,10 +437,33 @@ export default {
         }
       }         
       map.value.on('overlayadd overlayremove moveend', saveMapState)
+      map.value.on('baselayerchange', function(e) {
+        console.log('baselayerchange', e);
+        if (e.name === 'Historische Karte 1980er') {
+          document.body.classList.add('light-mode');
+        } else {
+          document.body.classList.remove('light-mode');
+        }
+        saveMapState();
+      })
+
+      return {
+        map: map.value,
+        data: data,
+        overlayLayers: overlayLayers.value,
+        centerMap
+      }
     }
     console.log('addDataToMap map', map)
     console.log('addDataToMap selectedYear', selectedYear)
-    return { selectedYear }
+    return {
+        map,
+        data,
+        overlayLayers,
+        selectedYear,
+        centerMap
+      };
+        
   }
 }
 </script>
@@ -455,6 +510,7 @@ h3 {
   border: none;
   border-radius: 5px;
   box-shadow: none;
+  cursor: pointer;
 }
 body.dark-mode #mapcontrol-center {
   background-color: #555;

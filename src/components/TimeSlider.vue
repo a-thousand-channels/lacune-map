@@ -37,7 +37,23 @@
       step: {
         type: Number,
         default: 1
-      }
+      },
+      map: {
+        type: Object,
+        required: true
+      },
+      data: {
+        type: Array,
+        required: true
+      },
+      overlayLayers: {
+        type: Object,
+        required: true
+      },
+      selectedYear: {
+        type: Number,
+        required: true
+      }      
     },
     setup(props, { emit }) {
       const formattedYear = computed(() => {
@@ -58,7 +74,9 @@
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
-        filter_and_update(map,data,overlayLayers,selectedYear)
+        console.log('TimeSlider -  overlayLayers', props.overlayLayers)
+        console.log('TimeSlider -  selectedYear', props.selectedYear)
+        filter_and_update(props.map,props.overlayLayers,props.selectedYear)
       }
   
       return {
