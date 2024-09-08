@@ -68,7 +68,7 @@ export default {
       })
     
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
-        attribution: 'Map by UT/3+x, Geodata by <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+        attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
         maxZoom: 17,
         detectRetina: false
       })
@@ -79,7 +79,7 @@ export default {
       transparent: true,
       minZoom: 9,
       maxZoom: 20,     
-      attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
 
 
@@ -103,9 +103,10 @@ export default {
         document.body.classList.add('dark-mode');
       } else if (savedBasemap === 'Hamburg Darkmode') {
         hamburg_dark_mode.addTo(map.value)
-        document.body.classList.remove('dark-mode');
+        document.body.classList.add('dark-mode');
       } else {
         wmsLayerHamburg1980s.addTo(map.value)    
+        document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
       }
     
@@ -441,8 +442,10 @@ export default {
         console.log('baselayerchange', e);
         if (e.name === 'Historische Karte 1980er') {
           document.body.classList.add('light-mode');
+          document.body.classList.remove('dark-mode');
         } else {
           document.body.classList.remove('light-mode');
+          document.body.classList.add('dark-mode');
         }
         saveMapState();
       })

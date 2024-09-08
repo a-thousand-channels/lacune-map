@@ -81,6 +81,11 @@ input.leaflet-control-layers-selector[disabled=""] + span {
 #map.leaflet-container .leaflet-control-attribution a {
   color: silver;
 }
+body.light-mode #map.leaflet-container .leaflet-control-attribution,
+body.light-mode #map.leaflet-container .leaflet-control-attribution a {
+  color: #666;
+}
+
 #map.leaflet-container a.leaflet-popup-close-button {
   right: 5px;
   font: 24px/24px Tahoma, Verdana, sans-serif;
