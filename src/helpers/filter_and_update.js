@@ -14,8 +14,8 @@ export function filter_and_update(map,overlayLayers,selectedYear) {
      
       layer.eachLayer((marker) => {
         if (marker instanceof L.Marker) {
-          console.log("marker.data",marker.options.data.title);
-          console.log("marker.data",marker.options.data.startdate);
+          // console.log("marker.data",marker.options.data.title);
+          // console.log("marker.data",marker.options.data.startdate);
           // checkForDates(layer, marker);
           
         }

@@ -334,25 +334,23 @@ export default {
           if ( layer.color == '#b1f075') {
             darkcolor = '#92c460';
           }
-          
-          
+                  
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
 
-
-
           marker.data = [];
-          marker.data.title = place.title;
-          marker.data.color = darkcolor;
-          marker.data.mtype = mtype;
-          marker.data.layer_id = layer.id;
           if ( place.startdate && !place.enddate ) {
             place.enddate = parseInt(place.startdate.substring(0, 4))+"-12-31T00:00:00.000Z";
             console.log("Set enddate with startdate", place.startdate,place.enddate);
           }
           if ( place.startdate && place.enddate ) {
             marker.data = setFromToYears(place.startdate,place.enddate); 
-          }
+          }          
+          marker.data.title = place.title;
+          marker.data.color = darkcolor;
+          marker.data.mtype = mtype;
+          marker.data.layer_id = layer.id;
+        
           function setFromToYears (startdate,enddate) {
             var startYear = parseInt(startdate.substring(0, 4));
             var endYear = parseInt(enddate.substring(0, 4));
