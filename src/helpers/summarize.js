@@ -28,8 +28,8 @@ export function summarize(data) {
     }
   
     // Convert the earliest and latest dates back to strings
-    const minYearISOString = new Date(minYear).toISOString().slice(0, 10);
-    const maxYearISOString = new Date(maxYear).toISOString().slice(0, 10);
+    const minYearISOString = new Date(minYear).toISOString().slice(0, 4);
+    const maxYearISOString = new Date(maxYear).toISOString().slice(0, 4);
   
     return {
       minYear: minYearISOString,

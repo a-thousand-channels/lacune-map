@@ -7,6 +7,11 @@
         :max="max"
         :step="step"
         :value="modelValue" 
+        :map="map"
+        :data="data"
+        :overlayLayers="overlayLayers"
+        :visibleLayers="visibleLayers"
+        :selectedYear="selectedYear"           
         class="slider" 
         id="yearSlider"
         @input="updateSlider"
@@ -43,10 +48,14 @@
         required: true
       },
       data: {
-        type: Array,
+        type: Object,
         required: true
       },
       overlayLayers: {
+        type: Object,
+        required: true
+      },
+      visibleLayers: {
         type: Object,
         required: true
       },
@@ -74,9 +83,11 @@
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
-        console.log('TimeSlider -  overlayLayers', props.overlayLayers)
+        console.log('TimeSlider -  visibleLayers', props.visibleLayers)
+        console.log('TimeSlider -  visibleLayers +', props.visibleLayers)
         console.log('TimeSlider -  selectedYear', props.selectedYear)
-        filter_and_update(props.map,props.overlayLayers,props.selectedYear)
+        console.log("TimeSlider -  map",props.map);
+        filter_and_update(props.map,props.visibleLayers,props.overlayLayers,props.selectedYear)
       }
   
       return {

@@ -12,12 +12,13 @@
   <TimeSlider 
       v-model="selectedYear"
       v-if="map && overlayLayers && selectedYear"
-      :min="1900"
-      :max="2024"
+      :min="minYear"
+      :max="maxYear"
       :step="1"
       :map="map"
       :data="data"
       :overlayLayers="overlayLayers"
+      :visibleLayers="visibleLayers"
       :selectedYear="selectedYear"      
     />
   <div id="map"></div>
@@ -49,15 +50,18 @@ export default {
   setup() {
     const map = ref(null)
     const data = ref([]);
+    const minYear = ref(1900);
+    const maxYear = ref(2024);
     // Create Metalayer object
     const overlayLayers = ref({})
-    const basemaps = ref({})
-    const defaultCenter = [53.56, 10.01]
-    const defaultZoom = 12
-    const savedCenter = localStorage.getItem('mapCenter')
-    const savedZoom = localStorage.getItem('mapZoom')
+    const visibleLayers = ref({})
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
+    const basemaps = ref({})
     let savedBasemap = localStorage.getItem('basemap') || ''
+    const defaultCenter = [53.56, 10.01]
+    const savedCenter = localStorage.getItem('mapCenter')
+    const defaultZoom = 12
+    const savedZoom = localStorage.getItem('mapZoom')
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
     const selectedYear = ref(1900) // initial value
@@ -263,18 +267,20 @@ export default {
         const fetchedData = await response.json()
         data.value = fetchedData;        
         
-        const summary = await summarize(data.value);
-        console.log(summary);
+        const timelineSummary = await summarize(data.value);
+        console.log("timelineSummary",timelineSummary.value);
       
         const result = await addDataToMap(data.value);
         map.value = result.map;
         overlayLayers.value = result.overlayLayers;
         // selectedYear.value = result.selectedYear;        
-        if ( summary.minYear ) {
-          selectedYear.yalue = summary.minYear
+        if ( timelineSummary.minYear ) {
+          selectedYear.yalue = timelineSummary.minYear
+          minYear.value = parseInt(timelineSummary.minYear, 10);
+          maxYear.value = parseInt(timelineSummary.maxYear, 10);
         }
         // const filteredData = 
-        await filter_and_update(map,overlayLayers,selectedYear)
+        // await filter_and_update(map,overlayLayers,selectedYear)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -417,11 +423,13 @@ export default {
             overlayLayers.value[layerName]
           ) {
             overlayLayers.value[layerName].addTo(map.value)
+            visibleLayers.value[layerName] = overlayLayers.value[layerName]
           }
         })
       } else {
         Object.keys(overlayLayers.value).forEach((layerName) => {
           overlayLayers.value[layerName].addTo(map.value)
+          visibleLayers.value[layerName] = overlayLayers.value[layerName]
         })
       }
       
@@ -464,8 +472,11 @@ export default {
         map,
         data,
         overlayLayers,
+        visibleLayers,
         selectedYear,
-        centerMap
+        centerMap,
+        minYear,
+        maxYear
       };
         
   }
