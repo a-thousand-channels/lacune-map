@@ -26,6 +26,7 @@
 
 <script>
 import { onMounted, computed, watch, ref } from 'vue'
+import { useRouter } from 'vue-router';
 import TimeSlider from './TimeSlider.vue'
 import { summarize } from '@/helpers/summarize'
 import { filter_and_update } from '@/helpers/filter_and_update'
@@ -48,6 +49,7 @@ export default {
     TimeSlider
   },
   setup() {
+    const router = useRouter();
     const map = ref(null)
     const data = ref([]);
     const minYear = ref(1900);
@@ -170,6 +172,18 @@ export default {
         map.value.setView(defaultCenter, defaultZoom)
       }
     }
+    const openLayerInfo = (layerId) => {
+      console.log('openLayerInfo', layerId)
+      router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
+    };
+
+    const openPlaceInfo = (layerId, placeId) => {
+      console.log('openPlaceInfo', layerId, placeId)
+      router.push({ 
+        name: 'placeInfo', 
+        params: { layerId: layerId.toString(), placeId: placeId.toString() } 
+      });
+    };
     const markerclusterSettings = {
       maxClusterRadius: 0,
       showCoverageOnHover: false,
@@ -372,14 +386,38 @@ export default {
           
           
           const popupContent = `
-              <p class="place-layer" style="background-color: ${darkcolor}">${layer.title}</p>
+              <p class="place-layer" style="background-color: ${darkcolor}">
+                <a href="#" class="layer-info" data-layer-id="${layer.id}">
+                  ${layer.title}
+                </a>
+              </p>
+              
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-address">${place.location} ${place.address}, ${place.city}</p>
               <h3 title="Place ID ${place.id}">${place.title}</h3>
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
+              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-place-id="${place.id}">Mehr</a>
             `
           marker.bindPopup(popupContent)
+
+          marker.on('popupopen', (e) => {
+            const popup = e.popup;
+            const container = popup.getElement();
+
+            container.querySelector('.place-info').addEventListener('click', (event) => {
+              event.preventDefault();
+              const layerId = event.target.getAttribute('data-layer-id');
+              const placeId = event.target.getAttribute('data-place-id');
+              openPlaceInfo(layerId, placeId);
+            });
+
+            container.querySelector('.layer-info').addEventListener('click', (event) => {
+              event.preventDefault();
+              const layerId = event.target.getAttribute('data-layer-id');
+              openLayerInfo(layerId);
+            });
+          });          
           layer_group.addLayer(marker)
         })
 
@@ -509,6 +547,10 @@ h3 {
   border-radius: 2px;
   color: white;
   font-weight: bold;
+}
+#map.leaflet-container .leaflet-popup-content p.place-layer a {
+  color: white;
+  text-decoration: none;
 }
 #map.leaflet-container .leaflet-popup-content p.place-dates {
   margin: 0;
