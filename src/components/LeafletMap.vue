@@ -84,7 +84,7 @@ export default {
     let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1980-1990',
       transparent: true,
-      minZoom: 9,
+      minZoom: 10,
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
@@ -102,7 +102,8 @@ export default {
     onMounted(() => {
 
     
-      map.value = L.map('map').setView(centerCoordinates, zoomLevel)
+      map.value = L.map('map', { maxZoom: 18, minZoom: 10, maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]] } ).setView(centerCoordinates, zoomLevel)
+    
       map.value.attributionControl.setPrefix("");
 
       if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
@@ -129,6 +130,8 @@ export default {
       const newZoom = map.value.getZoom()
       const visibleOverlayLayers = {}
       let visibleBasemap = ''
+
+      
 
       Object.keys(overlayLayers.value).forEach((layerName) => {
         visibleOverlayLayers[layerName] = false
