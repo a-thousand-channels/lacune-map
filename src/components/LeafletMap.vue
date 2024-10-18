@@ -177,11 +177,11 @@ export default {
       router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
     };
 
-    const openPlaceInfo = (layerId, placeId) => {
+    const openPlaceInfo = (layerId, layerTitle, layerDarkcolor, placeId) => {
       console.log('openPlaceInfo', layerId, placeId)
       router.push({ 
         name: 'placeInfo', 
-        params: { layerId: layerId.toString(), placeId: placeId.toString() } 
+        params: { layerId: layerId.toString(), layerTitle: layerTitle.toString(), layerDarkcolor: layerDarkcolor.toString(), placeId: placeId.toString() } 
       });
     };
     const markerclusterSettings = {
@@ -397,7 +397,7 @@ export default {
               <h3 title="Place ID ${place.id}">${place.title}</h3>
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
-              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-place-id="${place.id}">Mehr</a>
+              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Mehr</a>
             `
           marker.bindPopup(popupContent)
 
@@ -408,8 +408,10 @@ export default {
             container.querySelector('.place-info').addEventListener('click', (event) => {
               event.preventDefault();
               const layerId = event.target.getAttribute('data-layer-id');
+              const layerTitle = event.target.getAttribute('data-layer-title');
+              const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              openPlaceInfo(layerId, placeId);
+              openPlaceInfo(layerId, layerTitle, layerDarkcolor, placeId);
             });
 
             container.querySelector('.layer-info').addEventListener('click', (event) => {
