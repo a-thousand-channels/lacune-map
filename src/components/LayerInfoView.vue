@@ -2,25 +2,21 @@
     <div class="overlay" v-if="layerData">
       <h2>{{ layerData.layer.title }}</h2>
       <p>ID: {{ layerData.layer.id }}</p>
-      <div v-if="layerData.layer.text">{{ layerData.layer.text }}</div>
+      <div v-if="layerData.layer.text" v-html="layerData.layer.text"></div>
         
-        <figcaption v-if="layerData.layer.image_link">
+      <figure v-if="layerData.layer.image_link">
             <img :src="layerData.layer.image_link" alt="layerData.layer.title">
-        </figcaption>
-        
-
-
-
-
-      <h4>Places in this layer:</h4>
+      </figure>
+      
+      <h4>Einträge zu {{ layerData.layer.title }}:</h4>
       <ul>
         <li v-for="place in layerData.layer.places" :key="place.id">
           <router-link :to="{ name: 'placeInfo', params: { layerId, placeId: place.id } }">
-            {{ place.title }}
+            {{ place.date_with_qualifier }}  {{ place.title }} 
           </router-link>
         </li>
       </ul>
-      <button @click="closeOverlay">Close</button>
+      <button @click="closeOverlay">Zur Karte</button>
     </div>
     <div v-else class="overlay"><p>Loading...</p></div>
   </template>

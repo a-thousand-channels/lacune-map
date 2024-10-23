@@ -3,27 +3,29 @@
 <template>
   <div class="overlay" v-if="placeData">
     <button @click="closeOverlay">&times;</button>
-    <p class="place-layer" style="background-color: ${layerDarkcolor}">
-      <a href="#" class="layer-info" data-layer-id="${layerId}">
-        ${layerTitle}
+    <p class="place-layer" style="background-color: {{layerDarkcolor}}">
+      <a href="#" class="layer-info" data-layer-id="{{ layerId }}">
+        Layer {{ layerTitle }}
       </a>
     </p>
 
-    <p>{{ placeData.startdate }}, {{ placeData.enddate }}</p>
+    <p class="place-dates">{{ placeData.date_with_qualifier }}</p>
     <header>
       <h2>{{ placeData.title }}</h2>
       <p v-if="placeData.subtitle">Subtitle: {{ placeData.subtitle }}</p>
     </header>
     
-    <p>Location: {{ placeData.location }}, {{ placeData.city }}</p>
+    <p><span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
   
-    <p>Teaser: {{ placeData.teaser }}</p>
-    <p>Description: {{ placeData.text }}</p>
-    <p>Source: {{ placeData.source }}</p>
-    <a @click="closeOverlay">Zur Karte</a>
-    <p>Place ID: {{ placeData.id }}, Layer ID: {{ layerId }}</p>
+    <p v-html="placeData.teaser"></p>
+    <p v-html="placeData.text"></p>
+    <hr />
+    <p>Quellen: {{ placeData.source }}</p>
+    <p><button @click="closeOverlay">Zur Karte</button></p>
+    <p><small>Place ID: {{ placeData.id }}, Layer ID: {{ layerId }} {{ layerTitle }}</small></p>
   </div>
-  <div v-else class="overlay"><p>... (Infos zu einem einzelnen Orte können derzeit noch nicht angezeigt werden.)</p><p><a @click="closeOverlay">Zur Karte</a></p></div>
+  <div v-else class="overlay"><p>... (Infos zu einem einzelnen Orte können derzeit noch nicht angezeigt werden.)</p>
+  <p><a @click="closeOverlay">Zur Karte</a></p></div>
 </template>
 
 <script>
@@ -65,7 +67,7 @@ export default {
     };
 
     onMounted(() => {
-      fetchPlaceData(props.layerId, props.layerTitle, props.layerDarkcolor, props.placeId);
+      fetchPlaceData(props.layerId, props.placeId);
     });
 
     const closeOverlay = () => {

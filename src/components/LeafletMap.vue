@@ -394,7 +394,11 @@ export default {
               
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-address">${place.location} ${place.address}, ${place.city}</p>
-              <h3 title="Place ID ${place.id}">${place.title}</h3>
+              <h3 title="Place ID ${place.id}">
+                <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
+                  ${place.title}
+                </a>
+              </h3>
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
               <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Mehr</a>
