@@ -2,17 +2,17 @@
 
 <template>
   <div class="overlay" v-if="placeData">
-    <button @click="closeOverlay">&times;</button>
-    <p class="place-layer" style="background-color: {{layerDarkcolor}}">
-      <a href="#" class="layer-info" data-layer-id="{{ layerId }}">
-        Layer {{ layerTitle }}
+    <button class="close" @click="closeOverlay">&times;</button>
+    <p class="place-layer" :style="{ backgroundColor: layerDarkcolor}">
+      <a href="#" class="layer-info" :data-layer-id="layerId">
+        Layer {{ layerTitle }} {{ layerId }} {{layerDarkcolor}}
       </a>
     </p>
 
     <p class="place-dates">{{ placeData.date_with_qualifier }}</p>
     <header>
       <h2>{{ placeData.title }}</h2>
-      <p v-if="placeData.subtitle">Subtitle: {{ placeData.subtitle }}</p>
+      <p v-if="placeData.subtitle">{{ placeData.subtitle }}</p>
     </header>
     
     <p><span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>

@@ -16,7 +16,7 @@ a {
   color: hsla(160, 100%, 37%, 1);
   color: #c6c600;
   transition: 0.4s;
-  padding: 3px;
+  /* padding: 3px; */
 }
 
 @media (hover: hover) {
@@ -24,6 +24,30 @@ a {
     background-color: hsla(165, 9%, 82%, 0.2);
   }
 }
+button {
+  cursor: pointer;
+  background-color: #c6c600;
+  background-color: #878701;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: 0.4s;
+}
+button.close {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    border: none;
+    text-align: center;
+    width: 24px;
+    height: 24px;
+    font: 25px/24px Tahoma, Verdana, sans-serif;
+    color: #757575;
+
+    text-decoration: none;
+    background: transparent;
+  }
 
 p {
   margin: 0 0 1rem 0;
