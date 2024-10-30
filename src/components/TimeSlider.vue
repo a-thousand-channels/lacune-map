@@ -74,20 +74,76 @@
         const year = Math.max(props.min, Math.min(props.modelValue, props.max))
         return year.toString()
       })
+
+      let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1930-1940',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })
+    let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1950-1960',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })    
+    let wmsLayerHamburg1960s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1960-1970',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })   
+    let wmsLayerHamburg1970s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1970-1980',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })              
+    let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1980-1990',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })      
   
       function updateSlider(event) {
         const value = Number(event.target.value)
-        console.log('TimeSlider - Updating slider:', value)
+        console.log('TimeSlider - Updating slider:', value);
         if (!isNaN(value)) {
           emit('update:modelValue', value)
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
-        console.log('TimeSlider -  visibleLayers', props.visibleLayers)
-        console.log('TimeSlider -  visibleLayers +', props.visibleLayers)
         console.log('TimeSlider -  selectedYear', props.selectedYear)
-        console.log("TimeSlider -  map",props.map);
+        
         filter_and_update(props.map,props.visibleLayers,props.overlayLayers,props.selectedYear)
+        props.map.eachLayer(layer => {
+          if (layer instanceof L.TileLayer.WMS) {
+            props.map.removeLayer(layer);
+          }
+        });
+        if (value < 1950 ) {
+          console.log('TimeSlider < 1950')
+          wmsLayerHamburg1930s.addTo(props.map);
+        } else if (value < 1960) {
+          console.log('TimeSlider < 1960')
+          wmsLayerHamburg1950s.addTo(props.map);
+        } else if (value < 1970) {
+          console.log('TimeSlider < 1970')
+          wmsLayerHamburg1960s.addTo(props.map);
+        } else if (value < 1980) {
+          console.log('TimeSlider < 1980')
+          wmsLayerHamburg1970s.addTo(props.map);
+        } else {
+          console.log('TimeSlider > 1980')
+          wmsLayerHamburg1980s.addTo(props.map);
+        }
+
       }
   
       return {

@@ -106,6 +106,7 @@ hr {
   height: 95vh;
   font-family: unset;
   background-color: #222;
+  background-color: #ccc;
 
 }
 @media (min-width: 768px) {

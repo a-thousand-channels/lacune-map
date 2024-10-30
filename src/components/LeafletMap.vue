@@ -84,7 +84,34 @@ export default {
         tileSize: 256
       })
     
-
+    let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1930-1940',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })
+    let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1950-1960',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })    
+    let wmsLayerHamburg1960s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1960-1970',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })   
+    let wmsLayerHamburg1970s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1970-1980',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })              
     let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1980-1990',
       transparent: true,
@@ -144,7 +171,7 @@ export default {
       // Check which layers are currently visible
       map.value.eachLayer((layer) => {
         Object.keys(overlayLayers.value).forEach((layerName) => {
-          console.log('overlayLayers', layerName);
+          // console.log('overlayLayers', layerName);
           if (layer === overlayLayers.value[layerName]) {
             visibleOverlayLayers[layerName] = true
           }
@@ -152,9 +179,9 @@ export default {
         if (layer instanceof L.MarkerClusterGroup) {
           layer.refreshClusters();
         } 
-        console.log('basemaps', basemaps.value);
+        // console.log('basemaps', basemaps.value);
         Object.keys(basemaps.value).forEach((layerName) => {
-          console.log('basemaps', layerName);
+          // console.log('basemaps', layerName);
           if (layer === basemaps.value[layerName]) {
             visibleBasemap = layerName
           }
@@ -166,6 +193,31 @@ export default {
       localStorage.setItem('mapLayers', JSON.stringify(visibleOverlayLayers))
       localStorage.setItem('basemap', visibleBasemap)
       console.log('saveMapState mapZoom', newZoom);
+    }
+    var lastZoom;
+    const setTooltipDisplay = () => {
+      var tooltipThreshold = 17;
+      var zoom =  map.value.getZoom();
+      if (zoom < tooltipThreshold && (!lastZoom || lastZoom >= tooltipThreshold)) {
+         map.value.eachLayer(function(l) {
+            if (l.getTooltip()) {
+                var tooltip = l.getTooltip();
+                l.unbindTooltip().bindTooltip(tooltip, {
+                    permanent: false
+                })
+            }
+        })
+      } else if (zoom >= tooltipThreshold && (!lastZoom || lastZoom < tooltipThreshold)) {
+         map.value.eachLayer(function(l) {
+            if (l.getTooltip()) {
+                var tooltip = l.getTooltip();
+                l.unbindTooltip().bindTooltip(tooltip, {
+                    permanent: true
+                })
+            }
+        });
+      }
+      lastZoom = zoom;
     }
 
     const centerMap = () => {
@@ -362,6 +414,7 @@ export default {
                   
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
+          // .bindTooltip(place.title,{permanent: false, direction: 'auto', opacity: 0.7});
 
           marker.data = [];
           if ( place.startdate && !place.enddate ) {
@@ -403,7 +456,7 @@ export default {
               </h3>
               <p>${place.subtitle}</p>
               <p>${place.teaser}</p>
-              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Mehr</a>
+              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Weiter lesen</a>
             `
           marker.bindPopup(popupContent)
 
@@ -500,7 +553,8 @@ export default {
           focusMarker(marker);
         }
       }         
-      map.value.on('overlayadd overlayremove moveend', saveMapState)
+      map.value.on('overlayadd overlayremove moveend', saveMapState);
+      map.value.on('zoomend', setTooltipDisplay);
       map.value.on('baselayerchange', function(e) {
         console.log('baselayerchange', e);
         if (e.name === 'Historische Karte 1980er') {
