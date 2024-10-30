@@ -11,13 +11,14 @@
       <li><strike>Kartenfehler/Clusterprobleme fixen</strike></li>
       <li><strike>Eigenen Kartenhintergrund einbauen</strike></li>
       <li><strike></strike></li>
-      
-      <li>Icon für (Recherche)</li>
-      <li>Filter nach Recherche oder Bericht</li>
+      <li><strike>Layer Infoseite mit Bild (verlinkt aus den Popups)</strike></li>
       <li>In Arbeit: Timeslider Funktionalität</li>
-      <li>In Arbeit: Layer Infoseite mit Bild (verlinkt aus den Popups)</li>
-      <li>Contentseiten (link aus den Popups)</li>
+      <li>In Arbeit: Inhaltseite zu einem Orte (Link aus den Popups)</li>
+      
+      <li>Icon für/anstatt des Hinweis (Recherche)</li>
+      <li>Filter nach den beiden Kategorien Recherche oder Bericht</li>
       <li>Impressum/Datenschutz/Credits Seite</li>
+      <li>Historical Maps 20er, 30er etc</li>
     </ul>
 
     <p>Vielleicht einen Tick später</p>

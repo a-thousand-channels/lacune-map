@@ -31,7 +31,12 @@ const router = createRouter({
       path: '/layer/:layerId/place/:placeId', 
       name: 'placeInfo', 
       component: PlaceView,
-      props: true
+      props: route => ({
+        layerId: route.params.layerId,
+        placeId: route.params.placeId,
+        layerTitle: route.params.layerTitle,
+        layerDarkcolor: route.params.layerDarkcolor
+      })
     }
   ]
 })

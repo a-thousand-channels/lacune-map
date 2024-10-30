@@ -48,10 +48,42 @@ button.close {
     text-decoration: none;
     background: transparent;
   }
-
+h2 {
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
 p {
   margin: 0 0 1rem 0;
+  line-height: 1.5;
 }
+p.small {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.overlay h2 {
+  font-size: 7vw;
+}
+.overlay p {
+  font-size: 4.5vw;
+}
+.overlay p.small {
+  font-size: 3vw;
+}
+
+@media (min-width: 768px) {
+  .overlay h2 {
+    font-size: 7vw;
+  }
+  .overlay p {
+    font-size: 3vw;
+  }
+}
+.source p {
+  font-style: italic;
+}
+
+
 hr {
   margin: 2rem 0 1.5rem;
   height: 1px;

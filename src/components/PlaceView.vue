@@ -3,9 +3,9 @@
 <template>
   <div class="overlay" v-if="placeData">
     <button class="close" @click="closeOverlay">&times;</button>
-    <p class="place-layer" :style="{ backgroundColor: layerDarkcolor}">
-      <a href="#" class="layer-info" :data-layer-id="layerId">
-        Layer {{ layerTitle }} {{ layerId }} {{layerDarkcolor}}
+    <p class="place-layer" :style="{ backgroundColor: layerStore.layerDarkcolor }">
+      <a @click="openLayerInfo(layerId)" class="layer-info" :data-layer-id="layerId">
+        {{ placeData.layer_title }} 
       </a>
     </p>
 
@@ -15,44 +15,40 @@
       <p v-if="placeData.subtitle">{{ placeData.subtitle }}</p>
     </header>
     
-    <p><span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
+    <p class="place-location">■ <span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
   
     <p v-html="placeData.teaser"></p>
     <p v-html="placeData.text"></p>
     <hr />
-    <p>Quellen: {{ placeData.source }}</p>
+    <div class="source">
+      <p>Quelle: <span v-if="placeData.source">{{ placeData.source }}</span><span v-else>...</span></p>
+      <p class="small">{{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune Map, 2024/2025</p>
+    </div>
     <p><button @click="closeOverlay">Zur Karte</button></p>
-    <p><small>Place ID: {{ placeData.id }}, Layer ID: {{ layerId }} {{ layerTitle }}</small></p>
   </div>
   <div v-else class="overlay"><p>... (Infos zu einem einzelnen Orte können derzeit noch nicht angezeigt werden.)</p>
-  <p><a @click="closeOverlay">Zur Karte</a></p></div>
+  <p><button @click="closeOverlay">Zur Karte</button></p></div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
+import { useLayerStore } from '@/stores/layerStore';
 import { useRouter } from 'vue-router';
 
 export default {
   props: {
     layerId: {
-      type: String,
-      required: true
-    },
-    layerTitle: {
-      type: String,
-      required: true
-    },
-    layerDarkcolor: {
-      type: String,
-      required: true
-    },
-    placeId: {
-      type: String,
-      required: true
-    }
+        type: String,
+        required: true
+      },
+      placeId: {
+        type: String,
+        required: true
+      }  
   },
   setup(props) {
     const router = useRouter();
+    const layerStore = useLayerStore();
     const placeData = ref(null);
 
     const fetchPlaceData = async (layerId, placeId) => {
@@ -65,16 +61,24 @@ export default {
         console.error('Error fetching place data:', error);
       }
     };
+       
+
 
     onMounted(() => {
       fetchPlaceData(props.layerId, props.placeId);
+
+        
     });
 
+    const openLayerInfo = (layerId) => {
+        console.log('openLayerInfo', layerId )
+        router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
+      };  
     const closeOverlay = () => {
       router.push({ name: 'home' });
     };
 
-    return { placeData, closeOverlay };
+    return { placeData, layerStore, closeOverlay, openLayerInfo };
   }
 }
 </script>
@@ -90,5 +94,22 @@ export default {
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 48px 18px;
+  }
+  p.place-location {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3vw;
+  }
+  p.place-layer {
+    display: inline-block;
+    background-color: lightsalmon;
+    padding: 2px 11px;
+    margin: 0 0 6px -11px;
+    border-radius: 2px;
+    color: white;
+    font-weight: bold;
+  }  
+  p.place-layer a {
+    color: white;
+    text-decoration: none;
   }
 </style>

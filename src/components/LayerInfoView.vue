@@ -1,22 +1,24 @@
 <template>
     <div class="overlay" v-if="layerData">
-      <h2>{{ layerData.layer.title }}</h2>
-      <p>ID: {{ layerData.layer.id }}</p>
-      <div v-if="layerData.layer.text" v-html="layerData.layer.text"></div>
-        
+      
       <figure v-if="layerData.layer.image_link">
-            <img :src="layerData.layer.image_link" alt="layerData.layer.title">
+        <img :src="layerData.layer.image_link" alt="layerData.layer.title">
       </figure>
       
-      <h4>Einträge zu {{ layerData.layer.title }}:</h4>
+      <h2 :style="{ 'color': layerStore.layerDarkcolor.toString() }">
+        {{ layerData.layer.title }}
+      </h2>
+      <div v-if="layerData.layer.text" v-html="layerData.layer.text"></div>
       <ul>
         <li v-for="place in layerData.layer.places" :key="place.id">
-          <router-link :to="{ name: 'placeInfo', params: { layerId, placeId: place.id } }">
-            {{ place.date_with_qualifier }}  {{ place.title }} 
+          <router-link :to="{ name: 'placeInfo', params: { layerId: layerId, placeId: place.id } }">
+            {{ place.date_with_qualifier }} {{ place.title }} 
           </router-link>
         </li>
       </ul>
-      <button @click="closeOverlay">Zur Karte</button>
+      <p>
+        <button @click="closeOverlay">Zur Karte</button>
+      </p>
     </div>
     <div v-else class="overlay"><p>Loading...</p></div>
   </template>
@@ -24,16 +26,22 @@
   <script>
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
+  import { useLayerStore } from '@/stores/layerStore';
   
   export default {
     props: {
       layerId: {
         type: String,
         required: true
-      }
+      },
+      placeId: {
+        type: String,
+        required: true
+      }      
     },
     setup(props) {
       const router = useRouter();
+      const layerStore = useLayerStore();      
       const layerData = ref(null);
   
       const fetchLayerData = async (id) => {
@@ -42,6 +50,10 @@
           const response = await fetch(`https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg/layers/${id}`);
           const data = await response.json();
           layerData.value = data;
+          console.log('layerData', layerData.value);
+          console.log('layerTitle', layerData.value.layer.title);
+          console.log('layerDarkcolor', layerData.value.layer.color);
+          layerStore.setLayerData(layerData.value.layer.title, layerData.value.layer.color, layerData.value.layer.id);
         } catch (error) {
           console.error('Error fetching layer data:', error);
         }
@@ -55,7 +67,7 @@
         router.push({ name: 'home' });
       };
   
-      return { layerData, closeOverlay };
+      return { layerData, layerStore, closeOverlay };
     }
   }
   </script>

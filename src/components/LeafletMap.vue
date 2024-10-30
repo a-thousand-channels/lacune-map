@@ -27,6 +27,7 @@
 <script>
 import { onMounted, computed, watch, ref } from 'vue'
 import { useRouter } from 'vue-router';
+import { useLayerStore } from '@/stores/layerStore';
 import TimeSlider from './TimeSlider.vue'
 import { summarize } from '@/helpers/summarize'
 import { filter_and_update } from '@/helpers/filter_and_update'
@@ -52,6 +53,7 @@ export default {
     const router = useRouter();
     const map = ref(null)
     const data = ref([]);
+    const layerStore = useLayerStore();    
     const minYear = ref(1900);
     const maxYear = ref(2024);
     // Create Metalayer object
@@ -173,15 +175,15 @@ export default {
       }
     }
     const openLayerInfo = (layerId) => {
-      console.log('openLayerInfo', layerId)
+      console.log('openLayerInfo', layerId )
       router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
     };
 
-    const openPlaceInfo = (layerId, layerTitle, layerDarkcolor, placeId) => {
+    const openPlaceInfo = (layerId, placeId) => {
       console.log('openPlaceInfo', layerId, placeId)
       router.push({ 
         name: 'placeInfo', 
-        params: { layerId: layerId.toString(), layerTitle: layerTitle.toString(), layerDarkcolor: layerDarkcolor.toString(), placeId: placeId.toString() } 
+        params: { layerId: layerId.toString(), placeId: placeId.toString() } 
       });
     };
     const markerclusterSettings = {
@@ -393,7 +395,7 @@ export default {
               </p>
               
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
-              <p class="place-address">${place.location} ${place.address}, ${place.city}</p>
+              <p class="place-address">◼ ${place.location} ${place.address}, ${place.city}</p>
               <h3 title="Place ID ${place.id}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}
@@ -415,12 +417,17 @@ export default {
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              openPlaceInfo(layerId, layerTitle, layerDarkcolor, placeId);
+              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);
+              openPlaceInfo(layerId, placeId);
             });
 
             container.querySelector('.layer-info').addEventListener('click', (event) => {
               event.preventDefault();
               const layerId = event.target.getAttribute('data-layer-id');
+              const layerTitle = event.target.getAttribute('data-layer-title');
+              const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
+              const placeId = event.target.getAttribute('data-place-id');
+              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);              
               openLayerInfo(layerId);
             });
           });          
