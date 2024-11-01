@@ -3,7 +3,7 @@ import { LargeMarkerIcon } from '@/helpers/marker'
 export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) {
   
 
-  selectedYear == '' ? 1900 : selectedYear;
+  selectedYear == '' ? 9999 : selectedYear;
   // console.log("Timeline: filterMarkers",selectedYear);
   // console.log("Timeline: overlayLayers", overlayLayers);
   // console.log("Timeline: visibleLayers", visibleLayers);

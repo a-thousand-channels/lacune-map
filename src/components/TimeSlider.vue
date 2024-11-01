@@ -71,7 +71,10 @@
           console.warn('TimeSlider - Model value is not a valid number:', props.modelValue)
           return 'Invalid Year'
         }
-        const year = Math.max(props.min, Math.min(props.modelValue, props.max))
+        let year = Math.max(props.min, Math.min(props.modelValue, props.max))
+        if ( props.modelValue < props.min ) {
+          year = props.min + " — " + props.max;
+        }         
         return year.toString()
       })
 

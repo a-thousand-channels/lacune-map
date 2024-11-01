@@ -68,7 +68,7 @@ export default {
     const savedZoom = localStorage.getItem('mapZoom')
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
-    const selectedYear = ref(1900) // initial value
+    const selectedYear = ref(1) // initial value
     const allMarkers = [];
 
     L.Browser.retina = false
