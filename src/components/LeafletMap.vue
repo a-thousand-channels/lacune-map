@@ -138,7 +138,7 @@ export default {
       map.value.attributionControl.setPrefix("");
 
       if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
-        alidade_smooth_dark.addTo(map.value)
+        // alidade_smooth_dark.addTo(map.value)
         document.body.classList.add('dark-mode');
       } else if (savedBasemap === 'Hamburg Darkmode') {
         hamburg_dark_mode.addTo(map.value)
@@ -512,9 +512,12 @@ export default {
 
 
       basemaps.value = {
-        'Hamburg Darkmode': hamburg_dark_mode,
-        'Dunkle OSM Karte (Alidade Smooth Dark)': alidade_smooth_dark,
-        'Historische Karte 1980er': wmsLayerHamburg1980s
+        'Aktuelle Hamburg Karte (Dark)': hamburg_dark_mode,
+        'Historische Hamburg Karte 1930er': wmsLayerHamburg1930s,
+        'Historische Hamburg Karte 1950er': wmsLayerHamburg1950s,
+        'Historische Hamburg Karte 1960er': wmsLayerHamburg1960s,
+        'Historische Hamburg Karte 1970er': wmsLayerHamburg1970s,
+        'Historische Hamburg Karte 1980er': wmsLayerHamburg1980s
       }
       const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
       layerControl.addTo(map.value)

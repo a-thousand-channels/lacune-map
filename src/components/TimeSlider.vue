@@ -146,6 +146,8 @@
           console.log('TimeSlider > 1980')
           wmsLayerHamburg1980s.addTo(props.map);
         }
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
 
       }
   
@@ -172,18 +174,18 @@
   
   .slider {
     width: 100%;
-    height: 2px;
+    height: 3px;
     -webkit-appearance: none;
-    background: #666;
+    background: #333;
     outline: none;
-    opacity: 0.85;
+    opacity: 0.9;
     transition: opacity 0.2s;
-    box-shadow: 0 0 0 #888;
-
-   
-    
+    box-shadow: 0 0 0 #888
+  }  
+  .dark-mode .slider {
+    background: #aaa;
+    box-shadow: 0 0 4px black;
   }
-  
   .slider:hover {
     opacity: 1;
   }
@@ -226,7 +228,13 @@
   #yearDisplay {
     margin-top: 10px;
     font-size: 18px;
-    color: #555;
-    font-weight: normal;
+    color: #333;
+    font-weight: bold;
+    text-shadow: 0 0 3px white;
+  }
+  .dark-mode #yearDisplay {
+    color: #aaa;
+    font-weight: bold;
+    text-shadow: 0 0 3px black;
   }
   </style>
