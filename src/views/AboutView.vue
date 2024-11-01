@@ -12,18 +12,21 @@
       <li><strike>Eigenen Kartenhintergrund einbauen</strike></li>
       <li><strike></strike></li>
       <li><strike>Layer Infoseite mit Bild (verlinkt aus den Popups)</strike></li>
+      <li><strike>Historical Maps 20er, 30er etc</strike></li>
       <li>In Arbeit: Timeslider Funktionalität</li>
       <li>In Arbeit: Inhaltseite zu einem Orte (Link aus den Popups)</li>
+      <li>Relations einbauen.</li>
+      <li>Bug: Cluster aus vergangegen Einträgen wird nicht weiß angezeigt.</li>
       
-      <li>Icon für/anstatt des Hinweis (Recherche)</li>
-      <li>Filter nach den beiden Kategorien Recherche oder Bericht</li>
+      <li>Einzelansicht als Overlay links neben der Karte</li>
+      <li>Einzelansicht hübscher setzen.</li>
       <li>Impressum/Datenschutz/Credits Seite</li>
-      <li>Historical Maps 20er, 30er etc</li>
+      
     </ul>
 
     <p>Vielleicht einen Tick später</p>
     <ul>
-      <li>Relations einbauen. Einblendung bei Marker click?</li>
+    
       <li>OpenGraph</li>
     </ul>
   </div>

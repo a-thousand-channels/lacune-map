@@ -21,10 +21,10 @@
     <p v-html="placeData.text"></p>
     <hr />
     <div class="source">
-      <p>Quelle: <span v-if="placeData.source">{{ placeData.source }}</span><span v-else>...</span></p>
-      <p class="small">{{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune Map, 2024/2025</p>
+      <p>Quelle(n): <span v-if="placeData.source">{{ placeData.source }}</span><span v-else>...</span></p>
+      <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lakune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
     </div>
-    <p><button @click="closeOverlay">Zur Karte</button></p>
+    <p><button @click="closeOverlay">Zum Eintrag auf der Karte (TODO)</button></p>
   </div>
   <div v-else class="overlay"><p>... (Infos zu einem einzelnen Orte können derzeit noch nicht angezeigt werden.)</p>
   <p><button @click="closeOverlay">Zur Karte</button></p></div>
@@ -112,4 +112,5 @@ export default {
     color: white;
     text-decoration: none;
   }
+
 </style>

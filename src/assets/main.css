@@ -68,7 +68,7 @@ p.small {
   font-size: 4.5vw;
 }
 .overlay p.small {
-  font-size: 3vw;
+  font-size: 2vw;
 }
 
 @media (min-width: 768px) {
