@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="overlay" v-if="placeData">
     <button class="close" @click="closeOverlay">&times;</button>

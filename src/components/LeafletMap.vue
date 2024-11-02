@@ -248,8 +248,6 @@ export default {
         let layer_color = ''
         let data_id = 1
 
-        // console.log('Cluster: Zigzgag', cluster.getChildCount())
-        // console.log('Cluster: Childmarkers', cluster.getAllChildMarkers())
         // TODO: add color from data
         let childmarker_colors = []
         cluster.getAllChildMarkers().forEach(function (marker) {
@@ -357,11 +355,13 @@ export default {
       }
     }
 
-    const focusMarker = (marker) => {
-  
-      map.value.setView(marker.getLatLng(), 15);
-      // Öffne das Popup
-      marker.openPopup();
+    const focusMarker = (markerId) => {
+      const marker = allMarkers.find(m => m.options.id === parseInt(markerId));
+      if (marker) {
+        map.value.flyTo(marker.getLatLng(), 15);
+        // Öffne das Popup
+        marker.openPopup();
+      }
     };
     const FormatDate = (DateString) => {
       let date = new Date(DateString)
@@ -449,14 +449,14 @@ export default {
               
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
               <p class="place-address">◼ ${place.location} ${place.address}, ${place.city}</p>
-              <h3 title="Place ID ${place.id}">
+              <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}
                 </a>
               </h3>
               <p>${place.subtitle}</p>
-              <p>${place.teaser}</p>
-              <p><a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Weiter lesen</a>
+              <p>
+                <a href="#" class="place-info1" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Weiter lesen</a>
             `
           marker.bindPopup(popupContent)
 
@@ -473,6 +473,15 @@ export default {
               layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);
               openPlaceInfo(layerId, placeId);
             });
+            container.querySelector('.place-info1').addEventListener('click', (event) => {
+              event.preventDefault();
+              const layerId = event.target.getAttribute('data-layer-id');
+              const layerTitle = event.target.getAttribute('data-layer-title');
+              const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
+              const placeId = event.target.getAttribute('data-place-id');
+              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);
+              openPlaceInfo(layerId, placeId);
+            });            
 
             container.querySelector('.layer-info').addEventListener('click', (event) => {
               event.preventDefault();
@@ -550,11 +559,8 @@ export default {
       console.log("markers",allMarkers);
       console.log("markerId",markerId);
       if (markerId) {
-        const marker = allMarkers.find(m => m.options.id === parseInt(markerId));
-        if (marker) {
-          console.log("focus marker", marker);
-          focusMarker(marker);
-        }
+        console.log("focus marker", markerId);
+        focusMarker(markerId);
       }         
       map.value.on('overlayadd overlayremove moveend', saveMapState);
       map.value.on('zoomend', setTooltipDisplay);
