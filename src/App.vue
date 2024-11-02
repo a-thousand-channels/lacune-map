@@ -26,7 +26,7 @@ export default {
 <style scoped>
 header {
   line-height: 1;
-  height: 8vh;
+  height: 40px;
   padding: 0.55rem 1rem 0;
   font-size: 16px;
   letter-spacing: 0.05em;
@@ -35,7 +35,6 @@ header {
 }
 @media (min-width: 768px) {
   header {
-    height: 5vh;
   }
 }
 
