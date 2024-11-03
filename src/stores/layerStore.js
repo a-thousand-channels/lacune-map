@@ -5,6 +5,7 @@ export const useLayerStore = defineStore('layerStore', {
     layerId: '',
     layerTitle: '',
     layerDarkcolor: '',
+    layerType: '',
     placeId: ''
   }),
   actions: {

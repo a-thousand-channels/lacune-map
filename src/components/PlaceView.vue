@@ -1,37 +1,41 @@
 <template>
   <div class="overlay" v-if="placeData">
-    <button class="close" @click="closeOverlay">&times;</button>
+    <button class="close" @click="closeOverlay(placeId)">&times;</button>
     <p class="place-layer" :style="{ backgroundColor: layerStore.layerDarkcolor }">
       <a @click="openLayerInfo(layerId)" class="layer-info" :data-layer-id="layerId">
         {{ placeData.layer_title }} 
       </a>
     </p>
 
-    <p class="place-dates">{{ placeData.date_with_qualifier }}</p>
+    <p class="place-dates">
+      {{ placeData.date_with_qualifier }}
+      ⬤ <span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
+
+
+
     <header>
       <h2>{{ placeData.title }}</h2>
-      <p v-if="placeData.subtitle">{{ placeData.subtitle }}</p>
+      <p class="place-subtitle" v-if="placeData.subtitle">{{ placeData.subtitle }}</p>
     </header>
-    
-    <p class="place-location">■ <span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
-  
-    <p v-html="placeData.teaser"></p>
-    <p v-html="placeData.text"></p>
+    <p class="place-teaser" v-html="placeData.teaser"></p>
+    <div class="place-text" v-html="placeData.text"></div>
     <hr />
-    <div class="source">
-      <p>Quelle(n): <span v-if="placeData.source">{{ placeData.source }}</span><span v-else>...</span></p>
+    <div class="place-source">
+      <p>Quelle(n): <span v-if="placeData.source">{{ placeData.source }}</span><span v-else title="Angaben fehlen noch">...</span></p>
       <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lakune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
     </div>
-    <p><button @click="closeOverlay">Zum Eintrag auf der Karte (TODO)</button></p>
+    <p><button @click="closeOverlay()">Zum Eintrag auf der Karte (TODO)</button></p>
   </div>
   <div v-else class="overlay"><p>... (Infos zu einem einzelnen Orte können derzeit noch nicht angezeigt werden.)</p>
-  <p><button @click="closeOverlay">Zur Karte</button></p></div>
+  <p><button @click="closeOverlay()">Zur Karte</button></p></div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import { useLayerStore } from '@/stores/layerStore';
+import { useMap } from '@/composables/useMap'
 import { useRouter } from 'vue-router';
+
 
 export default {
   props: {
@@ -48,6 +52,7 @@ export default {
     const router = useRouter();
     const layerStore = useLayerStore();
     const placeData = ref(null);
+    const { focusMarkerById } = useMap()
 
     const fetchPlaceData = async (layerId, placeId) => {
       try {
@@ -64,16 +69,22 @@ export default {
 
     onMounted(() => {
       fetchPlaceData(props.layerId, props.placeId);
-
-        
+       
     });
 
     const openLayerInfo = (layerId) => {
         console.log('openLayerInfo', layerId )
         router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
       };  
-    const closeOverlay = () => {
-      router.push({ name: 'home' });
+    const closeOverlay = (placeId) => {
+      if (placeId === 'X')  {
+        console.log('closeOverlay', placeId );
+        // router.push({ name: 'home' });
+        focusMarkerById(placeId)      
+      } else {
+          console.log('closeOverlay' );
+          router.push({ name: 'home' });
+      }
     };
 
     return { placeData, layerStore, closeOverlay, openLayerInfo };
@@ -82,26 +93,12 @@ export default {
 </script>
 
 <style scoped>
-  .overlay {
-    position: fixed;
-    overflow: scroll;
-    top: 5vh;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 48px 18px;
-  }
-  p.place-location {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 3vw;
-  }
+  
   p.place-layer {
     display: inline-block;
     background-color: lightsalmon;
     padding: 2px 11px;
-    margin: 0 0 6px -11px;
+    margin: 0 0 0.75em -12px;
     border-radius: 2px;
     color: white;
     font-weight: bold;

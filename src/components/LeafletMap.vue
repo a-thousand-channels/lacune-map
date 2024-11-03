@@ -29,6 +29,10 @@ import { onMounted, computed, watch, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useLayerStore } from '@/stores/layerStore';
 import TimeSlider from './TimeSlider.vue'
+import { useMap } from '@/composables/useMap'
+
+const { map, setMap, registerMarker } = useMap()
+
 import { summarize } from '@/helpers/summarize'
 import { filter_and_update } from '@/helpers/filter_and_update'
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
@@ -133,7 +137,8 @@ export default {
     onMounted(() => {
 
     
-      map.value = L.map('map', { maxZoom: 18, minZoom: 10, maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]] } ).setView(centerCoordinates, zoomLevel)
+      map.value = L.map('map', { maxZoom: 18, minZoom: 10, maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]] } ).setView(centerCoordinates, zoomLevel);
+      setMap(map.value)
     
       map.value.attributionControl.setPrefix("");
 
@@ -470,7 +475,7 @@ export default {
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);
+              layerStore.setLayerData(layerTitle, layerDarkcolor, placeId );
               openPlaceInfo(layerId, placeId);
             });
             container.querySelector('.place-info1').addEventListener('click', (event) => {
@@ -479,7 +484,7 @@ export default {
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);
+              layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);
               openPlaceInfo(layerId, placeId);
             });            
 
@@ -489,11 +494,12 @@ export default {
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              layerStore.setLayerData(layerTitle, layerDarkcolor, layerId);              
+              layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);              
               openLayerInfo(layerId);
             });
           });          
-          layer_group.addLayer(marker)
+          layer_group.addLayer(marker);
+          registerMarker(place.id, marker)
         })
 
         // Transfer markers from FeatureGroup to MarkerClusterGroup
