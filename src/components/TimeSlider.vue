@@ -6,12 +6,12 @@
         :min="min"
         :max="max"
         :step="step"
-        :value="modelValue" 
+        :value=Number(modelValue)
         :map="map"
         :data="data"
         :overlayLayers="overlayLayers"
         :visibleLayers="visibleLayers"
-        :selectedYear="selectedYear"           
+        :selectedYear=Number(selectedYear)
         class="slider" 
         id="yearSlider"
         @input="updateSlider"
@@ -29,8 +29,7 @@
     props: {
       modelValue: {
         type: Number,
-        required: true,
-        default: 1
+        required: true
       },
       min: {
         type: Number,
@@ -62,19 +61,19 @@
       },
       selectedYear: {
         type: Number,
-        required: true,
-        default: 1
+        required: true
       }      
     },
     setup(props, { emit }) {
       const formattedYear = computed(() => {
         console.log('TimeSlider - Computing formatted year:', props.modelValue)
-        if (typeof props.modelValue !== 'number' || isNaN(props.modelValue)) {
-          console.warn('TimeSlider - Model value is not a valid number:', props.modelValue)
+        var modelValueNumber = Number(props.modelValue)
+        if (typeof modelValueNumber !== 'number' || isNaN(modelValueNumber)) {
+          console.warn('TimeSlider - Model value is not a valid number:', modelValueNumber)
           return 'Invalid Year'
         }
-        let year = Math.max(props.min, Math.min(props.modelValue, props.max))
-        if ( props.modelValue < props.min ) {
+        let year = Math.max(props.min, Math.min(modelValueNumber, props.max))
+        if ( modelValueNumber < props.min ) {
           year = props.min + " — " + props.max;
         }         
         return year.toString()
@@ -120,11 +119,12 @@
         const value = Number(event.target.value)
         console.log('TimeSlider - Updating slider:', value);
         if (!isNaN(value)) {
-          emit('update:modelValue', value)
+          emit('update:modelValue', Number(value))
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
         console.log('TimeSlider -  selectedYear', props.selectedYear)
+        console.log('TimeSlider -  map', props.map)
         
         filter_and_update(props.map,props.visibleLayers,props.overlayLayers,props.selectedYear)
         props.map.eachLayer(layer => {

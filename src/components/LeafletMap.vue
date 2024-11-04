@@ -11,28 +11,27 @@
   </div>
   <TimeSlider 
       v-model="selectedYear"
-      v-if="mapElement && overlayLayers"
+      v-if="mapInstance && overlayLayers && selectedYear"
       :min="minYear"
       :max="maxYear"
       :step="1"
-      :map="map"
+      :map="mapInstance"
       :data="data"
       :overlayLayers="overlayLayers"
       :visibleLayers="visibleLayers"
-      :selectedYear="selectedYear"      
+      :selectedYear=Number(selectedYear)
     />
   <div id="map" ref="mapElement"></div>
 </template>
 
 <script>
-import { onMounted, nextTick, computed, watch, ref } from 'vue'
+import { onMounted, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useLayerStore } from '@/stores/layerStore';
 import TimeSlider from './TimeSlider.vue'
 import { useMap } from '@/composables/useMap'
 
 import { summarize } from '@/helpers/summarize'
-import { filter_and_update } from '@/helpers/filter_and_update'
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
 import { LargeMarkerIcon } from '@/helpers/marker'
 import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
@@ -52,9 +51,8 @@ export default {
     TimeSlider
   },
   setup() {
-    const map = ref(null) 
     const mapElement = ref(null)  // This is the DOM element reference
-    const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
+    const { mapInstance, initMap, registerMarker } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
     const data = ref([]);
     const layerStore = useLayerStore();    
@@ -126,9 +124,7 @@ export default {
 
 
       
-    onMounted(async () => {
-      // Wait for next DOM update
-      await nextTick()
+    onMounted( () => {
       console.log('mapElement element:', mapElement.value) // Debug log
       console.log('onMounted', mapElement.value)  
       if (mapElement.value) {
@@ -342,11 +338,11 @@ export default {
         console.log("timelineSummary",timelineSummary.value);
       
         const result = await addDataToMap(data.value);
-        mapInstance.value = result.map;
+        // mapInstance.value = result.map;
         overlayLayers.value = result.overlayLayers;
         selectedYear.value = result.selectedYear;        
         if ( timelineSummary.minYear ) {
-          selectedYear.yalue = timelineSummary.minYear
+          selectedYear.value = timelineSummary.minYear
           minYear.value = parseInt(timelineSummary.minYear, 10);
           maxYear.value = parseInt(timelineSummary.maxYear, 10);
         }
@@ -580,16 +576,20 @@ export default {
         saveMapState();
       })
 
+      console.log('addDataToMap map mapInstance', mapInstance.value)
+
       return {
         data: data,
         overlayLayers: overlayLayers.value,
-        centerMap
+        centerMap,
+        mapInstance 
       }
     }
     // console.log('addDataToMap map', mapInstance.value)
     console.log('addDataToMap selectedYear', selectedYear)
     return {
         mapElement,
+        mapInstance,
         data,
         overlayLayers,
         visibleLayers,
@@ -608,7 +608,7 @@ export default {
 
 #map.leaflet-container .leaflet-popup-content  h3 {
   font-weight: normal;
-  font-size: 26px;
+  font-size: 23px;
   word-break: break-word;
   line-height: 1.1;
   color: #a8a803;

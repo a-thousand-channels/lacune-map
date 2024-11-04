@@ -1,14 +1,16 @@
 // composables/usemapElement.js
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, provide, inject } from 'vue'
 import L from 'leaflet'
 
+
 export const useMap = () => {
-  const mapInstance = ref(null)
+  const mapInstanceSymbol = Symbol('mapInstance')
+  const mapInstance = inject(mapInstanceSymbol, ref(null))
   const isMapReady = ref(false)
-  const markersRegistry = reactive(new Map())
+  const markersRegistrySymbol = Symbol('markersRegistry')
+  const markersRegistry = reactive(inject(markersRegistrySymbol, new Map()))  
+
   const pendingOperations = []
-
-
   const defaultCenter = [53.56, 10.01]
   const savedCenter = localStorage.getItem('mapCenter')
   const defaultZoom = 12
@@ -17,6 +19,7 @@ export const useMap = () => {
   const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom  
 
   const initMap = (mapElement, options = {}) => {
+    if (mapInstance.value) return mapInstance.value
     console.log('initMap')
     const defaultOptions = {
       maxZoom: 18, 
@@ -25,7 +28,6 @@ export const useMap = () => {
       ...options
     }
 
-    if (typeof L !== 'undefined') {
       mapInstance.value = L.map(mapElement, defaultOptions)
       
       // Add tile layer
@@ -37,23 +39,16 @@ export const useMap = () => {
       mapInstance.value.setView(centerCoordinates, zoomLevel);
 
       isMapReady.value = true
-      
-      // Process any pending operations
-      while (pendingOperations.length) {
-        const operation = pendingOperations.shift()
-        operation()
-      }
+      console.log('isMapReady??', isMapReady.value)
+
+      // Provide the map instance and markers registry to child components
+      provide(mapInstanceSymbol, mapInstance)
+      provide(markersRegistrySymbol, markersRegistry)
+
       return mapInstance.value
-    }
   }
 
-  const ensureMapReady = (operation) => {
-    if (isMapReady.value && mapInstance.value) {
-      operation()
-    } else {
-      pendingOperations.push(operation)
-    }
-  }
+
 
   const registerMarker = (id, coordinates, popupContent = '') => {
     if (isMapReady.value && mapInstance.value) {      
@@ -77,8 +72,11 @@ export const useMap = () => {
   }
 
   const focusMarkerById = (id, zoom = 18) => {
+    console.log('focusMarkerById', id)
+    console.log('markersRegistry', markersRegistry.size)
+    console.log('isMapReady', isMapReady.value)
+    console.log('mapInstance', mapInstance.value) 
     if (isMapReady.value && mapInstance.value) {   
-      console.log('focusMarkerById', id)
       console.log('markersRegistry', markersRegistry.size)
       const marker = markersRegistry.get(id)
       if (!marker) {

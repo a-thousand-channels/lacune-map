@@ -23,11 +23,12 @@ export default {
     HomeView,
     AboutView
   },
-  setup(props) {
-    const { focusMarkerById, markersRegistry} = useMap();
+  setup() {
+    const { focusMarkerById, markersRegistry } = useMap();
     const flyTo = (placeId) => {
       if (placeId)  {
         console.log('focusMarkerById', placeId );
+        console.log('markersRegistry', markersRegistry.size );
         // router.push({ name: 'home' });
         focusMarkerById(placeId)      
       } else {
