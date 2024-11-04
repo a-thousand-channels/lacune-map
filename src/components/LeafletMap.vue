@@ -11,7 +11,7 @@
   </div>
   <TimeSlider 
       v-model="selectedYear"
-      v-if="map && overlayLayers && selectedYear"
+      v-if="mapElement && overlayLayers"
       :min="minYear"
       :max="maxYear"
       :step="1"
@@ -21,17 +21,15 @@
       :visibleLayers="visibleLayers"
       :selectedYear="selectedYear"      
     />
-  <div id="map"></div>
+  <div id="map" ref="mapElement"></div>
 </template>
 
 <script>
-import { onMounted, computed, watch, ref } from 'vue'
+import { onMounted, nextTick, computed, watch, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useLayerStore } from '@/stores/layerStore';
 import TimeSlider from './TimeSlider.vue'
 import { useMap } from '@/composables/useMap'
-
-const { map, setMap, registerMarker } = useMap()
 
 import { summarize } from '@/helpers/summarize'
 import { filter_and_update } from '@/helpers/filter_and_update'
@@ -54,8 +52,10 @@ export default {
     TimeSlider
   },
   setup() {
+    const map = ref(null) 
+    const mapElement = ref(null)  // This is the DOM element reference
+    const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
-    const map = ref(null)
     const data = ref([]);
     const layerStore = useLayerStore();    
     const minYear = ref(1900);
@@ -125,45 +125,40 @@ export default {
       })
 
 
-    const formattedYear = computed(() => {
-      console.log('Computing formatted year:', selectedYear.value)
-      if (typeof selectedYear.value !== 'number' || isNaN(selectedYear.value)) {
-        console.warn('Selected year is not a valid number:', selectedYear.value)
-        return 'Invalid Year'
-      }
-      return selectedYear.value.toString()
-    })   
       
-    onMounted(() => {
-
+    onMounted(async () => {
+      // Wait for next DOM update
+      await nextTick()
+      console.log('mapElement element:', mapElement.value) // Debug log
+      console.log('onMounted', mapElement.value)  
+      if (mapElement.value) {
+        initMap(mapElement.value)
+        console.log('mapInstance', mapInstance.value)  
     
-      map.value = L.map('map', { maxZoom: 18, minZoom: 10, maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]] } ).setView(centerCoordinates, zoomLevel);
-      setMap(map.value)
-    
-      map.value.attributionControl.setPrefix("");
+      
 
-      if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
-        // alidade_smooth_dark.addTo(map.value)
-        document.body.classList.add('dark-mode');
-      } else if (savedBasemap === 'Hamburg Darkmode') {
-        hamburg_dark_mode.addTo(map.value)
-        document.body.classList.add('dark-mode');
-      } else {
-        wmsLayerHamburg1980s.addTo(map.value)    
-        document.body.classList.remove('dark-mode');
-        document.body.classList.add('light-mode');
+        if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
+          // alidade_smooth_dark.addTo(mapInstance.value)
+          document.body.classList.add('dark-mode');
+        } else if (savedBasemap === 'Hamburg Darkmode') {
+          hamburg_dark_mode.addTo(mapInstance.value)
+          document.body.classList.add('dark-mode');
+        } else {
+          wmsLayerHamburg1980s.addTo(mapInstance.value)    
+          document.body.classList.remove('dark-mode');
+          document.body.classList.add('light-mode');
+        }
+      
+
+        // Load JSON data and add layers here
+        loadJSONData(mapElement)
       }
-    
-
-      // Load JSON data and add layers here
-      loadJSONData()
-
     })
 
     const saveMapState = () => {
       console.log('saveMapState called')
-      const newCenter = map.value.getCenter()
-      const newZoom = map.value.getZoom()
+      const newCenter = mapInstance.value.getCenter()
+      const newZoom = mapInstance.value.getZoom()
       const visibleOverlayLayers = {}
       let visibleBasemap = ''
 
@@ -174,7 +169,7 @@ export default {
       })
     
       // Check which layers are currently visible
-      map.value.eachLayer((layer) => {
+      mapInstance.value.eachLayer((layer) => {
         Object.keys(overlayLayers.value).forEach((layerName) => {
           // console.log('overlayLayers', layerName);
           if (layer === overlayLayers.value[layerName]) {
@@ -202,9 +197,9 @@ export default {
     var lastZoom;
     const setTooltipDisplay = () => {
       var tooltipThreshold = 17;
-      var zoom =  map.value.getZoom();
+      var zoom =  mapInstance.value.getZoom();
       if (zoom < tooltipThreshold && (!lastZoom || lastZoom >= tooltipThreshold)) {
-         map.value.eachLayer(function(l) {
+         mapInstance.value.eachLayer(function(l) {
             if (l.getTooltip()) {
                 var tooltip = l.getTooltip();
                 l.unbindTooltip().bindTooltip(tooltip, {
@@ -213,7 +208,7 @@ export default {
             }
         })
       } else if (zoom >= tooltipThreshold && (!lastZoom || lastZoom < tooltipThreshold)) {
-         map.value.eachLayer(function(l) {
+         mapInstance.value.eachLayer(function(l) {
             if (l.getTooltip()) {
                 var tooltip = l.getTooltip();
                 l.unbindTooltip().bindTooltip(tooltip, {
@@ -227,8 +222,8 @@ export default {
 
     const centerMap = () => {
       console.log('Call centerMap')
-      if (map.value) {
-        map.value.setView(defaultCenter, defaultZoom)
+      if (mapInstance.value) {
+        mapInstance.value.setView(defaultCenter, defaultZoom)
       }
     }
     const openLayerInfo = (layerId) => {
@@ -334,6 +329,8 @@ export default {
     }
 
     const loadJSONData = async () => {
+      console.log('loadJSONData')
+      console.log('mapInstance', mapInstance.value)
       try {
         const response = await fetch(
           'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
@@ -345,9 +342,9 @@ export default {
         console.log("timelineSummary",timelineSummary.value);
       
         const result = await addDataToMap(data.value);
-        map.value = result.map;
+        mapInstance.value = result.map;
         overlayLayers.value = result.overlayLayers;
-        // selectedYear.value = result.selectedYear;        
+        selectedYear.value = result.selectedYear;        
         if ( timelineSummary.minYear ) {
           selectedYear.yalue = timelineSummary.minYear
           minYear.value = parseInt(timelineSummary.minYear, 10);
@@ -363,7 +360,7 @@ export default {
     const focusMarker = (markerId) => {
       const marker = allMarkers.find(m => m.options.id === parseInt(markerId));
       if (marker) {
-        map.value.flyTo(marker.getLatLng(), 15);
+        mapInstance.value.flyTo(marker.getLatLng(), 15);
         // Öffne das Popup
         marker.openPopup();
       }
@@ -459,9 +456,10 @@ export default {
                   ${place.title}
                 </a>
               </h3>
-              <p>${place.subtitle}</p>
-              <p>
+              <p class="popup-place-subtitle">${place.subtitle}</p>
+              <p class="popup-action">
                 <a href="#" class="place-info1" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Weiter lesen</a>
+              </p>
             `
           marker.bindPopup(popupContent)
 
@@ -496,10 +494,10 @@ export default {
               const placeId = event.target.getAttribute('data-place-id');
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);              
               openLayerInfo(layerId);
-            });
+            }); 
           });          
           layer_group.addLayer(marker);
-          registerMarker(place.id, marker)
+          registerMarker(place.id, [place.lat, place.lon],popupContent)
         })
 
         // Transfer markers from FeatureGroup to MarkerClusterGroup
@@ -510,7 +508,7 @@ export default {
           }
         })
         overlayLayers.value[layer.title] = layer_group
-        // map.value.addLayer(layer_group)
+        // mapInstance.value.addLayer(layer_group)
       })
 
       console.log('bounds per default')
@@ -521,8 +519,8 @@ export default {
       console.log('bounds', bounds)
       const padding = 0.1 // 10% padding
       const paddedBounds = bounds.pad(padding)
-      // map.value.fitBounds(paddedBounds)
-      // map.value.setView(centerCoordinates, zoomLevel)
+      // mapInstance.value.fitBounds(paddedBounds)
+      // mapInstance.value.setView(centerCoordinates, zoomLevel)
       */ 
 
 
@@ -535,9 +533,9 @@ export default {
         'Historische Hamburg Karte 1980er': wmsLayerHamburg1980s
       }
       const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
-      layerControl.addTo(map.value)
-
-      // check for savedlayers and make them visible
+      console.log('map', mapInstance.value)      
+      layerControl.addTo(mapInstance.value)
+            // check for savedlayers and make them visible
       console.log('savedLayers', savedLayers, Object.keys(savedLayers).length)
       if (Object.keys(savedLayers).length > 0) {
         Object.keys(savedLayers).forEach((layerName) => {
@@ -547,13 +545,13 @@ export default {
             savedLayers[layerName] === true &&
             overlayLayers.value[layerName]
           ) {
-            overlayLayers.value[layerName].addTo(map.value)
+            overlayLayers.value[layerName].addTo(mapInstance.value)
             visibleLayers.value[layerName] = overlayLayers.value[layerName]
           }
         })
       } else {
         Object.keys(overlayLayers.value).forEach((layerName) => {
-          overlayLayers.value[layerName].addTo(map.value)
+          overlayLayers.value[layerName].addTo(mapInstance.value)
           visibleLayers.value[layerName] = overlayLayers.value[layerName]
         })
       }
@@ -568,9 +566,9 @@ export default {
         console.log("focus marker", markerId);
         focusMarker(markerId);
       }         
-      map.value.on('overlayadd overlayremove moveend', saveMapState);
-      map.value.on('zoomend', setTooltipDisplay);
-      map.value.on('baselayerchange', function(e) {
+      mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+      mapInstance.value.on('zoomend', setTooltipDisplay);
+      mapInstance.value.on('baselayerchange', function(e) {
         console.log('baselayerchange', e);
         if (e.name === 'Historische Karte 1980er') {
           document.body.classList.add('light-mode');
@@ -583,16 +581,15 @@ export default {
       })
 
       return {
-        map: map.value,
         data: data,
         overlayLayers: overlayLayers.value,
         centerMap
       }
     }
-    console.log('addDataToMap map', map)
+    // console.log('addDataToMap map', mapInstance.value)
     console.log('addDataToMap selectedYear', selectedYear)
     return {
-        map,
+        mapElement,
         data,
         overlayLayers,
         visibleLayers,
@@ -609,17 +606,22 @@ export default {
 <style>
 @import 'leaflet/dist/leaflet.css';
 
-h3 {
+#map.leaflet-container .leaflet-popup-content  h3 {
   font-weight: normal;
   font-size: 26px;
   word-break: break-word;
   line-height: 1.1;
-  color: #c6c600;
-  margin: 0.75rem 0 0.5rem 0;
-
+  color: #a8a803;
+  margin: 0.25rem 0 0.25rem 0;
+  font-weight: bold;
+}
+#map.leaflet-container .leaflet-popup-content  h3 a {
+  color: #a8a803;
+  color: #c6c600;  
+  font-weight: bold;
 }
 #map.leaflet-container .leaflet-popup-content p {
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.2em 0;
 }
 #map.leaflet-container .leaflet-popup-content p.place-layer {
   display: inline-block;
@@ -641,7 +643,10 @@ h3 {
 #map.leaflet-container .leaflet-popup-content p.place-address {
   margin: 3px 0;
 }
-
+#map.leaflet-container .leaflet-popup-content p.popup-action a {
+  font-weight: bold;
+  color: #a8a803;
+}
 #mapcontrol-center {
   left: 12px;
   position: absolute;

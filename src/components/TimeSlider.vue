@@ -29,7 +29,8 @@
     props: {
       modelValue: {
         type: Number,
-        required: true
+        required: true,
+        default: 1
       },
       min: {
         type: Number,
@@ -61,7 +62,8 @@
       },
       selectedYear: {
         type: Number,
-        required: true
+        required: true,
+        default: 1
       }      
     },
     setup(props, { emit }) {
