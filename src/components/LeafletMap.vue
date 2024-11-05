@@ -52,7 +52,7 @@ export default {
   },
   setup() {
     const mapElement = ref(null)  // This is the DOM element reference
-    const { mapInstance, initMap, registerMarker } = useMap()  // This contains the Leaflet map instance
+    const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
     const data = ref([]);
     const layerStore = useLayerStore();    
@@ -342,7 +342,7 @@ export default {
         overlayLayers.value = result.overlayLayers;
         selectedYear.value = result.selectedYear;        
         if ( timelineSummary.minYear ) {
-          selectedYear.value = timelineSummary.minYear
+          selectedYear.value = 1;
           minYear.value = parseInt(timelineSummary.minYear, 10);
           maxYear.value = parseInt(timelineSummary.maxYear, 10);
         }
@@ -495,7 +495,7 @@ export default {
           layer_group.addLayer(marker);
           registerMarker(place.id, [place.lat, place.lon],popupContent)
         })
-
+        
         // Transfer markers from FeatureGroup to MarkerClusterGroup
         layer_group.eachLayer((layer) => {
           if (layer instanceof L.Marker) {
@@ -506,7 +506,7 @@ export default {
         overlayLayers.value[layer.title] = layer_group
         // mapInstance.value.addLayer(layer_group)
       })
-
+      console.log('markersRegistry', markersRegistry.size)
       console.log('bounds per default')
 
       /*
