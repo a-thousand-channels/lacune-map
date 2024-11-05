@@ -21,6 +21,10 @@
       :visibleLayers="visibleLayers"
       :selectedYear=Number(selectedYear)
     />
+    <PlaceView 
+      v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
+      :placeData="placeData" />
+     
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -28,7 +32,9 @@
 import { onMounted, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useLayerStore } from '@/stores/layerStore';
+import { useSidebarStore } from '@/stores/sidebarToggle';
 import TimeSlider from './TimeSlider.vue'
+import PlaceView from './PlaceView.vue'
 import { useMap } from '@/composables/useMap'
 
 import { summarize } from '@/helpers/summarize'
@@ -48,14 +54,17 @@ export default {
   name: 'LeafletMap',
   components: {
     CenterMapIcon,
-    TimeSlider
+    TimeSlider,
+    PlaceView
   },
   setup() {
     const mapElement = ref(null)  // This is the DOM element reference
     const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
     const data = ref([]);
+    const placeData = ref(null);
     const layerStore = useLayerStore();    
+    const sidebarStore = useSidebarStore();    
     const minYear = ref(1900);
     const maxYear = ref(2024);
     // Create Metalayer object
@@ -227,12 +236,19 @@ export default {
       router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
     };
 
-    const openPlaceInfo = (layerId, placeId) => {
-      console.log('openPlaceInfo', layerId, placeId)
+    const openPlaceInfo = (place) => {
+      console.log('openPlaceInfo', place.id)
+      placeData.value = place
+      console.log('openPlaceInfo', placeData.value)
+      console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
+      sidebarStore.openSidebar();
+      console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
+      /*
       router.push({ 
         name: 'placeInfo', 
         params: { layerId: layerId.toString(), placeId: placeId.toString() } 
       });
+      */
     };
     const markerclusterSettings = {
       maxClusterRadius: 0,
@@ -462,6 +478,7 @@ export default {
           marker.on('popupopen', (e) => {
             const popup = e.popup;
             const container = popup.getElement();
+            console.log('popupopen', place.id)
 
             container.querySelector('.place-info').addEventListener('click', (event) => {
               event.preventDefault();
@@ -470,7 +487,8 @@ export default {
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId );
-              openPlaceInfo(layerId, placeId);
+              place.layer_title = layerTitle;
+              openPlaceInfo(place);
             });
             container.querySelector('.place-info1').addEventListener('click', (event) => {
               event.preventDefault();
@@ -479,7 +497,8 @@ export default {
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);
-              openPlaceInfo(layerId, placeId);
+              place.layer_title = layerTitle;
+              openPlaceInfo(place);
             });            
 
             container.querySelector('.layer-info').addEventListener('click', (event) => {
@@ -591,12 +610,14 @@ export default {
         mapElement,
         mapInstance,
         data,
+        placeData,
         overlayLayers,
         visibleLayers,
         selectedYear,
         centerMap,
+        sidebarStore,
         minYear,
-        maxYear
+        maxYear     
       };
         
   }
@@ -651,7 +672,7 @@ export default {
   left: 12px;
   position: absolute;
   bottom: 50px;
-  z-index: 999999;
+  z-index: 9999;
   background-color: white;
   padding: 5px 5px 1px;
   border: none;

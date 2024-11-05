@@ -17,10 +17,6 @@ const router = createRouter({
       name: 'about',
       component: AboutView
     },
-    { path: '/layer/:id', 
-      name: 'layer', 
-      component: LayerInfoView 
-    },
     { 
       path: '/layer/:layerId', 
       name: 'layerInfo', 
