@@ -565,7 +565,7 @@ export default {
       mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
       mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
-        console.log('baselayerchange', e);
+        console.log('baselayerchange', e);     
         if (e.name === 'Historische Karte 1980er') {
           document.body.classList.add('light-mode');
           document.body.classList.remove('dark-mode');

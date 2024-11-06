@@ -117,6 +117,8 @@
   
       function updateSlider(event) {
         const value = Number(event.target.value)
+        const sliderContainer = document.querySelector('.slider-container');
+        sliderContainer.classList.add('active');
         console.log('TimeSlider - Updating slider:', value);
         if (!isNaN(value)) {
           emit('update:modelValue', Number(value))
@@ -231,12 +233,15 @@
     margin-top: 10px;
     font-size: 18px;
     color: #333;
-    font-weight: bold;
+    font-weight: normal;
     text-shadow: 0 0 3px white;
   }
   .dark-mode #yearDisplay {
     color: #aaa;
-    font-weight: bold;
     text-shadow: 0 0 3px black;
+  }
+  div.slider-container.active #yearDisplay {
+    font-weight: bold;
+    transition: 0.5s all;
   }
   </style>
