@@ -1,24 +1,24 @@
 <template>
-    <div class="overlay" v-if="layerData">
+    <div class="sidebar" v-if="layerData">
       <button class="close" @click="closeOverlay(placeId)">&times;</button>
-      <figure class="layer-figure" v-if="layerData.layer.image_link">
-        <img :src="layerData.layer.image_link" alt="layerData.layer.title">
+      <figure class="layer-figure" v-if="layerData.image_link">
+        <img :src="layerData.image_link" alt="layerData.title">
       </figure>
       
-      <h2 :style="{ 'color': layerStore.layerDarkcolor.toString() }">
-        {{ layerData.layer.title }}
+      <h2 class="layer-title" :style="{ 'background-color': layerData.color.toString() }">
+        {{ layerData.title }}
         {{ layerStore.layerType }}
       </h2>
-      <div v-if="layerData.layer.text" v-html="layerData.layer.text"></div>
+      <div v-if="layerData.text" v-html="layerData.text"></div>
       <ul class="layer-places-list">
-        <li v-for="place in layerData.layer.places" :key="place.id">
-          <router-link :to="{ name: 'placeInfo', params: { layerId: layerData.layer.id, placeId: place.id } }">
+        <li v-for="place in layerData.places" :key="place.id">
+          <a @click="openPlaceInfo(place)">
             <svg height="25" width="25" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-              <path v-if="layerData.layer.id == 82" :fill="layerStore.layerDarkcolor.toString()"fill-opacity="1" stroke="1" stroke-width="1" stroke-opacity="1" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path>
-              <circle v-else class="cls-1" cx="15" cy="15" r="15" :fill="layerStore.layerDarkcolor.toString()" fill-opacity="0.8" stroke="1" stroke-width="0" stroke-opacity="1" shape-rendering="geometricPrecision"></circle>
+              <path v-if="layerData.id == 82" :fill="layerData.color.toString() "fill-opacity="1" stroke="1" stroke-width="1" stroke-opacity="1" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path>
+              <circle v-else class="cls-1" cx="15" cy="15" r="15" :fill="layerData.color.toString() " fill-opacity="0.8" stroke="1" stroke-width="0" stroke-opacity="1" shape-rendering="geometricPrecision"></circle>
             </svg>
             {{ place.date_with_qualifier }} {{ place.title }} 
-          </router-link>
+          </a>
         </li>
       </ul>
       <p class="action">
@@ -33,52 +33,40 @@
   import { useRouter } from 'vue-router';
   import { useRoute } from 'vue-router';
   import { useLayerStore } from '@/stores/layerStore';
+  import { useSidebarStore } from '@/stores/sidebarToggle';
+
   
   export default {
     props: {
-      layerId: {
-        type: String,
-        required: true
+      layerData: {
+        type: Object,
+        default: null
       },
-      placeId: {
+      layerDarkcolor: {
         type: String,
-        required: true
-      }      
+        default: '#333'
+      }
     },
     setup(props) {
-      const router = useRouter();
-      const route = useRoute();      
       const layerStore = useLayerStore();      
-      const layerData = ref(null);
-  
-      const fetchLayerData = async (id) => {
-        try {
-          // Replace with your actual API call
-          const response = await fetch(`https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg/layers/${id}`);
-          const data = await response.json();
-          console.log('layerData', data);
-          layerData.value = data;
-          console.log('layerData', layerData.value);
-          console.log('layerTitle', layerData.value.layer.title);
-          console.log('layerDarkcolor', layerData.value.layer.color);
-          layerStore.setLayerData(layerData.value.layer.title, layerData.value.layer.color, layerData.value.layer.id);
-        } catch (error) {
-          console.error('Error fetching layer data:', error);
-        }
-      };
-  
+      const sidebarStore = useSidebarStore();
+      const placeData = ref(null);
+
       onMounted(() => {
-        console.log('layerId', props.layerId);
-        const layerId = route.params.id;
-        console.log('layerId', layerId);
-        fetchLayerData( layerId);
+        console.log('layerId', props.layerData.id);
       });
   
       const closeOverlay = () => {
-        router.push({ name: 'home' });
+        props.layerData.value = null;
+        sidebarStore.closeSidebar();
+      };  
+      const openPlaceInfo = (place) => {
+        props.layerData.value = null;
+        sidebarStore.closeSidebar();
+        placeData.value = place;
+        // TODO: openpopup
       };
-  
-      return { layerData, layerStore, closeOverlay };
+      return { layerStore, closeOverlay, openPlaceInfo, placeData };
     }
   }
   </script>
@@ -104,11 +92,11 @@
   }
   @media (min-width: 768px) {
     .layer-places-list li {
-      font-size: 1.5em;
+      font-size: 1.35em;
     }
   }
   .layer-places-list li a {
-    color: white;
+    color: #444;
     text-decoration: none;
   }
   .layer-places-list li svg {

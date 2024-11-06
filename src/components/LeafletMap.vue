@@ -24,7 +24,9 @@
     <PlaceView 
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
       :placeData="placeData" />
-     
+    <LayerInfoView
+      v-if="layerData && sidebarStore.isSidebarVisible == true"
+      :layerData="layerData" />
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -35,6 +37,7 @@ import { useLayerStore } from '@/stores/layerStore';
 import { useSidebarStore } from '@/stores/sidebarToggle';
 import TimeSlider from './TimeSlider.vue'
 import PlaceView from './PlaceView.vue'
+import LayerInfoView from './LayerInfoView.vue'
 import { useMap } from '@/composables/useMap'
 
 import { summarize } from '@/helpers/summarize'
@@ -55,7 +58,8 @@ export default {
   components: {
     CenterMapIcon,
     TimeSlider,
-    PlaceView
+    PlaceView,
+    LayerInfoView
   },
   setup() {
     const mapElement = ref(null)  // This is the DOM element reference
@@ -63,6 +67,7 @@ export default {
     const router = useRouter();
     const data = ref([]);
     const placeData = ref(null);
+    const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
     const minYear = ref(1900);
@@ -231,13 +236,18 @@ export default {
         mapInstance.value.setView(defaultCenter, defaultZoom)
       }
     }
-    const openLayerInfo = (layerId) => {
-      console.log('openLayerInfo', layerId )
-      router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
+    const openLayerInfo = (layer,layerDarkcolor) => {
+      console.log('openLayerInfo', layer.id )
+      layer.color = layerDarkcolor
+      layerData.value = layer
+      console.log('openLayerInfo', layerData.value.color)
+      // router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
+      sidebarStore.openSidebar();
     };
 
     const openPlaceInfo = (place) => {
       console.log('openPlaceInfo', place.id)
+      layerData.value = null;
       placeData.value = place
       console.log('openPlaceInfo', placeData.value)
       console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
@@ -456,7 +466,7 @@ export default {
           
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
-                <a href="#" class="layer-info" data-layer-id="${layer.id}">
+                <a href="#" class="layer-info" data-layer-id="${layer.id}" data-layer-darkcolor="${darkcolor}">
                   ${layer.title}
                 </a>
               </p>
@@ -492,7 +502,6 @@ export default {
             });
             container.querySelector('.place-info1').addEventListener('click', (event) => {
               event.preventDefault();
-              const layerId = event.target.getAttribute('data-layer-id');
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
@@ -503,12 +512,11 @@ export default {
 
             container.querySelector('.layer-info').addEventListener('click', (event) => {
               event.preventDefault();
-              const layerId = event.target.getAttribute('data-layer-id');
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);              
-              openLayerInfo(layerId);
+              openLayerInfo(layer,layerDarkcolor);
             }); 
           });          
           layer_group.addLayer(marker);
@@ -611,6 +619,7 @@ export default {
         mapInstance,
         data,
         placeData,
+        layerData,
         overlayLayers,
         visibleLayers,
         selectedYear,
