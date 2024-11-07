@@ -30,10 +30,6 @@ export const useMap = () => {
 
       mapInstance.value = L.map(mapElement, defaultOptions)
       
-      // Add tile layer
-      L.tileLayer('https://{s}.tile.openstreetmapElement.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(mapInstance.value)
 
       mapInstance.value.attributionControl.setPrefix("");
       mapInstance.value.setView(centerCoordinates, zoomLevel);

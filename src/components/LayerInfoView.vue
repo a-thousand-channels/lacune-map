@@ -1,31 +1,33 @@
 <template>
-    <div class="sidebar" v-if="layerData">
-      <button class="close" @click="closeOverlay(placeId)">&times;</button>
-      <figure class="layer-figure" v-if="layerData.image_link">
-        <img :src="layerData.image_link" alt="layerData.title">
-      </figure>
-      
-      <h2 class="layer-title" :style="{ 'background-color': layerData.color.toString() }">
-        {{ layerData.title }}
-        {{ layerStore.layerType }}
-      </h2>
-      <div v-if="layerData.text" v-html="layerData.text"></div>
-      <ul class="layer-places-list">
-        <li v-for="place in layerData.places" :key="place.id">
-          <a @click="openPlaceInfo(place)">
-            <svg height="25" width="25" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-              <path v-if="layerData.id == 82" :fill="layerData.color.toString() "fill-opacity="1" stroke="1" stroke-width="1" stroke-opacity="1" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path>
-              <circle v-else class="cls-1" cx="15" cy="15" r="15" :fill="layerData.color.toString() " fill-opacity="0.8" stroke="1" stroke-width="0" stroke-opacity="1" shape-rendering="geometricPrecision"></circle>
-            </svg>
-            {{ place.date_with_qualifier }} {{ place.title }} 
-          </a>
-        </li>
-      </ul>
-      <p class="action">
-        <button @click="closeOverlay">Zur Karte</button>
-      </p>
-    </div>
-    <div v-else class="overlay"><p>Loading...</p></div>
+    <transition name="slide">
+      <div class="sidebar" v-if="layerData">
+        <button class="close" @click="closeOverlay(placeId)">&times;</button>
+        <figure class="layer-figure" v-if="layerData.image_link">
+          <img :src="layerData.image_link" alt="layerData.title">
+        </figure>
+        
+        <h2 class="layer-title" :style="{ 'background-color': layerData.color.toString() }">
+          {{ layerData.title }}
+          {{ layerStore.layerType }}
+        </h2>
+        <div v-if="layerData.text" v-html="layerData.text"></div>
+        <ul class="layer-places-list">
+          <li v-for="place in layerData.places" :key="place.id">
+            <a @click="openPlaceInfo(place)">
+              <svg height="25" width="25" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                <path v-if="layerData.id == 82" :fill="layerData.color.toString() "fill-opacity="1" stroke="1" stroke-width="1" stroke-opacity="1" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path>
+                <circle v-else class="cls-1" cx="15" cy="15" r="15" :fill="layerData.color.toString() " fill-opacity="0.8" stroke="1" stroke-width="0" stroke-opacity="1" shape-rendering="geometricPrecision"></circle>
+              </svg>
+              {{ place.date_with_qualifier }} {{ place.title }} 
+            </a>
+          </li>
+        </ul>
+        <p class="action">
+          <button @click="closeOverlay">Zur Karte</button>
+        </p>
+      </div>
+      <div v-else class="overlay"><p>Loading...</p></div>
+    </transition>
   </template>
   
   <script>

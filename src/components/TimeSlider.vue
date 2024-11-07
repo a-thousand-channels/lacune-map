@@ -182,13 +182,16 @@
     -webkit-appearance: none;
     background: #333;
     outline: none;
-    opacity: 0.9;
+    opacity: 0.4;
     transition: opacity 0.2s;
     box-shadow: 0 0 0 #888
   }  
   .dark-mode .slider {
     background: #aaa;
     box-shadow: 0 0 4px black;
+  }
+  div.slider-container.active .slider{
+    opacity: 1;
   }
   .slider:hover {
     opacity: 1;
