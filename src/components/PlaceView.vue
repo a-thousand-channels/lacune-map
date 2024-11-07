@@ -9,7 +9,7 @@
 
     <p class="place-dates">
       {{ placeData.date_with_qualifier }}
-      ⬤ <span v-if="placeData.location">{{ placeData.location }}, </span>{{ placeData.city }}</p>
+      ○ <span v-if="placeData.location">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}</p>
 
 
 
@@ -24,7 +24,7 @@
       <p>Quelle(n): <span v-if="placeData.source">{{ placeData.source }}</span><span v-else title="Angaben fehlen noch">...</span></p>
       <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
     </div>
-    <p><button @click="closeOverlay(placeId)">Zum Eintrag auf der Karte (TODO)</button></p>
+    <p><button @click="closeOverlay(placeId)">Zur Karte</button></p>
   </div>
   <div v-else class="sidebar"><p>... Infos zu diesem Ort können gerade nicht angezeigt werden.</p>
   <p><button @click="closeOverlay()">Zur Karte</button></p></div>
@@ -90,7 +90,7 @@ export default {
     margin: 0 0 0.75em -12px;
     border-radius: 2px;
     color: white;
-    font-weight: bold;
+    font-weight: normal;
   }  
   p.place-layer a {
     color: white;

@@ -50,9 +50,12 @@ button.close {
   font-weight: bold;
 }
 h2 {
-  margin: 1rem 0 1rem 0;
   line-height: 1.2;
-  font-weight: bold;
+  font-size: 3em;
+  font-weight: normal;
+  color: #c6c600;
+  margin: 0.25rem 0 0.25rem 0;
+  font-weight: normal;
 }
 h2.layer-title {
   display: inline-block;
@@ -71,31 +74,11 @@ img {
   max-width: 100%;
   height: auto;
 }
-.overlay {
-  position: fixed;
-  overflow: scroll;
-  top: 5vh;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 48px 18px;
-}
-@media (min-width: 768px) {
-  .overlay  {
-    top: 0;
-    padding: 74px 104px 48px 74px;
-  }
-}
-.overlay h2 {
-  font-size: 3em;
-  margin: 0 0 0.25em;
-}
-.overlay p {
+
+.sidebar p {
   font-size: 1.2em;
 }
-.overlay p.small {
+.sidebar p.small {
   font-size: 1em;
 }
 p.place-layer {
@@ -105,13 +88,13 @@ p.place-layer {
   margin: 0 0 0.75em -12px;
   border-radius: 2px;
   color: white;
-  font-weight: bold;
+  font-weight: normal;
 }  
 p.place-layer a {
   color: white !important;
   text-decoration: none;
 }
-p.place-date {
+p.place-date, p.place-dates {
   margin: 0 0 0.25em;
 }
 p.place-location {
@@ -179,8 +162,9 @@ hr {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 10000;
   width: 100%;
-  padding: 20px;
-  transition: transform 2.3s ease;
+  padding: 20px 20px 60px;
+  transition: all 2.3s ease;
+  transform: translateX(0%);
 }
 
 @media (min-width: 768px) {
@@ -194,17 +178,19 @@ hr {
 /* Transition animations */
 .slide-enter-active,
 .slide-leave-active {
-  transition: transform 2.3s ease;
+  transition: all 2.3s ease;
 }
 
 .slide-enter-from,
 .slide-leave-to {
   transform: translateX(-100%);
+  opacity: 0;
 }
 
 .slide-enter-to,
 .slide-leave-from {
   transform: translateX(0);
+  opacity: 1;
 }
 .sidebar {
   overflow-y: auto;

@@ -472,7 +472,7 @@ export default {
               </p>
               
               <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
-              <p class="place-address">◼ ${place.location} ${place.address}, ${place.city}</p>
+              <p class="place-address">○ ${place.location} ${place.address}, ${place.city}</p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}
@@ -643,12 +643,12 @@ export default {
   line-height: 1.1;
   color: #a8a803;
   margin: 0.25rem 0 0.25rem 0;
-  font-weight: bold;
+  font-weight: normal;
 }
 #map.leaflet-container .leaflet-popup-content  h3 a {
   color: #a8a803;
   color: #c6c600;  
-  font-weight: bold;
+  font-weight: normal;
 }
 #map.leaflet-container .leaflet-popup-content p {
   margin: 0 0 0.2em 0;
@@ -674,7 +674,7 @@ export default {
   margin: 3px 0;
 }
 #map.leaflet-container .leaflet-popup-content p.popup-action a {
-  font-weight: bold;
+  font-weight: normal;
   color: #a8a803;
 }
 #mapcontrol-center {
