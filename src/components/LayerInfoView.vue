@@ -6,7 +6,7 @@
           <img :src="layerData.image_link" alt="layerData.title">
         </figure>
         
-        <h2 class="layer-title" :style="{ 'background-color': layerData.color.toString() }">
+        <h2 class="layer-title" :style="{ 'background-colorY': layerData.color.toString() }">
           {{ layerData.title }}
           {{ layerStore.layerType }}
         </h2>

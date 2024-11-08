@@ -24,6 +24,9 @@ a {
     background-color: hsla(165, 9%, 82%, 0.2);
   }
 }
+strong {
+  font-weight: bold;
+}
 button {
   cursor: pointer;
   background-color: #c6c600;

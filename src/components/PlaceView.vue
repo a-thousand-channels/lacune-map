@@ -9,7 +9,7 @@
       </p>
 
       <p class="place-dates">
-        {{ placeData.date_with_qualifier }}
+        <strong>{{ placeData.date_with_qualifier }}</strong>
         ○ <span v-if="placeData.location">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}</p>
 
 

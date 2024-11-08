@@ -33,7 +33,7 @@
       },
       min: {
         type: Number,
-        default: 1900
+        default: 0
       },
       max: {
         type: Number,
@@ -120,15 +120,19 @@
         const sliderContainer = document.querySelector('.slider-container');
         sliderContainer.classList.add('active');
         console.log('TimeSlider - Updating slider:', value);
+   
         if (!isNaN(value)) {
           emit('update:modelValue', Number(value))
+          console.warn('TimeSlider - Emit value:', value)
         } else {
           console.warn('TimeSlider - Invalid slider value:', event.target.value)
         }
-        console.log('TimeSlider -  selectedYear', props.selectedYear)
-        console.log('TimeSlider -  map', props.map)
+        // FIX: this value is always 1
+        // console.log('TimeSlider -  selectedYear', props.selectedYear)
+        // console.log('TimeSlider -  map', props.map)
         
-        filter_and_update(props.map,props.visibleLayers,props.overlayLayers,props.selectedYear)
+        filter_and_update(props.map,props.visibleLayers,props.overlayLayers,value)
+        /*
         props.map.eachLayer(layer => {
           if (layer instanceof L.TileLayer.WMS) {
             props.map.removeLayer(layer);
@@ -150,6 +154,7 @@
           console.log('TimeSlider > 1980')
           wmsLayerHamburg1980s.addTo(props.map);
         }
+          */
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
 

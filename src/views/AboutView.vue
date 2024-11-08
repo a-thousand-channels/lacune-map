@@ -13,13 +13,15 @@
       <li><strike></strike></li>
       <li><strike>Layer Infoseite mit Bild (verlinkt aus den Popups)</strike></li>
       <li><strike>Historical Maps 20er, 30er etc</strike></li>
+      <li><strike>Inhaltseite zu einem Orte (Link aus den Popups)</strike></li>
+      <li><strike>Einzelansicht als Overlay links neben der Karte</strike></li>
+      <li><strike>Einzelansicht hübscher setzen.</strike></li>
       <li>In Arbeit: Timeslider Funktionalität</li>
-      <li>In Arbeit: Inhaltseite zu einem Orte (Link aus den Popups)</li>
-      <li>Relations einbauen.</li>
-      <li>Bug: Cluster aus vergangegen Einträgen wird nicht weiß angezeigt.</li>
+      <li>TODO: Relations einbauen.</li>
+      <li>Bug: Filtern nach Layern und Timeline funktioniert nicht richtig</li>
+      <li>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</li>
+      <li>Bug: Darkmode Karte wird manchmal über die historischen karten gelegt</li>
       
-      <li>Einzelansicht als Overlay links neben der Karte</li>
-      <li>Einzelansicht hübscher setzen.</li>
       <li>Impressum/Datenschutz/Credits Seite</li>
       
     </ul>

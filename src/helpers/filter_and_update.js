@@ -58,9 +58,12 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
       if (marker.data.fromYear <= selectedYear && marker.data.endYear >= selectedYear) {
           // console.log("1 Now", selectedYear, marker.data.fromYear,marker.data.endYear,marker.data.color, marker.data.title, marker.data.layer_id);
           // console.log("Timeslider marker color",marker.data.color);
-          let icon = LargeMarkerIcon.create({color: marker.data.color, opacity: 0.72, mtype: marker.data.mtype })
+          if ( ( marker.data.color == 'transparent') || ( marker.data.color == '#fff') ) {
+            marker.data.color = marker.data.color2;
+          }
+          let icon = LargeMarkerIcon.create({color: marker.data.color, opacity: 0.82, mtype: marker.data.mtype })
           marker.setIcon(icon);
-          marker.addTo(map);
+          // marker.addTo(map);
           filterSummary.now += 1;
       } 
       // selecting past years
@@ -69,18 +72,29 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
           // console.log("X Past", marker.data.fromYear,selectedYear,marker.data.endYear,marker.data.color, marker.data.title, marker.data.layer_id);        
   
           map.removeLayer(marker);
+          if ( ( marker.data.color !== 'transparent') && ( marker.data.color !== '#fff') ) {
+            marker.data.color2 = marker.data.color;
+          }          
           let icon = LargeMarkerIcon.create({color: '#fff', opacity: 0.72, mtype: marker.data.mtype })
+          marker.data.color = '#fff';
           marker.setIcon(icon);    
-          marker.addTo(map);    
+          layer.refreshClusters(marker);
+          // marker.addTo(map);    
           // TODO: remove relations and other elements!
           filterSummary.past += 1;
       // selecting future years
       } else {
         // console.log("X Future", marker.data.fromYear,selectedYear,marker.data.endYear,marker.data.color, marker.data.title, marker.data.layer_id);        
         map.removeLayer(marker);
+        if ( ( marker.data.color !== 'transparent') && ( marker.data.color !== '#fff') ) {
+          marker.data.color2 = marker.data.color;
+        }          
+        let icon = LargeMarkerIcon.create({color: 'transparent', opacity: 0.72, mtype: marker.data.mtype })
+        marker.data.color = 'transparent';
+        marker.setIcon(icon);           
         filterSummary.future += 1;
       }    
-      // Check which layers are currently visible
+      
       Object.keys(visibleLayers).forEach((layerName) => {
         const layer = visibleLayers[layerName];
         if (layer instanceof L.MarkerClusterGroup) {

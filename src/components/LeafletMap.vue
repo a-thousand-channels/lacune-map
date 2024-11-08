@@ -70,7 +70,7 @@ export default {
     const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
-    const minYear = ref(1900);
+    const minYear = ref(0);
     const maxYear = ref(2024);
     // Create Metalayer object
     const overlayLayers = ref({})
@@ -434,6 +434,9 @@ export default {
           let darkcolor = layer.color;
           if ( layer.color == '#b1f075') {
             darkcolor = '#92c460';
+
+          } else if ( layer.color == '#f0d875' ) {
+            darkcolor = '#d1b132';
           }
                   
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
@@ -471,7 +474,9 @@ export default {
                 </a>
               </p>
               
-              <p class="place-dates">${FormatDateRange(place.startdate, place.enddate)}</p>
+              <p class="place-dates">
+                ${place.date_with_qualifier ? place.date_with_qualifier : ''}
+              </p>
               <p class="place-address">○ ${place.location} ${place.address}, ${place.city}</p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
@@ -527,7 +532,7 @@ export default {
         layer_group.eachLayer((layer) => {
           if (layer instanceof L.Marker) {
             // markers.addLayer(layer)
-            allMarkers.push(layer);
+            // allMarkers.push(layer);
           }
         })
         overlayLayers.value[layer.title] = layer_group
@@ -656,8 +661,8 @@ export default {
 #map.leaflet-container .leaflet-popup-content p.place-layer {
   display: inline-block;
   background-color: lightsalmon;
-  padding: 2px 11px;
-  margin: 0 0 6px -11px;
+  padding: 2px 9px;
+  margin: 0 0 6px -9px;
   border-radius: 2px;
   color: white;
   font-weight: bold;
