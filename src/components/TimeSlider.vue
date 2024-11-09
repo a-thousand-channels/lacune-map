@@ -120,6 +120,8 @@
       function disableSlider(event) {
         const sliderContainer = document.querySelector('.slider-container');
         sliderContainer.classList.remove('active');
+        const disableSlider = document.querySelector('#disableSlider');
+        disableSlider.classList.remove('active');        
         const value = 1;
         emit('update:modelValue', Number(value));
         console.log('TimeSlider - Updating slider:', value);
@@ -131,6 +133,8 @@
         const value = Number(event.target.value)
         const sliderContainer = document.querySelector('.slider-container');
         sliderContainer.classList.add('active');
+        const disableSlider = document.querySelector('#disableSlider');
+        disableSlider.classList.add('active');           
         console.log('TimeSlider - Updating slider:', value);
    
         if (!isNaN(value)) {
@@ -260,8 +264,8 @@
   }
   #disableSlider {
     display: inline-block;
-    border: 1px solid #888;
-    color: #888;
+    border: 1px solid #444;
+    color: #444;
     border-radius: 100px;
     line-height: 0;
     padding: 7px 2px;
@@ -269,9 +273,12 @@
     height: 10px;
     margin-left: 5px;
     transition: 0.5s all ease;
-
+    opacity: 0;
   }
-  #disableSlider:hover {
+  #disableSlider.active {
+    opacity: 1;
+  }
+  #disableSlider.active:hover {
     cursor: pointer;
     background: white;
     border-color: #CC0000;

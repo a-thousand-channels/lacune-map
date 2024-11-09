@@ -3,34 +3,47 @@
     <h1>About</h1>
     <p>Credits/Impressum?</p>
     <hr />
-    <h2>TODO</h2>
-    <p>Was erledigt ist, in Arbeit oder noch gemacht werden muss:</p>
+    <h2>TODOs</h2>
+    <p>Was erledigt ist, in Arbeit ist oder noch gemacht werden muss:</p>
     <ul>
       <li><strike>Timeslider Design</strike></li>
       <li><strike>Clusterfärbung nach den Markern dieses Clusters</strike></li>
       <li><strike>Kartenfehler/Clusterprobleme fixen</strike></li>
       <li><strike>Eigenen Kartenhintergrund einbauen</strike></li>
-      <li><strike></strike></li>
       <li><strike>Layer Infoseite mit Bild (verlinkt aus den Popups)</strike></li>
       <li><strike>Historical Maps 20er, 30er etc</strike></li>
       <li><strike>Inhaltseite zu einem Orte (Link aus den Popups)</strike></li>
       <li><strike>Einzelansicht als Overlay links neben der Karte</strike></li>
       <li><strike>Einzelansicht hübscher setzen.</strike></li>
-      <li>In Arbeit: Timeslider Funktionalität</li>
+      <li><strike>In Arbeit: Timeslider Funktionalität</strike></li>
       <li>TODO: Relations einbauen.</li>
-      <li>Bug: Filtern nach Layern und Timeline funktioniert nicht richtig</li>
-      <li>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</li>
-      <li>Bug: Darkmode Karte wird manchmal über die historischen karten gelegt</li>
-      
+      <li>TODO: Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</li>
+      <li>TODO: Datumsangaben verbessern, zb. 1923-1923</li>
+      <li>TODO: Deeplinks für einzelne Orte!</li>
+      <li><strike>Bug: Filtern nach Layern und Timeline funktioniert nicht richtig</strike></li>
+      <li><strike>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</strike></li>
+      <li>Bug: Darkmode Karte wird manchmal über die historischen Karten gelegt</li>
+      <li>Bug: Peformance verbessern</li>
       <li>Impressum/Datenschutz/Credits Seite</li>
-      
     </ul>
-
-    <p>Vielleicht einen Tick später</p>
+    <br/>
+    <p>Fragen</p>
     <ul>
-    
-      <li>OpenGraph</li>
+      <li>Optische Unterscheidung zwischen berichten und recherchen?</li>
+      <li>Biografisches aus der Timeline</li>
+      <li>Aufeinander liegende Orte verschiedener Kategorien etwas versetzen (innerhalb eines Gebäudes)</li>
+      <li>Einträge in Gewässern besser ohne Adressangaben, oder?</li>
     </ul>
+    <br/>
+    <p>TODOs vielleicht einen Tick später</p>
+    <ul>
+      <li>Timeline mit Mengenangaben, also je Jahr eine verdickte Timeline um sehen zu können wie die Verteilung ist</li>
+      <li>OpenGraph Angaben für Social Media</li>
+
+    </ul>
+    <br/>
+    <p>Letzte Änderungen: https://github.com/a-thousand-channels/lacune-map/commits/main/</p>
+    <p>&nbsp;</p>
   </div>
 </template>
 
