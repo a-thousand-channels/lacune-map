@@ -1,6 +1,6 @@
 <template>
     <transition name="slide">
-      <div class="sidebar" v-if="layerData">
+      <div class="sidebar" v-if="sidebarStore.isSidebarVisible == true">
         <button class="close" @click="closeOverlay(placeId)">&times;</button>
         <figure class="layer-figure" v-if="layerData.image_link">
           <img :src="layerData.image_link" alt="layerData.title">
@@ -14,10 +14,7 @@
         <ul class="layer-places-list">
           <li v-for="place in layerData.places" :key="place.id">
             <a @click="openPlaceInfo(place)">
-              <svg height="25" width="25" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-                <path v-if="layerData.id == 82" :fill="layerData.color.toString() "fill-opacity="1" stroke="1" stroke-width="1" stroke-opacity="1" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path>
-                <circle v-else class="cls-1" cx="15" cy="15" r="15" :fill="layerData.color.toString() " fill-opacity="0.8" stroke="1" stroke-width="0" stroke-opacity="1" shape-rendering="geometricPrecision"></circle>
-              </svg>
+              <IconMarker :layerData="layerData" :isSidebarVisible ="sidebarStore.isSidebarVisible"  />
               {{ place.date_with_qualifier }} {{ place.title }} 
             </a>
           </li>
@@ -36,6 +33,8 @@
   import { useRoute } from 'vue-router';
   import { useLayerStore } from '@/stores/layerStore';
   import { useSidebarStore } from '@/stores/sidebarToggle';
+  import IconMarker from './icons/IconMarker.vue'
+  import { Icon } from 'leaflet';
 
   
   export default {
@@ -48,6 +47,9 @@
         type: String,
         default: '#333'
       }
+    },
+    components: {
+      IconMarker
     },
     setup(props) {
       const layerStore = useLayerStore();      
@@ -68,7 +70,7 @@
         placeData.value = place;
         // TODO: openpopup
       };
-      return { layerStore, closeOverlay, openPlaceInfo, placeData };
+      return { layerStore, closeOverlay, openPlaceInfo, placeData, sidebarStore};
     }
   }
   </script>

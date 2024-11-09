@@ -25,8 +25,8 @@
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
       :placeData="placeData" />
     <LayerInfoView
-      v-if="layerData && sidebarStore.isSidebarVisible == true"
-      :layerData="layerData" />
+          v-if="layerData && sidebarStore.isSidebarVisible == true"
+          :layerData="layerData" />
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -261,6 +261,7 @@ export default {
       */
     };
     const markerclusterSettings = {
+      chunkedLoading: true,
       maxClusterRadius: 0,
       showCoverageOnHover: false,
       animate: true,
@@ -281,7 +282,20 @@ export default {
         // check if all values of childmarker_colors are the same
         let check_all_same = childmarker_colors.every((val, i, arr) => val === arr[0])
         // console.log('All colors are the same: ', check_all_same)
-        let cluster_color
+
+        // NOW: with white and layer color
+        const checkChildMarkerColors = (childmarker_colors) => {
+          const uniqueColors = [...new Set(childmarker_colors)];
+          if (uniqueColors.length === 1 && uniqueColors[0] === '#fff') {
+            return '#fff';
+          } else if (uniqueColors.length === 2 && uniqueColors.includes('#fff')) {
+            return uniqueColors.find(color => color !== '#fff');
+          } else {
+            // 'multiple colors'
+            return '';
+          }
+        };
+        let cluster_color = checkChildMarkerColors(childmarker_colors);
         if (childmarker_colors.length > 0 && check_all_same) {
           cluster_color = childmarker_colors[0]
         }
@@ -477,7 +491,7 @@ export default {
               <p class="place-dates">
                 ${place.date_with_qualifier ? place.date_with_qualifier : ''}
               </p>
-              <p class="place-address">○ ${place.location} ${place.address}, ${place.city}</p>
+              <p class="place-address">◯ ${place.location} ${place.address}, ${place.city}</p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}

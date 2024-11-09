@@ -1,6 +1,7 @@
 <template>
     <div class="slider-container">
       <div id="yearDisplay">{{ formattedYear }}</div>
+      <div id="disableSlider" @click="disableSlider">&times;</div>
       <input 
         type="range" 
         :min="min"
@@ -114,6 +115,17 @@
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })      
+
+
+      function disableSlider(event) {
+        const sliderContainer = document.querySelector('.slider-container');
+        sliderContainer.classList.remove('active');
+        const value = 1;
+        emit('update:modelValue', Number(value));
+        console.log('TimeSlider - Updating slider:', value);
+        filter_and_update(props.map,props.visibleLayers,props.overlayLayers,value)
+ 
+      }
   
       function updateSlider(event) {
         const value = Number(event.target.value)
@@ -162,7 +174,8 @@
   
       return {
         formattedYear,
-        updateSlider
+        updateSlider,
+        disableSlider
       }
     }
   }
@@ -243,6 +256,27 @@
     color: #333;
     font-weight: normal;
     text-shadow: 0 0 3px white;
+    display: inline;
+  }
+  #disableSlider {
+    display: inline-block;
+    border: 1px solid #888;
+    color: #888;
+    border-radius: 100px;
+    line-height: 0;
+    padding: 7px 2px;
+    vertical-align: top;
+    height: 10px;
+    margin-left: 5px;
+    transition: 0.5s all ease;
+
+  }
+  #disableSlider:hover {
+    cursor: pointer;
+    background: white;
+    border-color: #CC0000;
+    color: #CC0000;
+    transition: 0.5s all ease;
   }
   .dark-mode #yearDisplay {
     color: #aaa;

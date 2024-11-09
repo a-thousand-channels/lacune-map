@@ -1,5 +1,5 @@
 <template>
-  <transition name="slide">
+  <Transition name="slide">
     <div class="sidebar" v-if="placeData" >
       <button class="close" @click="closeOverlay()">&times;</button>
       <p class="place-layer" :style="{ backgroundColor: layerStore.layerDarkcolor }">
@@ -10,7 +10,7 @@
 
       <p class="place-dates">
         <strong>{{ placeData.date_with_qualifier }}</strong>
-        ○ <span v-if="placeData.location">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}</p>
+        ◯ <span v-if="placeData.location">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}</p>
 
 
 
@@ -31,7 +31,7 @@
       <p>... Infos zu diesem Ort können gerade nicht angezeigt werden.</p>
       <p><button @click="closeOverlay()">Zur Karte</button></p>
     </div>
-  </transition>
+  </Transition>
 </template>
 
 <script>
@@ -101,20 +101,37 @@ export default {
   }
 
 /* Transition animations */
-.slide-enter-active,
-.slide-leave-active {
+.slide-enter-active .sidebar,
+.slide-leave-active .sidebar {
   transition: all 2.3s ease;
 }
 
-.slide-enter-from,
-.slide-leave-to {
+.slide-enter-from .sidebar,
+.slide-leave-to .sidebar {
   transform: translateX(-100%);
+  transition: all 2.3s ease;
   opacity: 0;
 }
 
-.slide-enter-to,
-.slide-leave-from {
+.slide-enter-to .sidebar
+.slide-leave-from  .sidebar {
   transform: translateX(0);
-  opacity: 1;
+  transition: all 2.3s ease;
+  opacity: 0.4;
+}
+
+.slide-enter {
+  transform: translateX(-300px);
+}
+
+.slide-enter-active {
+  transition: all .3s ease-in;
+}
+
+.slide-leave-active {
+  transition: all .3s ease-in;
+}
+.slide-leave-to {
+  transform: translateX(-300px);
 }
 </style>
