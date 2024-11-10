@@ -103,21 +103,21 @@ export default {
     let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1930-1940',
       transparent: true,
-      minZoom: 10,
+      minZoom: 11,
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1950-1960',
       transparent: true,
-      minZoom: 10,
+      minZoom: 11,
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })    
     let wmsLayerHamburg1960s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1960-1970',
       transparent: true,
-      minZoom: 10,
+      minZoom: 11,
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })   
@@ -205,6 +205,8 @@ export default {
       console.log('saveMapState mapZoom', newZoom);
     }
     var lastZoom;
+    console.log('setTooltipDisplay')
+    /*
     const setTooltipDisplay = () => {
       var tooltipThreshold = 17;
       var zoom =  mapInstance.value.getZoom();
@@ -228,7 +230,7 @@ export default {
         });
       }
       lastZoom = zoom;
-    }
+    }*/
 
     const centerMap = () => {
       console.log('Call centerMap')
@@ -440,7 +442,7 @@ export default {
 
         layer.places.forEach((place) => {
           let mtype = 'place'
-          if (layer.title === 'Biografisches') {
+          if (place.subtitle === 'autobiografisch') {
             mtype = 'biography'
           } else if (layer.title === 'Hintergrund Informationen') {
             mtype = 'information'
@@ -480,7 +482,15 @@ export default {
 
           }          
           
-          
+          let mtypeIcon = '';
+          if ( place.subtitle === 'autobiografisch' ) {
+            mtypeIcon = '<span class="mtypeIcon">◊</span>';
+          } else if ( place.subtitle.length > 0 ) {
+            mtypeIcon = '◯';
+          } 
+          if ( layer.title === 'Hintergrund Informationen') {
+            mtypeIcon = '△';
+          }
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
                 <a href="#" class="layer-info" data-layer-id="${layer.id}" data-layer-darkcolor="${darkcolor}">
@@ -489,15 +499,19 @@ export default {
               </p>
               
               <p class="place-dates">
-                ${place.date_with_qualifier ? place.date_with_qualifier : ''}
-              </p>
-              <p class="place-address">◯ ${place.location} ${place.address}, ${place.city}</p>
+                <strong>
+                  ${place.date_with_qualifier ? place.date_with_qualifier : ''} 
+                </strong>
+                ${place.date_with_qualifier ? '|' : ''} 
+                ${place.location} ${place.address}${place.city ? ', '+place.city : ''}
+                 ${mtypeIcon} ${place.subtitle}
+                </p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}
                 </a>
               </h3>
-              <p class="popup-place-subtitle">${place.subtitle}</p>
+              
               <p class="popup-action">
                 <a href="#" class="place-info1" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">Weiter lesen</a>
               </p>
@@ -505,6 +519,10 @@ export default {
           marker.bindPopup(popupContent)
 
           marker.on('popupopen', (e) => {
+            if (!e.target._map) {
+              console.warn('Karte ist noch nicht bereit');
+              return;
+            }            
             const popup = e.popup;
             const container = popup.getElement();
             console.log('popupopen', place.id)
@@ -537,7 +555,8 @@ export default {
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);              
               openLayerInfo(layer,layerDarkcolor);
             }); 
-          });          
+          });       
+          console.log('layer_group addLayer');
           layer_group.addLayer(marker);
           registerMarker(place.id, [place.lat, place.lon],popupContent)
         })
@@ -608,8 +627,18 @@ export default {
         console.log("focus marker", markerId);
         focusMarker(markerId);
       }         
+      mapInstance.value.on('zoomstart', () => {
+        mapInstance.value.eachLayer((layer) => {
+          if (layer.closePopup) {
+            layer.closePopup();
+          }
+          if (layer instanceof L.MarkerClusterGroup) {
+            layer.unspiderfy();
+          }           
+        });
+      });
       mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
-      mapInstance.value.on('zoomend', setTooltipDisplay);
+      // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
         console.log('baselayerchange', e);     
         if (e.name === 'Historische Karte 1980er') {
@@ -687,7 +716,7 @@ export default {
 }
 #map.leaflet-container .leaflet-popup-content p.place-dates {
   margin: 0;
-  font-weight: bold;
+  font-weight: normal;
 }
 #map.leaflet-container .leaflet-popup-content p.place-address {
   margin: 3px 0;

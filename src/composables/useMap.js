@@ -23,7 +23,7 @@ export const useMap = () => {
     console.log('initMap')
     const defaultOptions = {
       maxZoom: 18, 
-      minZoom: 10, 
+      minZoom: 12, 
       maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]],
       ...options
     }

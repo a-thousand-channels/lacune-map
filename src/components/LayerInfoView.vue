@@ -14,7 +14,7 @@
         <ul class="layer-places-list">
           <li v-for="place in layerData.places" :key="place.id">
             <a @click="openPlaceInfo(place)">
-              <IconMarker :layerData="layerData" :isSidebarVisible ="sidebarStore.isSidebarVisible"  />
+              <IconMarker :layerData="layerData" :place="place" :isSidebarVisible ="sidebarStore.isSidebarVisible"  />
               {{ place.date_with_qualifier }} {{ place.title }} 
             </a>
           </li>

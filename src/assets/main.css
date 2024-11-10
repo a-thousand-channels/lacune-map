@@ -88,6 +88,9 @@ img {
 .sidebar p.small {
   font-size: 1em;
 }
+.mtypeIcon {
+  font-size: 130%;
+}
 p.place-layer {
   display: inline-block;
   background-color: lightsalmon;

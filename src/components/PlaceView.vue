@@ -10,7 +10,9 @@
 
       <p class="place-dates">
         <strong>{{ placeData.date_with_qualifier }}</strong>
-        ◯ <span v-if="placeData.location">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}</p>
+        <span v-if="placeData.date_with_qualifier"> | </span><span v-if="placeData.location.length > 0">{{ placeData.location }},</span>{{ placeData.address}} {{ placeData.city }}
+        <span class="" v-html="getMtypeIcon(placeData)"></span>
+      </p>
 
 
 
@@ -62,6 +64,18 @@ export default {
       console.log('place.layer_id', props.placeData.layer_id);
 
     });
+    const getMtypeIcon = (place) => {
+      if ( place.layer_title === 'Hintergrund Informationen') {
+        return '△';
+      } else if ( place.subtitle === 'autobiografisch' ) {
+        return '<span class="mtypeIcon">◊</span>&nbsp;autobiografisch';
+      } else if ( place.subtitle.length > 0 ) {
+        return '◯';
+      } else {
+        return '';
+      }
+      
+    };
 
     const openLayerInfo = (layerId) => {
         console.log('openLayerInfo', layerId )
@@ -79,7 +93,7 @@ export default {
       }
     };
 
-    return { layerStore, closeOverlay, sidebarStore };
+    return { layerStore, closeOverlay, sidebarStore, getMtypeIcon };
   }
 }
 </script>
