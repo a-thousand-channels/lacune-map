@@ -21,12 +21,16 @@
       :visibleLayers="visibleLayers"
       :selectedYear=Number(selectedYear)
     />
-    <PlaceView 
+  <PlaceView 
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
       :placeData="placeData" />
-    <LayerInfoView
+  <LayerInfoView
           v-if="layerData && sidebarStore.isSidebarVisible == true"
           :layerData="layerData" />
+  <LayerSwitchView
+          v-if="layersList" 
+          :layersList="layersList"
+          :visibleLayers="visibleLayers" />     
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -38,6 +42,7 @@ import { useSidebarStore } from '@/stores/sidebarToggle';
 import TimeSlider from './TimeSlider.vue'
 import PlaceView from './PlaceView.vue'
 import LayerInfoView from './LayerInfoView.vue'
+import LayerSwitchView from './LayerSwitchView.vue'
 import { useMap } from '@/composables/useMap'
 
 import { summarize } from '@/helpers/summarize'
@@ -59,7 +64,8 @@ export default {
     CenterMapIcon,
     TimeSlider,
     PlaceView,
-    LayerInfoView
+    LayerInfoView,
+    LayerSwitchView
   },
   setup() {
     const mapElement = ref(null)  // This is the DOM element reference
@@ -75,6 +81,7 @@ export default {
     // Create Metalayer object
     const overlayLayers = ref({})
     const visibleLayers = ref({})
+    const layersList = ref({})
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
     const basemaps = ref({})
     let savedBasemap = localStorage.getItem('basemap') || ''
@@ -439,7 +446,8 @@ export default {
       // Create layers and add data to the map
       data.map.layer.forEach((layer) => {
         let layer_group = L.markerClusterGroup(markerclusterSettings)
-
+        
+        layersList.value[layer.id] = { id: layer.id, title: layer.title, color: layer.color, places: layer.places.length }
         layer.places.forEach((place) => {
           let mtype = 'place'
           if (place.subtitle === 'autobiografisch') {
@@ -574,6 +582,8 @@ export default {
       console.log('markersRegistry', markersRegistry.size)
       console.log('bounds per default')
 
+      console.log('layersList.value', layersList.value)
+
       /*
       let bounds = [53.55, 9.95]
       bounds = L.latLngBounds(markers.getBounds())
@@ -670,6 +680,7 @@ export default {
         layerData,
         overlayLayers,
         visibleLayers,
+        layersList,
         selectedYear,
         centerMap,
         sidebarStore,
