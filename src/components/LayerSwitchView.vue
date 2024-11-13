@@ -30,14 +30,15 @@
 </template>
   
   <script>
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import IconMarker from './icons/IconMarker.vue'
   
   export default {
     props: {
       layersList: {
         type: Object,
-        required: true
+        required: true,
+        default: () => ({})        
       },
       visibleLayers: {
         type: Object,
@@ -49,18 +50,30 @@
     },
     setup(props) {
       console.log('LayerSwitchView - setup', props.layersList);
+      const sortedLayersList = ref({});
 
-      const sortedLayersListEntries = Object.entries(props.layersList).sort((a, b) => {
-        console.log('LayerSwitchView - setup - sort', a.title, b);
-        // If either entry is "background", handle specially
-        if (a[0] === "Hintergrund Informationen") return 1;  // Move "background" to the end
-        if (b[0] === "Hintergrund Informationen") return -1; // Keep other entry before "background"
-        
-        // Normal alphabetical sort by title for other entries
-        return a[1].title.localeCompare(b[1].title);
-      });      
-      const sortedLayersList = Object.fromEntries(sortedLayersListEntries);
-      console.log('LayerSwitchView - setup - sortedLayersList', sortedLayersList);
+      const sortLayers = () => {
+          if (Object.keys(props.layersList).length === 0) {
+            console.error('layersList is empty');
+            return;
+          }
+
+          let sortedLayersListEntries = Object.entries(props.layersList).sort((a, b) => {
+            console.log('LayerSwitchView - setup - sort', a[1].title, b[1].title);
+            // If either entry is "Hintergrund Informationen", handle specially
+            if (a[1].title === "Hintergrund Informationen") return 1;  // Move "Hintergrund Informationen" to the end
+            if (b[1].title === "Hintergrund Informationen") return -1; // Keep other entry before "Hintergrund Informationen"
+            
+            // Normal alphabetical sort by title for other entries
+            return a[1].title.localeCompare(b[1].title);
+          });
+
+          sortedLayersList.value = Object.fromEntries(sortedLayersListEntries);
+          console.log('LayerSwitchView - setup - sortedLayersList', sortedLayersList.value);
+      };
+
+      // Watch for changes in layersList and sort when it changes
+      watch(() => props.layersList, sortLayers, { immediate: true });
 
       const layerSwitch = (id) => {
         const layer = props.layersList[id];
