@@ -28,6 +28,8 @@ export var LargeMarkerIcon = {
     var svg = ''
     if (params.mtype === 'biography') {
       svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><path fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" d="M11.6,29.7l-11.3-14c-0.4-0.4-0.4-1.1,0-1.5L11.6,0.3c0.4-0.4,1.1-0.4,1.5,0l11.3,13.9c0.4,0.4,0.4,1.1,0,1.5l-11.3,14C12.7,30.1,12,30.1,11.6,29.7z"></path></svg>`
+    } else if (params.mtype === 'recherchiert') {
+      svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><path fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" d="M0,23.5L3.9,4.9c0-.6.6-1.1,1.2-1h18.6c.6.1,1,.7,1,1.3l-3.9,18.6c0,.6-.6,1.1-1.2,1H1c-.6,0-1-.6-1-1.2Z"></path></svg>`
     } else if (params.mtype === 'information') {
       svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" ><path fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" d="M0.5,25.6c-0.3-0.3-0.3-0.9,0-1.2L11.4,3.5c0.3-0.3,0.9-0.3,1.2,0l10.9,20.9c0.3,0.3,0.3,0.9,0,1.2"></path></svg>`
     } else {

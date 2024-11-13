@@ -447,7 +447,7 @@ export default {
       data.map.layer.forEach((layer) => {
         let layer_group = L.markerClusterGroup(markerclusterSettings)
         
-        layersList.value[layer.id] = { id: layer.id, title: layer.title, color: layer.color, places: layer.places.length }
+        layersList.value[layer.id] = { id: layer.id, title: layer.title, color: layer.color, colorChecked: layer.color, places: layer.places.length, checked: visibleLayers[layer.id] }
         layer.places.forEach((place) => {
           let mtype = 'place'
           if (place.subtitle === 'autobiografisch') {
@@ -497,7 +497,7 @@ export default {
             mtypeIcon = '◯';
           } 
           if ( layer.title === 'Hintergrund Informationen') {
-            mtypeIcon = '△';
+            mtypeIcon = '△&nbsp;informatives';
           }
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
