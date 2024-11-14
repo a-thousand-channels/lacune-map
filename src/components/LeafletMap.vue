@@ -28,9 +28,12 @@
           v-if="layerData && sidebarStore.isSidebarVisible == true"
           :layerData="layerData" />
   <LayerSwitchView
-          v-if="layersList" 
-          :layersList="layersList"
-          :visibleLayers="visibleLayers" />     
+          v-if="sortedLayersList && mapInstance && overlayLayers && visibleLayers" 
+          :layersList="sortedLayersList"
+          :map="mapInstance"
+          :visibleLayers="visibleLayers"
+          :overlayLayers="overlayLayers"          
+          />     
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -82,6 +85,8 @@ export default {
     const overlayLayers = ref({})
     const visibleLayers = ref({})
     const layersList = ref({})
+    const sortedLayersList = ref({})
+
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
     const basemaps = ref({})
     let savedBasemap = localStorage.getItem('basemap') || ''
@@ -437,7 +442,24 @@ export default {
         }
       }
     }
-
+    const sortLayersList = () => {
+      const currentLayers = {...layersList.value}; // Kopie erstellen
+    
+      const entries = Object.entries(currentLayers);
+      const sortedEntries = entries.sort((a, b) => {
+            // Spezialfall: "Hintergrund Informationen" ans Ende
+            if (a[1].title === "Hintergrund Informationen") return 1;
+            if (b[1].title === "Hintergrund Informationen") return -1;        
+          return a[1].title.localeCompare(b[1].title, 'de');
+      });
+      
+      // Neues Objekt erstellen und zuweisen
+      sortedLayersList.value = {};  // Reset
+      sortedEntries.forEach(([key, value]) => {
+          sortedLayersList.value[key] = value;
+       });
+    };
+      
     const addDataToMap = (data) => {
       // Create a MarkerClusterGroup
       // const markers = L.markerClusterGroup(markerclusterSettings)
@@ -447,7 +469,15 @@ export default {
       data.map.layer.forEach((layer) => {
         let layer_group = L.markerClusterGroup(markerclusterSettings)
         
-        layersList.value[layer.id] = { id: layer.id, title: layer.title, color: layer.color, colorChecked: layer.color, places: layer.places.length, checked: visibleLayers[layer.id] }
+        layersList.value[layer.title] = { 
+          id: layer.id, 
+          title: layer.title, 
+          color: layer.color, 
+          colorChecked: layer.color, 
+          places: layer.places.length, 
+          checked: visibleLayers[layer.id] 
+        };
+      
         layer.places.forEach((place) => {
           let mtype = 'place'
           if (place.subtitle === 'autobiografisch') {
@@ -583,7 +613,9 @@ export default {
       console.log('bounds per default')
 
       console.log('layersList.value', layersList.value)
-
+      if (Object.keys(layersList.value).length > 0) {
+            sortLayersList();
+        }   
       /*
       let bounds = [53.55, 9.95]
       bounds = L.latLngBounds(markers.getBounds())
@@ -618,6 +650,7 @@ export default {
           ) {
             overlayLayers.value[layerName].addTo(mapInstance.value)
             visibleLayers.value[layerName] = overlayLayers.value[layerName]
+            layersList.value[layerName].checked = true
           }
         })
       } else {
@@ -681,6 +714,7 @@ export default {
         overlayLayers,
         visibleLayers,
         layersList,
+        sortedLayersList,
         selectedYear,
         centerMap,
         sidebarStore,

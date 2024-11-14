@@ -2,14 +2,16 @@
     <div id="map-navigation">
       <div id="layer-switch">
         <div class="label-wrapper">
-          <div class="layer-switch-label" v-for="layer in sortedLayersList" :key="layer.id">
+          <div class="layer-switch-label" :id="'layer-switch-label-'+layer.id" v-for="layer in layersList" :key="layer.id">
             <label :for="layer.id">{{ layer.title }} ({{ layer.places }})</label>
           </div>
         </div>
         <div class="items-wrapper">
-          <div class="layer-switch-item" v-for="layer in sortedLayersList" :key="layer.id">
-            <input type="checkbox" :id="layer.id" :checked="layer.checked" @change="layerSwitch(layer.id)">
-              <IconMarker :iconData="layer" />
+          <div class="layer-switch-item" v-for="layer in layersList" :key="layer.id">
+            <input type="checkbox" :id="layer.id" :checked="layer.checked" @change="layerSwitch(layer.title)">
+            <IconMarker :iconData="layer" 
+            class="layer-switch-item-icon"
+            :id="'layer-switch-item-icon-'+layer.id" :data-layer-id="layer.id" />
           </div>
         </div>
       </div>  
@@ -30,7 +32,7 @@
 </template>
   
   <script>
-  import { ref, computed, watch } from 'vue'
+  import { ref, nextTick, onMounted } from 'vue'
   import IconMarker from './icons/IconMarker.vue'
   
   export default {
@@ -39,6 +41,14 @@
         type: Object,
         required: true,
         default: () => ({})        
+      },
+      map: {
+        type: Object,
+        required: true
+      },
+      overlayLayers: {
+        type: Object,
+        required: true
       },
       visibleLayers: {
         type: Object,
@@ -50,38 +60,56 @@
     },
     setup(props) {
       console.log('LayerSwitchView - setup', props.layersList);
-      const sortedLayersList = ref({});
 
-      const sortLayers = () => {
-          if (Object.keys(props.layersList).length === 0) {
-            console.error('layersList is empty');
+
+
+      onMounted(async () => {
+        console.log('LayerSwitchView - onMounted');
+  
+        // Warten auf DOM-Update
+        await nextTick();
+        await new Promise(resolve => setTimeout(resolve, 
+        4000));        
+        const iconElements = document.querySelectorAll('svg.layer-switch-item-icon');
+        if (iconElements && iconElements.length > 0) {
+          iconElements.forEach(icon => {
+            icon.addEventListener('mouseover', (event) => {
+              event.preventDefault();
+              let layerId = icon.getAttribute('data-layer-id');
+              document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
+            });
+            icon.addEventListener('mouseout', (event) => {
+              event.preventDefault();
+              let layerId = icon.getAttribute('data-layer-id');
+              document.querySelector("#layer-switch-label-"+layerId).classList.remove('active');
+            });            
+          });
+        } else {
+          console.warn('Keine Layer-Icons gefunden');
+        }
+      });
+
+      const layerSwitch = (layerName) => {
+        try {
+          if (!layerName || !props.layersList[layerName] || !props.overlayLayers[layerName]) {
+            console.warn('Ungültige Layer-Parameter:', layerName);
             return;
           }
 
-          let sortedLayersListEntries = Object.entries(props.layersList).sort((a, b) => {
-            console.log('LayerSwitchView - setup - sort', a[1].title, b[1].title);
-            // If either entry is "Hintergrund Informationen", handle specially
-            if (a[1].title === "Hintergrund Informationen") return 1;  // Move "Hintergrund Informationen" to the end
-            if (b[1].title === "Hintergrund Informationen") return -1; // Keep other entry before "Hintergrund Informationen"
-            
-            // Normal alphabetical sort by title for other entries
-            return a[1].title.localeCompare(b[1].title);
-          });
-
-          sortedLayersList.value = Object.fromEntries(sortedLayersListEntries);
-          console.log('LayerSwitchView - setup - sortedLayersList', sortedLayersList.value);
-      };
-
-      // Watch for changes in layersList and sort when it changes
-      watch(() => props.layersList, sortLayers, { immediate: true });
-
-      const layerSwitch = (id) => {
-        const layer = props.layersList[id];
-        if (layer) {
+          const layer = props.layersList[layerName];
           layer.checked = !layer.checked;
-          console.log('Layer switched:', id, layer.checked);
+
+          if (layer.checked) {
+            props.overlayLayers[layerName].addTo(props.map); // props.map statt mapInstance
+          } else {
+            props.map.removeLayer(props.overlayLayers[layerName]);
+          }
+
+          console.log('Layer Status geändert:', layerName, layer.checked);
+        } catch (error) {
+          console.error('Fehler beim Layer-Switch:', error);
         }
-      };      
+      };    
       const filterList = ref({
         autobiografisches: { id: 'autobiografisches', title: 'autobiografisch', color: '#bbb', colorChecked: '#999', checked: true },
         rechiert: { id: 'rechiert', title: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
@@ -98,7 +126,6 @@
       };      
 
       return {
-        sortedLayersList,
         layerSwitch,
         filterList,
         filterSwitch
@@ -159,7 +186,6 @@
     }    
     .layer-switch-label, .layer-switch-item,
     .type-filter-label, .type-filter-item 
-    
     {
       padding: 0;
       height: 35px;
@@ -167,6 +193,7 @@
       margin-bottom: 4px;
       text-align: right;
     }
+
     .layer-switch-label label,
     .type-filter-label label 
     {
@@ -180,6 +207,16 @@
       line-height: 2;
     }
 
+    .layer-switch-label label {
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s opacity;
+    }
+    .layer-switch-label.active label {
+      opacity: 1;
+      transition: 0.3s opacity;
+
+    }
 
     #type-filter {
       width: auto;
