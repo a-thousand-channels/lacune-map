@@ -11,7 +11,7 @@
             <input type="checkbox" :id="layer.id" :checked="layer.checked" @change="layerSwitch(layer.title)">
             <IconMarker :iconData="layer" 
             class="layer-switch-item-icon"
-            :id="'layer-switch-item-icon-'+layer.id" :data-layer-id="layer.id" />
+            :id="'layer-switch-item-icon-'+layer.id" :data-layer-id="layer.id" :data-layer-title="layer.title" />
           </div>
         </div>
       </div>  
@@ -77,12 +77,31 @@
               event.preventDefault();
               let layerId = icon.getAttribute('data-layer-id');
               document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
+              event.target.parentElement.classList.add('active');
+              
             });
             icon.addEventListener('mouseout', (event) => {
               event.preventDefault();
               let layerId = icon.getAttribute('data-layer-id');
               document.querySelector("#layer-switch-label-"+layerId).classList.remove('active');
-            });            
+              event.target.parentElement.classList.remove('active');
+            });
+            icon.addEventListener('click', (event) => {
+              event.preventDefault();
+              let layerId = icon.getAttribute('data-layer-id');
+              let layerName = icon.getAttribute('data-layer-title');
+              document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
+              console.log('click event', event.target)
+              let prevCheckbox = event.target.parentElement.previousElementSibling;
+              console.log('click event', prevCheckbox);
+              if( prevCheckbox ) {
+                  // Access checkbox properties
+                  console.log(prevCheckbox.checked);
+                  console.log(prevCheckbox.value);
+                  prevCheckbox.checked = false;
+                  layerSwitch(layerName)
+              }
+            });                        
           });
         } else {
           console.warn('Keine Layer-Icons gefunden');
@@ -112,7 +131,7 @@
       };    
       const filterList = ref({
         autobiografisches: { id: 'autobiografisches', title: 'autobiografisch', color: '#bbb', colorChecked: '#999', checked: true },
-        rechiert: { id: 'rechiert', title: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
+        recherchiert: { id: 'recherchiert', title: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
         sonstiges: { id: 'sonstiges', title: 'sonstiges', color: '#bbb', colorChecked: '#999', checked: true }
       });
 
@@ -153,9 +172,9 @@
       width: auto;
       position: relative;
       background-color: transparent;
-      right: 0;
-      margin-top: 40px;
-      padding: 15px 0px 10px 10px;
+      right: 8px;
+      margin-top: 10px;
+      padding: 15px 0 10px 3px;
       display: flex;
     }
     @media (max-width: 350px) {
@@ -167,7 +186,7 @@
 
     .label-wrapper {
       flex: 3;
-      padding: 10px 0 10px 10px;
+      padding: 10px 0 10px 3px;
       /* display to the right : */
       display: flex;
       flex-direction: column;
@@ -176,13 +195,23 @@
     }
     .items-wrapper {
       flex: 1;
-      padding: 10px 15px 10px 10px;
+      padding: 15px 8px 5px 2px;
       background-color: white;
       max-width: 70px;
+      border-radius: 5px;
     }
     .items-wrapper svg {
       vertical-align: middle;
       margin-left: 9px;
+      cursor: pointer;
+    }    
+    .layer-switch-item svg.active circle,
+    .layer-switch-item-icon.active circle,
+    .layer-switch-item:hover svg circle, 
+    .layer-switch-item svg:hover circle, 
+    .layer-switch-item svg circle:hover, 
+    .layer-switch-item svg:hover path {
+        fill: red !important;
     }    
     .layer-switch-label, .layer-switch-item,
     .type-filter-label, .type-filter-item 
@@ -193,7 +222,10 @@
       margin-bottom: 4px;
       text-align: right;
     }
-
+    .layer-switch-item input,
+    .type-filter-item input {
+      display: none;
+    }
     .layer-switch-label label,
     .type-filter-label label 
     {
@@ -210,11 +242,11 @@
     .layer-switch-label label {
       opacity: 0;
       pointer-events: none;
-      transition: 0.3s opacity;
+      transition: 0.5s opacity;
     }
     .layer-switch-label.active label {
       opacity: 1;
-      transition: 0.3s opacity;
+      transition: 0.5s opacity;
 
     }
 
@@ -225,6 +257,7 @@
       margin-top: 40px;
       padding: 15px 0px 10px 10px;
       display: flex;
+      display: none;
     }
     @media (max-width: 350px) {
       #type-filter {
