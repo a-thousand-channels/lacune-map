@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import { onMounted, nextTick, ref } from 'vue'
-import { useRouter } from 'vue-router';
+import { onMounted, watch, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useLayerStore } from '@/stores/layerStore';
 import { useSidebarStore } from '@/stores/sidebarToggle';
 import TimeSlider from './TimeSlider.vue'
@@ -74,8 +74,10 @@ export default {
     const mapElement = ref(null)  // This is the DOM element reference
     const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
+    const route = useRoute()    
     const data = ref([]);
     const placeData = ref(null);
+    const places = ref([]);
     const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
@@ -117,7 +119,7 @@ export default {
       transparent: true,
       minZoom: 11,
       maxZoom: 20,     
-      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
       })
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       layers: 'jahrgang_1950-1960',
@@ -173,7 +175,7 @@ export default {
       
 
         // Load JSON data and add layers here
-        loadJSONData(mapElement)
+        (mapElement)
       }
     })
 
@@ -273,6 +275,8 @@ export default {
         params: { layerId: layerId.toString(), placeId: placeId.toString() } 
       });
       */
+      router.push({ path: `/place/${place.id}` })
+
     };
     const markerclusterSettings = {
       chunkedLoading: true,
@@ -381,10 +385,18 @@ export default {
     const loadJSONData = async () => {
       console.log('loadJSONData')
       console.log('mapInstance', mapInstance.value)
+      let dataUrl = 'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg';
+      let localDataUrl = 'histoprojekt-hamburg.json';
       try {
-        const response = await fetch(
-          'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg'
-        )
+        const response = await fetch( dataUrl )
+        const fetchedData = await response.json()     
+        console.log('Service online.')
+      } catch (error) {
+        console.error('Error loading JSON data from Remote:', error)
+        dataUrl = localDataUrl;
+      }
+      try {
+        const response = await fetch( dataUrl )
         const fetchedData = await response.json()
         data.value = fetchedData;        
         
@@ -402,6 +414,28 @@ export default {
         }
         // const filteredData = 
         // await filter_and_update(map,overlayLayers,selectedYear)
+        const placeId = route.params.placeId
+        if (placeId && places) {
+          console.log('call place',placeId);
+          console.log('call place: places', places.value)
+          const searchId = typeof places.value[0]?.id === 'number' ? parseInt(placeId) : placeId.toString();
+
+          if (!places.value || !Array.isArray(places.value)) {
+              console.warn('call place. places ist nicht initialisiert oder kein Array')
+          }        
+          const arraySize = places.value?.length || 0;
+          console.log('call place Array Größe:', arraySize);
+          places.value.forEach((place) => {
+            console.log('call place: place', place.id)
+          })
+          const place = places.value.find(p => p.id === searchId)
+          if (place) {
+            console.log('call place',place.id)
+            placeData.value = place
+            isOverlayOpen.value = true
+          }
+        }      
+
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -492,7 +526,10 @@ export default {
           } else if ( layer.color == '#f0d875' ) {
             darkcolor = '#d1b132';
           }
-                  
+           
+          places.value.push(place)
+          console.log('call place set -->', places.value.length) 
+    
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
           // .bindTooltip(place.title,{permanent: false, direction: 'auto', opacity: 0.7});
@@ -705,6 +742,23 @@ export default {
     }
     // console.log('addDataToMap map', mapInstance.value)
     console.log('addDataToMap selectedYear', selectedYear)
+
+    watch(
+      () => route.query.placeId, (placeId) => {
+        // If the placeId query param is present, find the corresponding place and open the overlay
+        if (placeId) {
+          const place = places.value.find(p => p.id === placeId)
+          if (place) {
+            placeData.value = place
+            isOverlayOpen.value = true
+          }
+        } else {
+          isOverlayOpen.value = false
+          placeData.value = null
+        }
+      }
+    )
+
     return {
         mapElement,
         mapInstance,

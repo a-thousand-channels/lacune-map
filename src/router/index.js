@@ -13,6 +13,12 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/place/:placeId',
+      name: 'PlaceDetail',
+      component: HomeView,  // Same component as home, just with overlay triggered
+      props: true  // Passes route params as props to component
+    },    
+    {
       path: '/about',
       name: 'about',
       component: AboutView
@@ -36,5 +42,4 @@ const router = createRouter({
     }
   ]
 })
-
 export default router
