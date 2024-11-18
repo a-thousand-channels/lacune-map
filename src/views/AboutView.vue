@@ -17,9 +17,10 @@
       <li><strike>Einzelansicht hübscher setzen.</strike></li>
       <li><strike>In Arbeit: Timeslider Funktionalität</strike></li>
       <li>TODO: Relations einbauen.</li>
-      <li>TODO: Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</li>
+      <li>In Arbeit: Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</li>
+      <li>In Arbeit: Deeplinks für einzelne Orte!</li>
+      <li><strike>Link aus der Layerinfoseite zu einem Ort fliegt an die entsprechende Stelle und öffnet das Popup</strike></li>
       <li>TODO: Datumsangaben verbessern, zb. 1923-1923</li>
-      <li>TODO: Deeplinks für einzelne Orte!</li>
       <li><strike>Bug: Filtern nach Layern und Timeline funktioniert nicht richtig</strike></li>
       <li><strike>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</strike></li>
       <li>Bug: Darkmode Karte wird manchmal über die historischen Karten gelegt</li>
