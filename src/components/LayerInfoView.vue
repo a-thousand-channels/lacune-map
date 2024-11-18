@@ -11,10 +11,14 @@
           {{ layerStore.layerType }}
         </h2>
         <div v-if="layerData.text" v-html="layerData.text"></div>
+        {{ layerData.places.length }} Orte
         <ul class="layer-places-list">
           <li v-for="place in layerData.places" :key="place.id">
-            <a @click="openPlaceInfo(place)">
+            <a @click="openPlaceInfo1(place)">
               <IconMarker :layerData="layerData" :place="place" :isSidebarVisible ="sidebarStore.isSidebarVisible"  />
+              <IconMarker :iconData="place" 
+            class="layer-switch-item-icon"
+            :id="'layer-switch-item-icon-'+layerData.id" :data-layer-id="layerData.id" :data-layer-title="layerData.title" />              
               {{ place.date_with_qualifier }} {{ place.title }} 
             </a>
           </li>
@@ -29,10 +33,10 @@
   
   <script>
   import { ref, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useRoute } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router'
   import { useLayerStore } from '@/stores/layerStore';
   import { useSidebarStore } from '@/stores/sidebarToggle';
+  import { useMap } from '@/composables/useMap'
   import IconMarker from './icons/IconMarker.vue'
   import { Icon } from 'leaflet';
 
@@ -43,6 +47,10 @@
         type: Object,
         default: null
       },
+      map: {
+        type: Object,
+        required: true
+      },      
       layerDarkcolor: {
         type: String,
         default: '#333'
@@ -55,22 +63,61 @@
       const layerStore = useLayerStore();      
       const sidebarStore = useSidebarStore();
       const placeData = ref(null);
+      const router = useRouter();
+      const route = useRoute()          
 
       onMounted(() => {
         console.log('layerId', props.layerData.id);
       });
+      const closeAllPopups = () => {
+        if (props.map) {
+          props.map.closePopup()
+        }
+      }
+      const openExistingPopup = (place) => {
+        if (!props.map) return;
+
+        // Alle Layer durchsuchen
+        props.map.eachLayer((layer) => {
+          // Prüfen ob es ein Marker ist und die richtige ID hat
+          if (layer instanceof L.Marker && layer.options.id === place.id) {
+            console.log('openExistingPopup', place.id);
+            
+            // Zur Position fliegen
+            props.map.flyTo(layer.getLatLng(), 16);
+            // Vorhandenes Popup öffnen
+            if (layer.getPopup()) {
+              layer.openPopup();
+            } else {
+              console.warn('Kein Popup für diesen Marker gefunden:', place.id);
+            }
+          }
+        });
+      };
+
   
       const closeOverlay = () => {
         props.layerData.value = null;
         sidebarStore.closeSidebar();
       };  
-      const openPlaceInfo = (place) => {
+      const openPlaceInfo1 = (place) => {
+        console.log('openPlaceInfo1', place);
         props.layerData.value = null;
         sidebarStore.closeSidebar();
-        placeData.value = place;
-        // TODO: openpopup
+        placeData.value = place.value;
+        /* TODO: 
+         * closeallpopups
+         * openonepopup
+         * flyto
+         * */
+        if (!props.map) {
+          console.warn('props.map not available!!'); 
+        }
+        closeAllPopups()
+        openExistingPopup(place);      
+        router.push({ path: `/place/${place.id}` })
       };
-      return { layerStore, closeOverlay, openPlaceInfo, placeData, sidebarStore};
+      return { layerStore, closeOverlay, openPlaceInfo1, placeData, sidebarStore};
     }
   }
   </script>
@@ -102,6 +149,9 @@
   .layer-places-list li a {
     color: #444;
     text-decoration: none;
+  }
+  .layer-places-list li a:hover {
+    color: #222;
   }
   .layer-places-list li svg {
     vertical-align: middle;    

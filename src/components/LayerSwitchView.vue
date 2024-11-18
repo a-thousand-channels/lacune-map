@@ -130,9 +130,9 @@
         }
       };    
       const filterList = ref({
-        autobiografisches: { id: 'autobiografisches', title: 'autobiografisch', color: '#bbb', colorChecked: '#999', checked: true },
-        recherchiert: { id: 'recherchiert', title: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
-        sonstiges: { id: 'sonstiges', title: 'sonstiges', color: '#bbb', colorChecked: '#999', checked: true }
+        autobiografisches: { id: 'autobiografisches', subtitle: 'autobiografisch', color: '#bbb', colorChecked: '#999', checked: true },
+        recherchiert: { id: 'recherchiert', subtitle: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
+        sonstiges: { id: 'sonstiges', subtitle: 'sonstiges', color: '#bbb', colorChecked: '#999', checked: true }
       });
 
       const filterSwitch = (id) => {
@@ -241,11 +241,13 @@
 
     .layer-switch-label label {
       opacity: 0;
+      width: 0;
       pointer-events: none;
       transition: 0.5s opacity;
     }
     .layer-switch-label.active label {
       opacity: 1;
+      width: auto;
       transition: 0.5s opacity;
 
     }

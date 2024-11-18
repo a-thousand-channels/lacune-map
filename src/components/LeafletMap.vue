@@ -25,8 +25,9 @@
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
       :placeData="placeData" />
   <LayerInfoView
-          v-if="layerData && sidebarStore.isSidebarVisible == true"
-          :layerData="layerData" />
+          v-if="mapInstance && layerData && sidebarStore.isSidebarVisible == true"
+          :layerData="layerData"
+          :map="mapInstance" />
   <LayerSwitchView
           v-if="sortedLayersList && mapInstance && overlayLayers && visibleLayers" 
           :layersList="sortedLayersList"
@@ -81,6 +82,7 @@ export default {
     const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
+    const { focusMarkerById } = useMap()
     const minYear = ref(0);
     const maxYear = ref(2024);
     // Create Metalayer object
@@ -175,7 +177,7 @@ export default {
       
 
         // Load JSON data and add layers here
-        (mapElement)
+        loadJSONData(mapElement)
       }
     })
 
@@ -388,8 +390,7 @@ export default {
       let dataUrl = 'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg';
       let localDataUrl = 'histoprojekt-hamburg.json';
       try {
-        const response = await fetch( dataUrl )
-        const fetchedData = await response.json()     
+        await fetch( dataUrl )
         console.log('Service online.')
       } catch (error) {
         console.error('Error loading JSON data from Remote:', error)
@@ -414,7 +415,7 @@ export default {
         }
         // const filteredData = 
         // await filter_and_update(map,overlayLayers,selectedYear)
-        const placeId = route.params.placeId
+        const placeId = route.params.placeId;
         if (placeId && places) {
           console.log('call place',placeId);
           console.log('call place: places', places.value)
@@ -423,8 +424,6 @@ export default {
           if (!places.value || !Array.isArray(places.value)) {
               console.warn('call place. places ist nicht initialisiert oder kein Array')
           }        
-          const arraySize = places.value?.length || 0;
-          console.log('call place Array Größe:', arraySize);
           places.value.forEach((place) => {
             console.log('call place: place', place.id)
           })
@@ -432,10 +431,11 @@ export default {
           if (place) {
             console.log('call place',place.id)
             placeData.value = place
-            isOverlayOpen.value = true
+            sidebarStore.openSidebar();
+            focusMarkerById(placeId);
           }
         }      
-
+        console.log('loadJSONData mapInstance', mapInstance.value)
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -544,6 +544,7 @@ export default {
           }          
           marker.data.title = place.title;
           marker.data.color = darkcolor;
+          place.color = darkcolor;
           marker.data.mtype = mtype;
           marker.data.layer_id = layer.id;
         

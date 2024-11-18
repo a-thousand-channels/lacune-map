@@ -10,7 +10,6 @@ export const useMap = () => {
   const markersRegistrySymbol = Symbol('markersRegistry')
   const markersRegistry = reactive(inject(markersRegistrySymbol, new Map()))  
 
-  const pendingOperations = []
   const defaultCenter = [53.56, 10.01]
   const savedCenter = localStorage.getItem('mapCenter')
   const defaultZoom = 12

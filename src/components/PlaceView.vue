@@ -89,6 +89,7 @@ export default {
         placeData.value = null;
         sidebarStore.closeSidebar();
       }
+      router.push({ path: '/' })
     };
 
     return { layerStore, closeOverlay, sidebarStore, getMtypeIcon };
