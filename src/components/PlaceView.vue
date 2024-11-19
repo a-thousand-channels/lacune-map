@@ -3,7 +3,7 @@
     <div class="sidebar" v-if="placeData" >
       <button class="close" @click="closeOverlay()">&times;</button>
       <p class="place-layer" :style="{ backgroundColor: layerStore.layerDarkcolor }">
-        <a @click="openLayerInfo(layerId)" class="layer-info" :data-layer-id="layerId">
+        <a class="layer-info">
           {{ placeData.layer_title }} 
         </a>
       </p>
@@ -18,6 +18,10 @@
       <header>
         <h2>{{ placeData.title }}</h2>
       </header>
+      <div class="place-images" v-if="placeData.images">
+        <img v-for="image in placeData.images" :src="image.image_url" :alt="image.alt" :title="image.title" />
+      </div>
+      
       <p class="place-teaser" v-html="placeData.teaser"></p>
       <div class="place-text" v-html="placeData.text"></div>
       <hr />
@@ -47,6 +51,10 @@ export default {
     placeData: {
       type: Object,
       default: null
+    },
+    layerData: {
+        type: Object,
+        default: null
     }
   },
   setup(props) {
@@ -60,8 +68,16 @@ export default {
     onMounted(() => {
       console.log('place.id', props.placeData.id);
       console.log('place.layer_id', props.placeData.layer_id);
+      document.querySelector('.layer-info').addEventListener('click', (event) => {
+          event.preventDefault();
+          console.log('layer-info clicked', event.target);
+          console.log('layer-info clicked', props.layerData.id);
+           
+          openLayerInfo(props.layerData,props.layerData.color);
+      });       
 
     });
+    
     const getMtypeIcon = (place) => {
       if ( place.layer_title === 'Hintergrund Informationen') {
         return '△&nbsp;informatives';
@@ -75,9 +91,12 @@ export default {
       
     };
 
-    const openLayerInfo = (layerId) => {
-        console.log('openLayerInfo', layerId )
-      };  
+    const openLayerInfo = (layer,layerDarkcolor) => {
+      console.log('openLayerInfo', layer.id )
+      placeData.value = null;
+      console.log('openLayerInfo',layer.color)
+      // router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
+    };
     const closeOverlay = (placeId) => {
       if (placeId)  {
         console.log('closeOverlay', placeId );
@@ -92,7 +111,7 @@ export default {
       router.push({ path: '/' })
     };
 
-    return { layerStore, closeOverlay, sidebarStore, getMtypeIcon };
+    return { layerStore, closeOverlay, sidebarStore, getMtypeIcon, openLayerInfo};
   }
 }
 </script>

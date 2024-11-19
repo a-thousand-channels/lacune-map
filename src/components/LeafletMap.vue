@@ -23,9 +23,9 @@
     />
   <PlaceView 
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
-      :placeData="placeData" />
+      :placeData="placeData" :layerData="layerData" />
   <LayerInfoView
-          v-if="mapInstance && layerData && sidebarStore.isSidebarVisible == true"
+          v-if="mapInstance && !placeData && layerData && sidebarStore.isSidebarVisible == true"
           :layerData="layerData"
           :map="mapInstance" />
   <LayerSwitchView
@@ -35,6 +35,10 @@
           :visibleLayers="visibleLayers"
           :overlayLayers="overlayLayers"          
           />     
+  <div class="loader_wrapper">
+    <span class="loader"></span>
+  </div>
+          
   <div id="map" ref="mapElement"></div>
 </template>
 
@@ -100,15 +104,11 @@ export default {
     const savedZoom = localStorage.getItem('mapZoom')
     const centerCoordinates = savedCenter ? JSON.parse(savedCenter) : defaultCenter
     const zoomLevel = savedZoom ? parseInt(savedZoom) : defaultZoom
-    const selectedYear = ref(1) // initial value
+    const selectedYear = ref() // initial value
     const allMarkers = [];
 
     L.Browser.retina = false
 
-    let alidade_smooth_dark = L.tileLayer('https://tiles-eu.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-      })
-    
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
         attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
         maxZoom: 17,
@@ -117,6 +117,7 @@ export default {
       })
     
     let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1930s',
       layers: 'jahrgang_1930-1940',
       transparent: true,
       minZoom: 11,
@@ -124,6 +125,7 @@ export default {
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
       })
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1950s',
       layers: 'jahrgang_1950-1960',
       transparent: true,
       minZoom: 11,
@@ -131,6 +133,7 @@ export default {
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })    
     let wmsLayerHamburg1960s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1960s',
       layers: 'jahrgang_1960-1970',
       transparent: true,
       minZoom: 11,
@@ -138,6 +141,7 @@ export default {
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })   
     let wmsLayerHamburg1970s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1970s',
       layers: 'jahrgang_1970-1980',
       transparent: true,
       minZoom: 10,
@@ -145,6 +149,7 @@ export default {
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })              
     let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1980s',
       layers: 'jahrgang_1980-1990',
       transparent: true,
       minZoom: 10,
@@ -160,22 +165,24 @@ export default {
       if (mapElement.value) {
         initMap(mapElement.value)
         console.log('mapInstance', mapInstance.value)  
-    
-      
-
-        if (savedBasemap === 'Dunkle OSM Karte (Alidade Smooth Dark)') {
-          // alidade_smooth_dark.addTo(mapInstance.value)
-          document.body.classList.add('dark-mode');
-        } else if (savedBasemap === 'Hamburg Darkmode') {
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+        console.log('savedBasemap', savedBasemap);
+        if (savedBasemap === 'Hamburg 1930s') {
+          wmsLayerHamburg1930s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1950s') {
+          wmsLayerHamburg1950s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1960s') {
+          wmsLayerHamburg1960s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1970s') {
+          wmsLayerHamburg1970s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1980s') {
+          wmsLayerHamburg1980s.addTo(mapInstance.value);
+        } else {
           hamburg_dark_mode.addTo(mapInstance.value)
           document.body.classList.add('dark-mode');
-        } else {
-          wmsLayerHamburg1980s.addTo(mapInstance.value)    
-          document.body.classList.remove('dark-mode');
-          document.body.classList.add('light-mode');
+          document.body.classList.remove('light-mode');
         }
-      
-
         // Load JSON data and add layers here
         loadJSONData(mapElement)
       }
@@ -205,11 +212,9 @@ export default {
         if (layer instanceof L.MarkerClusterGroup) {
           layer.refreshClusters();
         } 
-        // console.log('basemaps', basemaps.value);
         Object.keys(basemaps.value).forEach((layerName) => {
-          // console.log('basemaps', layerName);
           if (layer === basemaps.value[layerName]) {
-            visibleBasemap = layerName
+            visibleBasemap = basemaps.value[layerName].options.name
           }
         })               
       })
@@ -257,6 +262,7 @@ export default {
     const openLayerInfo = (layer,layerDarkcolor) => {
       console.log('openLayerInfo', layer.id )
       layer.color = layerDarkcolor
+      placeData.value = null;
       layerData.value = layer
       console.log('openLayerInfo', layerData.value.color)
       // router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
@@ -265,7 +271,6 @@ export default {
 
     const openPlaceInfo = (place) => {
       console.log('openPlaceInfo', place.id)
-      layerData.value = null;
       placeData.value = place
       console.log('openPlaceInfo', placeData.value)
       console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
@@ -390,8 +395,9 @@ export default {
       let dataUrl = 'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg';
       let localDataUrl = 'histoprojekt-hamburg.json';
       try {
-        await fetch( dataUrl )
-        console.log('Service online.')
+        const response = await fetch( dataUrl )
+        const statusCode = response.status;
+        console.log('Service up and running with ', statusCode)    
       } catch (error) {
         console.error('Error loading JSON data from Remote:', error)
         dataUrl = localDataUrl;
@@ -436,6 +442,12 @@ export default {
           }
         }      
         console.log('loadJSONData mapInstance', mapInstance.value)
+        const loaderWrapper = document.querySelector('.loader_wrapper');
+        loaderWrapper.style.transition = 'opacity 300ms ease';
+        loaderWrapper.style.opacity = '0';
+        setTimeout(() => {
+          loaderWrapper.style.display = 'none';
+        }, 300);        
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -528,8 +540,6 @@ export default {
           }
            
           places.value.push(place)
-          console.log('call place set -->', places.value.length) 
-    
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
           // .bindTooltip(place.title,{permanent: false, direction: 'auto', opacity: 0.7});
@@ -632,7 +642,6 @@ export default {
               openLayerInfo(layer,layerDarkcolor);
             }); 
           });       
-          console.log('layer_group addLayer');
           layer_group.addLayer(marker);
           registerMarker(place.id, [place.lat, place.lon],popupContent)
         })
@@ -676,7 +685,7 @@ export default {
       const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
       console.log('map', mapInstance.value)      
       layerControl.addTo(mapInstance.value)
-            // check for savedlayers and make them visible
+      // check for savedlayers and make them visible
       console.log('savedLayers', savedLayers, Object.keys(savedLayers).length)
       if (Object.keys(savedLayers).length > 0) {
         Object.keys(savedLayers).forEach((layerName) => {
@@ -722,12 +731,18 @@ export default {
       // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
         console.log('baselayerchange', e);     
-        if (e.name === 'Historische Karte 1980er') {
-          document.body.classList.add('light-mode');
-          document.body.classList.remove('dark-mode');
-        } else {
+        if (e.name === 'Aktuelle Hamburg Karte (Dark)') {
           document.body.classList.remove('light-mode');
           document.body.classList.add('dark-mode');
+          mapInstance.value.eachLayer(layer => {
+            if (layer instanceof L.TileLayer.WMS) {
+                mapInstance.value.removeLayer(layer);
+            }
+          });          
+        } else {
+          document.body.classList.add('light-mode');
+          document.body.classList.remove('dark-mode');
+
         }
         saveMapState();
       })
@@ -831,20 +846,22 @@ export default {
   bottom: 50px;
   z-index: 9999;
   background-color: white;
-  padding: 5px 5px 1px;
+  padding: 4px 4px 1px;
   border: none;
   border-radius: 5px;
   box-shadow: none;
   cursor: pointer;
 }
 body.dark-mode #mapcontrol-center {
-  background-color: #555;
+  background-color: #444;
+  border: 2px solid #111;
+  
 }
 
 #mapcontrol-center svg path.path-content {
   fill: #666;
 }
 body.dark-mode #mapcontrol-center svg path.path-content {
-  fill: silver;
+  fill: #888;
 }
 </style>

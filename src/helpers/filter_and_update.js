@@ -26,7 +26,7 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
       console.log("init backup layer---------------------");
       backupLayers[index] = layer.getLayers();
     } else {
-      console.log("clear layers---------------------");
+      console.log("clear layers");
       layer.clearLayers();
       layer.addLayers(backupLayers[index]);
     }

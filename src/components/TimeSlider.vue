@@ -81,6 +81,7 @@
       })
 
       let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1930s',
       layers: 'jahrgang_1930-1940',
       transparent: true,
       minZoom: 10,
@@ -88,6 +89,7 @@
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1950s',
       layers: 'jahrgang_1950-1960',
       transparent: true,
       minZoom: 10,
@@ -95,6 +97,7 @@
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })    
     let wmsLayerHamburg1960s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1960s',
       layers: 'jahrgang_1960-1970',
       transparent: true,
       minZoom: 10,
@@ -102,6 +105,7 @@
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })   
     let wmsLayerHamburg1970s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1970s',
       layers: 'jahrgang_1970-1980',
       transparent: true,
       minZoom: 10,
@@ -109,6 +113,7 @@
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })              
     let wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1980s',
       layers: 'jahrgang_1980-1990',
       transparent: true,
       minZoom: 10,
@@ -124,7 +129,7 @@
         disableSlider.classList.remove('active');        
         const value = 1;
         emit('update:modelValue', Number(value));
-        console.log('TimeSlider - Updating slider:', value);
+        console.log('TimeSlider - Disable slider:', value);
         filter_and_update(props.map,props.visibleLayers,props.overlayLayers,value)
  
       }
@@ -148,34 +153,74 @@
         // console.log('TimeSlider -  map', props.map)
         
         filter_and_update(props.map,props.visibleLayers,props.overlayLayers,value)
-        /*
+        
+
+        const currentBaselayer = getActiveBaselayerName(props.map);
+        console.log('Current baselayer:', currentBaselayer);        
         props.map.eachLayer(layer => {
           if (layer instanceof L.TileLayer.WMS) {
-            props.map.removeLayer(layer);
+            if (layer.options.name !== currentBaselayer) {
+              props.map.removeLayer(layer);
+            }
+          }
+          if (layer instanceof L.TileLayer ) {
+           // props.map.removeLayer(layer);
           }
         });
         if (value < 1950 ) {
           console.log('TimeSlider < 1950')
-          wmsLayerHamburg1930s.addTo(props.map);
+          if (currentBaselayer !== 'Hamburg 1930s') {
+            wmsLayerHamburg1930s.addTo(props.map);
+          }
         } else if (value < 1960) {
           console.log('TimeSlider < 1960')
-          wmsLayerHamburg1950s.addTo(props.map);
+          if (currentBaselayer !== 'Hamburg 1950s') {
+            wmsLayerHamburg1950s.addTo(props.map);
+          }
         } else if (value < 1970) {
           console.log('TimeSlider < 1970')
-          wmsLayerHamburg1960s.addTo(props.map);
+          if (currentBaselayer !== 'Hamburg 1960s') {
+            wmsLayerHamburg1960s.addTo(props.map);
+          }
         } else if (value < 1980) {
           console.log('TimeSlider < 1980')
-          wmsLayerHamburg1970s.addTo(props.map);
+          if (currentBaselayer !== 'Hamburg 1970s') {
+            wmsLayerHamburg1970s.addTo(props.map);
+          }
         } else {
           console.log('TimeSlider > 1980')
-          wmsLayerHamburg1980s.addTo(props.map);
+          if (currentBaselayer !== 'Hamburg 1980s') {
+            wmsLayerHamburg1980s.addTo(props.map);
+          }
         }
-          */
+         // Layer Control aktualisieren
+        if (props.map.layerControl) {
+          console.log('LayerControl:', props.map.layerControl);
+          Object.keys(props.map.layerControl._layers).forEach(key => {
+            const controlLayer = props.map.layerControl._layers[key];
+            if (controlLayer.layer.options.name === currentBaselayer) {
+              props.map.layerControl._map.addLayer(controlLayer.layer);
+              controlLayer.input.checked = true;
+            }
+          });
+        }
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
 
       }
-  
+      function getActiveBaselayerName(map) {
+        let activeBaselayerName = '';
+    
+        map.eachLayer(layer => {
+            // Prüfen ob es sich um einen TileLayer handelt und dieser sichtbar ist
+            if (layer instanceof L.TileLayer && map.hasLayer(layer)) {
+              activeBaselayerName = layer.options.name || 'Unnamed Layer';
+            }
+        });
+
+        return activeBaselayerName;
+      }
+
       return {
         formattedYear,
         updateSlider,

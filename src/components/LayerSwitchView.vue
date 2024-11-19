@@ -202,9 +202,14 @@
     }
     .items-wrapper svg {
       vertical-align: middle;
-      margin-left: 9px;
+      text-align: center;
+      margin-left: 2px;
       cursor: pointer;
-    }    
+    }
+    .dark-mode .items-wrapper {
+      background-color: #333;
+      border: 2px solid #222;
+    }
     .layer-switch-item svg.active circle,
     .layer-switch-item-icon.active circle,
     .layer-switch-item:hover svg circle, 
@@ -212,6 +217,9 @@
     .layer-switch-item svg circle:hover, 
     .layer-switch-item svg:hover path {
         fill: red !important;
+    }    
+    #layer-switch-item-icon-83 {
+      transform: translateX(2px) scale(1.2);
     }    
     .layer-switch-label, .layer-switch-item,
     .type-filter-label, .type-filter-item 
@@ -230,25 +238,31 @@
     .type-filter-label label 
     {
       padding: 0 12px;
+      margin-right: -2px;
       display: inline-block;
       height: 25px;
       background-color: white;
       vertical-align: baseline;
       white-space: nowrap;
       font-size: 0.9rem;
-      line-height: 2;
+      line-height: 1.4;
     }
-
+    .dark-mode .layer-switch-label label,
+    .dark-mode .type-filter-label label  {
+      background-color: #333;
+      color: #aaa;
+      border: 2px solid #222;
+    }
     .layer-switch-label label {
       opacity: 0;
       width: 0;
       pointer-events: none;
-      transition: 0.5s opacity;
+      transition: 0.5s opacity 0s width;
     }
     .layer-switch-label.active label {
       opacity: 1;
       width: auto;
-      transition: 0.5s opacity;
+      transition: 0.5s opacity 0s width;
 
     }
 

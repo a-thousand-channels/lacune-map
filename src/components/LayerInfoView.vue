@@ -15,8 +15,7 @@
         <ul class="layer-places-list">
           <li v-for="place in layerData.places" :key="place.id">
             <a @click="openPlaceInfo1(place)">
-              <IconMarker :layerData="layerData" :place="place" :isSidebarVisible ="sidebarStore.isSidebarVisible"  />
-              <IconMarker :iconData="place" 
+              <IconMarker :iconData="placeIconData(place)" 
             class="layer-switch-item-icon"
             :id="'layer-switch-item-icon-'+layerData.id" :data-layer-id="layerData.id" :data-layer-title="layerData.title" />              
               {{ place.date_with_qualifier }} {{ place.title }} 
@@ -69,12 +68,26 @@
       onMounted(() => {
         console.log('layerId', props.layerData.id);
       });
+      const placeIconData = (place) => {
+        let placeData = {
+          id: place.id,
+          subtitle: place.subtitle,
+          color: place.color,
+          colorChecked: place.color,
+          strokeWidth: 0,
+          checked: true
+        };
+        return placeData;
+      }
       const closeAllPopups = () => {
         if (props.map) {
           props.map.closePopup()
         }
       }
       const openExistingPopup = (place) => {
+        console.log('openExistingPopup', place.id);
+        console.log('openExistingPopup map', props.map);
+
         if (!props.map) return;
 
         // Alle Layer durchsuchen
@@ -83,14 +96,27 @@
           if (layer instanceof L.Marker && layer.options.id === place.id) {
             console.log('openExistingPopup', place.id);
             
+            const isVisible = layer?.visible ?? false;
             // Zur Position fliegen
             props.map.flyTo(layer.getLatLng(), 16);
             // Vorhandenes Popup öffnen
             if (layer.getPopup()) {
+              if ( isVisible ) {
+                layer.openPopup();
+              } else {
+                console.log('Layer nicht sichtbar:', place.id);
+                layer.openPopup();
+                const popup = layer.getPopup();
+                if (popup){
+                  popup.openOn(props.map) // you'll need a reference to the L.map instance for this
+                }
+              }
               layer.openPopup();
             } else {
-              console.warn('Kein Popup für diesen Marker gefunden:', place.id);
+              console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
             }
+          } else {
+            console.warn('Kein Popup für diesen Marker gefunden:', place.id);
           }
         });
       };
@@ -105,19 +131,14 @@
         props.layerData.value = null;
         sidebarStore.closeSidebar();
         placeData.value = place.value;
-        /* TODO: 
-         * closeallpopups
-         * openonepopup
-         * flyto
-         * */
         if (!props.map) {
           console.warn('props.map not available!!'); 
         }
-        closeAllPopups()
+        closeAllPopups();
         openExistingPopup(place);      
         router.push({ path: `/place/${place.id}` })
       };
-      return { layerStore, closeOverlay, openPlaceInfo1, placeData, sidebarStore};
+      return { layerStore, closeOverlay, openPlaceInfo1, placeData, sidebarStore, placeIconData};
     }
   }
   </script>
@@ -143,15 +164,16 @@
   }
   @media (min-width: 768px) {
     .layer-places-list li {
-      font-size: 1.35em;
+      font-size: 1.15em;
     }
   }
   .layer-places-list li a {
     color: #444;
     text-decoration: none;
+    cursor: pointer;
   }
   .layer-places-list li a:hover {
-    color: #222;
+    color: #111;
   }
   .layer-places-list li svg {
     vertical-align: middle;    

@@ -250,8 +250,9 @@ body.dark-mode #map.leaflet-container .leaflet-control-layers {
 body.dark-mode #map.leaflet-container .leaflet-bar a,
 body.dark-mode #map.leaflet-container .leaflet-bar a.leaflet-control-zoom-out,
 body.dark-mode #map.leaflet-container .leaflet-bar a.leaflet-control-zoom-in {
-  background-color: #333;
-  color: silver;
+  background-color: #444;
+  color: #999;
+  border: 2px solid #111;
 }
 
 
