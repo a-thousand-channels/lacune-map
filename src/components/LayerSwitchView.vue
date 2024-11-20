@@ -91,27 +91,27 @@
               let layerId = icon.getAttribute('data-layer-id');
               let layerName = icon.getAttribute('data-layer-title');
               document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
-              console.log('click event', event.target)
+              console.log('LayerSwitchView click event', event.target)
               let prevCheckbox = event.target.parentElement.previousElementSibling;
-              console.log('click event', prevCheckbox);
+              console.log('LayerSwitchView click event', prevCheckbox);
               if( prevCheckbox ) {
                   // Access checkbox properties
-                  console.log(prevCheckbox.checked);
-                  console.log(prevCheckbox.value);
+                  // console.log(prevCheckbox.checked);
+                  // console.log(prevCheckbox.value);
                   prevCheckbox.checked = false;
                   layerSwitch(layerName)
               }
             });                        
           });
         } else {
-          console.warn('Keine Layer-Icons gefunden');
+          console.warn('LayerSwitchView - Keine Layer-Icons gefunden');
         }
       });
 
       const layerSwitch = (layerName) => {
         try {
           if (!layerName || !props.layersList[layerName] || !props.overlayLayers[layerName]) {
-            console.warn('Ungültige Layer-Parameter:', layerName);
+            console.warn('layerSwitch Ungültige Layer-Parameter:', layerName);
             return;
           }
 
@@ -124,9 +124,9 @@
             props.map.removeLayer(props.overlayLayers[layerName]);
           }
 
-          console.log('Layer Status geändert:', layerName, layer.checked);
+          console.log('layerSwitch Layer Status geändert:', layerName, layer.checked);
         } catch (error) {
-          console.error('Fehler beim Layer-Switch:', error);
+          console.error('layerSwitch Fehler beim Layer-Switch:', error);
         }
       };    
       const filterList = ref({

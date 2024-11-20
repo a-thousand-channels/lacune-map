@@ -2,7 +2,8 @@
   <header>
     <h1> <router-link to="/">Lacune</router-link></h1>
     <div class="nav">
-      <a @click="flyTo(968)" title="Über das Projekt">Info</a>  
+      <router-link to="/place/968">Info</router-link>
+       
       <router-link to="/about">About</router-link>
     </div>
   </header>
@@ -21,7 +22,9 @@ export default {
   name: 'App',
   components: {
     HomeView,
-    AboutView
+    AboutView,
+    RouterLink,
+    RouterView    
   },
   setup() {
     const { focusMarkerById, markersRegistry } = useMap();

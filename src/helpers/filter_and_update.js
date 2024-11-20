@@ -82,7 +82,7 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
       // selecting past years
       else if ( marker.data.endYear <= selectedYear) {
           layer.removeLayer(marker);
-          let icon = LargeMarkerIcon.create({color: '#fff', opacity: 0.72, mtype: marker.data.mtype })
+          let icon = LargeMarkerIcon.create({color: '#fff', opacity: 0.82, mtype: marker.data.mtype, stroke_width: 1, stroke: '#888', stroke_opacity: 0.3 })
           marker.data.color = '#fff';
           marker.setIcon(icon);    
           layer.addLayer(marker);
