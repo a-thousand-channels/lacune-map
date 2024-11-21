@@ -80,6 +80,12 @@
         return year.toString()
       })
 
+      let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
+        attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
+        maxZoom: 17,
+        detectRetina: false,
+        tileSize: 256
+      })
       let wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       name: 'Hamburg 1930s',
       layers: 'jahrgang_1930-1940',
@@ -130,6 +136,12 @@
         const value = 1;
         emit('update:modelValue', Number(value));
         console.log('TimeSlider - Disable slider:', value);
+        props.map.eachLayer(layer => {
+          if (layer instanceof L.TileLayer.WMS) {
+            props.map.removeLayer(layer);
+          }
+        });        
+        hamburg_dark_mode.addTo(props.map);
         filter_and_update(props.map,props.visibleLayers,props.overlayLayers,value)
  
       }
@@ -162,9 +174,6 @@
             if (layer.options.name !== currentBaselayer) {
               props.map.removeLayer(layer);
             }
-          }
-          if (layer instanceof L.TileLayer ) {
-           // props.map.removeLayer(layer);
           }
         });
         if (value < 1950 ) {
