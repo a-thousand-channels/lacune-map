@@ -26,7 +26,7 @@
       <div class="place-text" v-html="placeData.text"></div>
       <hr />
       <div class="place-source">
-        <p>Quelle(n): <span v-if="placeData.source">{{ placeData.source }}</span><span v-else title="Angaben fehlen noch">...</span></p>
+        <p>Quelle(n): <span v-if="placeData.sources">{{ placeData.sources }}</span><span v-else title="Angaben fehlen noch">...</span></p>
         <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
       </div>
       <p><button @click="closeOverlay(placeId)">Zur Karte</button></p>
