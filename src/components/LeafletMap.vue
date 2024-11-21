@@ -424,15 +424,12 @@ export default {
         const placeId = route.params.placeId;
         if (placeId && places) {
           console.log('call place',placeId);
-          console.log('call place: places', places.value)
+          console.log(' places', places.value)
           const searchId = typeof places.value[0]?.id === 'number' ? parseInt(placeId) : placeId.toString();
 
           if (!places.value || !Array.isArray(places.value)) {
               console.warn('call place. places ist nicht initialisiert oder kein Array')
           }        
-          places.value.forEach((place) => {
-            console.log('call place: place', place.id)
-          })
           const place = places.value.find(p => p.id === searchId)
           if (place) {
             console.log('call place',place.id)

@@ -97,7 +97,7 @@
         let isVisible = false;
         props.map.eachLayer((layer) => {
           if (layer instanceof L.Marker && layer.options.id === place.id) {
-            console.log('PopupIsVisible', place.id);
+            // console.log('PopupIsVisible', place.id);
             isVisible = true;
             return true;
           } 

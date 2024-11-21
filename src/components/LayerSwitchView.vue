@@ -69,7 +69,7 @@
         // Warten auf DOM-Update
         await nextTick();
         await new Promise(resolve => setTimeout(resolve, 
-        4000));        
+        5000));        
         const iconElements = document.querySelectorAll('svg.layer-switch-item-icon');
         if (iconElements && iconElements.length > 0) {
           iconElements.forEach(icon => {
