@@ -195,8 +195,6 @@ export default {
       const visibleOverlayLayers = {}
       let visibleBasemap = ''
 
-      
-
       Object.keys(overlayLayers.value).forEach((layerName) => {
         visibleOverlayLayers[layerName] = false
       })
@@ -734,7 +732,8 @@ export default {
           }           
         });
       });
-      mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+      // mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+
       // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
         console.log('baselayerchange', e);     

@@ -26,7 +26,7 @@ export const useMap = () => {
       maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]],
       ...options
     }
-
+    console.log(mapElement);
       mapInstance.value = L.map(mapElement, defaultOptions)
       
 
