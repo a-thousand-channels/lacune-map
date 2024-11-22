@@ -17,7 +17,6 @@
             <p class="place-dates" style="font-size: 0.86em">
             
                 <strong>{{ place.date_with_qualifier }}</strong>
-                {{ PopupIsVisible(place) ? 'visible' : 'not visible' }}
                 <IconMarker :iconData="placeIconData(place)" 
                 class="layer-switch-item-icon"
                 :id="'layer-switch-item-icon-'+layerData.id" 

@@ -554,6 +554,16 @@ export default {
           place.color = darkcolor;
           marker.data.mtype = mtype;
           marker.data.layer_id = layer.id;
+
+          if ( place.date_with_qualifier ) {
+            const regex = /ca. (\d{4})s/;
+
+            
+            if (regex.test(place.date_with_qualifier)) {
+              // Replace english "s" with german "er" (like in 2000s)
+              place.date_with_qualifier = place.date_with_qualifier.replace(regex, '$1er');
+            }
+          }
         
           function setFromToYears (startdate,enddate) {
             var startYear = parseInt(startdate.substring(0, 4));
