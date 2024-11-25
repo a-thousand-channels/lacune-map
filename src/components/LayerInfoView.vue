@@ -17,11 +17,10 @@
             <p class="place-dates" style="font-size: 0.86em">
             
                 <strong>{{ place.date_with_qualifier }}</strong>
-                <IconMarker :iconData="placeIconData(place)" 
+                <IconMarker :iconData="iconData(place, PopupIsVisible(map,place) ? true : false)" 
                 class="layer-switch-item-icon"
-                :id="'layer-switch-item-icon-'+layerData.id" 
-                :data-layer-id="layerData.id" :data-layer-title="layerData.title" />              
-                {{ place.subtitle }}                
+                :id="'layer-switch-item-icon-'+layerData.id" />              
+                {{ place.subtitle !== 'recherchiert' ? place.subtitle : '' }}                
             </p>
             <h3>
               <a @click="openPlaceInfo1(place)">
@@ -43,8 +42,10 @@
   import { useRouter, useRoute } from 'vue-router'
   import { useLayerStore } from '@/stores/layerStore';
   import { useSidebarStore } from '@/stores/sidebarToggle';
-  import { useMap } from '@/composables/useMap'
-  import IconMarker from './icons/IconMarker.vue'
+  import { useMap } from '@/composables/useMap';
+  import { iconData } from '@/helpers/icondata';
+  import { PopupIsVisible } from '@/helpers/popup';
+  import IconMarker from './icons/IconMarker.vue';
   import { Icon } from 'leaflet';
 
   
@@ -76,33 +77,13 @@
       onMounted(() => {
         console.log('layerId', props.layerData.id);
       });
-      const placeIconData = (place) => {
-        let placeData = {
-          id: place.id,
-          subtitle: place.subtitle,
-          color: place.color,
-          colorChecked: place.color,
-          strokeWidth: 0,
-          checked: PopupIsVisible(place) ? true : false
-        };
-        return placeData;
-      }
+     
       const closeAllPopups = () => {
         if (props.map) {
           props.map.closePopup()
         }
       }
-      const PopupIsVisible = (place) => {
-        let isVisible = false;
-        props.map.eachLayer((layer) => {
-          if (layer instanceof L.Marker && layer.options.id === place.id) {
-            // console.log('PopupIsVisible', place.id);
-            isVisible = true;
-            return true;
-          } 
-        }); 
-        return isVisible;      
-      };
+
       const openExistingPopup = (place) => {
         console.log('openExistingPopup', place.id);
         console.log('openExistingPopup map', props.map);
@@ -147,7 +128,7 @@
       };  
       const openPlaceInfo1 = (place) => {
         console.log('openPlaceInfo1', place);
-        if( PopupIsVisible(place) ) {
+        if( PopupIsVisible(props.map,place) ) {
           props.layerData.value = null;
           sidebarStore.closeSidebar();
           placeData.value = place.value;
@@ -159,7 +140,7 @@
           router.push({ path: `/place/${place.id}` })
         }
       };
-      return { layerStore, closeOverlay, openPlaceInfo1, PopupIsVisible, placeData, sidebarStore, placeIconData};
+      return { layerStore, closeOverlay, openPlaceInfo1, PopupIsVisible, placeData, sidebarStore, iconData };
     }
   }
   </script>

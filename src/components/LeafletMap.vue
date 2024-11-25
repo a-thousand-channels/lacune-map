@@ -54,6 +54,10 @@ import LayerSwitchView from './LayerSwitchView.vue'
 import { useMap } from '@/composables/useMap'
 
 import { summarize } from '@/helpers/summarize'
+import { iconData } from '@/helpers/icondata';
+import { Icon } from '@/helpers/icon';
+import { PopupIsVisible } from '@/helpers/popup';
+
 import { cluster_small, cluster_medium, cluster_large, cluster_xlarge } from '@/helpers/cluster'
 import { LargeMarkerIcon } from '@/helpers/marker'
 import CenterMapIcon from '@/components/icons/IconCenterMap.vue'
@@ -392,14 +396,14 @@ export default {
       console.log('mapInstance', mapInstance.value)
       let dataUrl = 'https://orte-backend.a-thousand-channels.xyz/public/maps/histoprojekt-hamburg';
       let localDataUrl = 'histoprojekt-hamburg.json';
-      try {
+      /* try {
         const response = await fetch( dataUrl )
         const statusCode = response.status;
         console.log('Service up and running with ', statusCode)    
       } catch (error) {
         console.error('Error loading JSON data from Remote:', error)
         dataUrl = localDataUrl;
-      }
+      } */
       try {
         const response = await fetch( dataUrl )
         const fetchedData = await response.json()
@@ -522,9 +526,11 @@ export default {
         layer.places.forEach((place) => {
           let mtype = 'place'
           if (place.subtitle === 'autobiografisch') {
-            mtype = 'biography'
+            mtype = 'biography';
+          } else if (place.subtitle === 'selbstaussage') {
+              mtype = 'selbstaussage';    
           } else if (layer.title === 'Hintergrund Informationen') {
-            mtype = 'information'
+            mtype = 'information';
           }
           let darkcolor = layer.color;
           if ( layer.color == '#b1f075') {
@@ -574,11 +580,18 @@ export default {
           }          
           
           let mtypeIcon = '';
+          /* ◊ */
+          
           if ( place.subtitle === 'autobiografisch' ) {
-            mtypeIcon = '<span class="mtypeIcon">◊</span>';
+            mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false));
+          /* '▱' */
+          } else if ( place.subtitle === 'selbstaussage' ) {
+            mtypeIcon = '◯';
+          /* ◯ */
           } else if ( place.subtitle.length > 0 ) {
             mtypeIcon = '◯';
           } 
+          mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false));
           if ( layer.title === 'Hintergrund Informationen') {
             mtypeIcon = '△&nbsp;informatives';
           }
@@ -596,7 +609,7 @@ export default {
                 ${place.date_with_qualifier ? '|' : ''} 
                 ${place.location} ${place.address}${place.city ? ', '+place.city : ''}
                  ${mtypeIcon} ${place.subtitle}
-                </p>
+                  </p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}

@@ -11,7 +11,7 @@
             <input type="checkbox" :id="layer.id" :checked="layer.checked" @change="layerSwitch(layer.title)">
             <IconMarker :iconData="layer" 
             class="layer-switch-item-icon"
-            :id="'layer-switch-item-icon-'+layer.id" :data-layer-id="layer.id" :data-layer-title="layer.title" />
+            :id="'layer-switch-item-icon-'+layer.id" />
           </div>
         </div>
       </div>  
@@ -69,7 +69,7 @@
         // Warten auf DOM-Update
         await nextTick();
         await new Promise(resolve => setTimeout(resolve, 
-        5000));        
+        7000));        
         const iconElements = document.querySelectorAll('svg.layer-switch-item-icon');
         if (iconElements && iconElements.length > 0) {
           iconElements.forEach(icon => {
@@ -131,7 +131,7 @@
       };    
       const filterList = ref({
         autobiografisches: { id: 'autobiografisches', subtitle: 'autobiografisch', color: '#bbb', colorChecked: '#999', checked: true },
-        recherchiert: { id: 'recherchiert', subtitle: 'recherchiert', color: '#bbb', colorChecked: '#999', checked: true },
+        selbstaussage: { id: 'selbstaussage', subtitle: 'selbstaussage', color: '#bbb', colorChecked: '#999', checked: true },
         sonstiges: { id: 'sonstiges', subtitle: 'sonstiges', color: '#bbb', colorChecked: '#999', checked: true }
       });
 
