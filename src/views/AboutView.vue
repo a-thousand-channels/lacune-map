@@ -19,8 +19,8 @@
       <li><strike>Bilder</strike></li>
       <li><strike>Loader-Kreisel bis alle Daten geladen sind.</strike></li>
       <li>TODO: Relations einbauen.</li>
-      <li>In Arbeit: Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</li>
-      <li>In Arbeit: Deeplinks für einzelne Orte!</li>
+      <li><strike>Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</strike></li>
+      <li><strike>In Arbeit: Deeplinks für einzelne Orte!</strike></li>
       <li><strike>Link aus der Layerinfoseite zu einem Ort fliegt an die entsprechende Stelle und öffnet das Popup</strike></li>
       <li>In Arbeit: Deeplink für Layer</li>
       <li>TODO: Datumsangaben verbessern, zb. 1923-1923</li>
@@ -28,15 +28,13 @@
       <li><strike>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</strike></li>
       <li><strike>Bug: Darkmode Karte wird manchmal über die historischen Karten gelegt</strike></li>
       <li><strike>Bug: Sidebar wechsel im MAC</strike></li>
+      <li>TODO: Timeline beschränken von 1920-1990</li>
       <li>Bug: Peformance verbessern</li>
       <li>Impressum/Datenschutz/Credits Seite</li>
     </ul>
     <br/>
     <p>Fragen</p>
     <ul>
-      <li>Optische Unterscheidung zwischen berichten und recherchen?</li>
-      <li>Biografisches aus der Timeline rausnehmen?</li>
-      <li>Aufeinander liegende Orte verschiedener Kategorien etwas versetzen (innerhalb eines Gebäudes)</li>
       <li>Einträge in Gewässern besser ohne Adressangaben, oder?</li>
     </ul>
     <br/>

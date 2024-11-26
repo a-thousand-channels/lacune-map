@@ -17,8 +17,8 @@
             <p class="place-dates" style="font-size: 0.86em">
             
                 <strong>{{ place.date_with_qualifier }}</strong>
-                <IconMarker :iconData="iconData(place, PopupIsVisible(map,place) ? true : false)" 
-                class="layer-switch-item-icon"
+                <IconMarker :iconData="iconData(place, PopupIsVisible(map,place))"
+                klass="layer-item-icon"
                 :id="'layer-switch-item-icon-'+layerData.id" />              
                 {{ place.subtitle !== 'recherchiert' ? place.subtitle : '' }}                
             </p>
@@ -186,6 +186,11 @@
   .layer-places-list li a:hover {
     color: #111;
   }
+  .layer-places-list li div.layer-item-icon {
+    display: inline;
+    margin-left: 5px;
+  }
+
   .layer-places-list li svg {
     vertical-align: middle;    
     margin-right: 0.5em;

@@ -29,12 +29,12 @@
           :layerData="layerData"
           :map="mapInstance" />
   <LayerSwitchView
-          v-if="sortedLayersList && mapInstance && overlayLayers && visibleLayers" 
-          :layersList="sortedLayersList"
-          :map="mapInstance"
-          :visibleLayers="visibleLayers"
-          :overlayLayers="overlayLayers"          
-          />     
+            v-if="sortedLayersList && Object.keys(sortedLayersList).length > 7 && mapInstance && overlayLayers && visibleLayers" 
+            :layersList="sortedLayersList"
+            :map="mapInstance"
+            :visibleLayers="visibleLayers"
+            :overlayLayers="overlayLayers"          
+            />     
   <div class="loader_wrapper">
     <span class="loader"></span>
   </div>
@@ -161,7 +161,12 @@ export default {
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
 
-
+    // Watcher für sortedLayersList
+    watch(sortedLayersList, (newValue) => {
+      if (newValue && Object.keys(newValue).length > 7) {
+        console.log('LayerSwitchView kann jetzt gerendert werden');
+      }
+    });
       
     onMounted( () => {
       console.log('mapElement element:', mapElement.value) // Debug log
@@ -420,6 +425,12 @@ export default {
           selectedYear.value = 1;
           minYear.value = parseInt(timelineSummary.minYear, 10);
           maxYear.value = parseInt(timelineSummary.maxYear, 10);
+          if (minYear.value < 1920) {
+            minYear.value = 1920;
+          }
+          if (maxYear.value > 1990) {
+            maxYear.value = 1999;
+          }
         }
         // const filteredData = 
         // await filter_and_update(map,overlayLayers,selectedYear)
@@ -446,7 +457,10 @@ export default {
         loaderWrapper.style.opacity = '0';
         setTimeout(() => {
           loaderWrapper.style.display = 'none';
-        }, 300);        
+        }, 300);      
+        if (Object.keys(layersList.value).length > 0) {
+          sortLayersList();
+        }            
       } catch (error) {
         console.error('Error loading JSON data:', error)
       }
@@ -488,6 +502,7 @@ export default {
       }
     }
     const sortLayersList = () => {
+      console.log('sortLayersList');
       const currentLayers = {...layersList.value}; // Kopie erstellen
     
       const entries = Object.entries(currentLayers);
@@ -503,6 +518,7 @@ export default {
       sortedEntries.forEach(([key, value]) => {
           sortedLayersList.value[key] = value;
        });
+      console.log('sortedLayersList with layers', Object.keys(sortedLayersList.value).length);
     };
       
     const addDataToMap = (data) => {
@@ -580,21 +596,9 @@ export default {
           }          
           
           let mtypeIcon = '';
-          /* ◊ */
-          
-          if ( place.subtitle === 'autobiografisch' ) {
-            mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false));
-          /* '▱' */
-          } else if ( place.subtitle === 'selbstaussage' ) {
-            mtypeIcon = '◯';
-          /* ◯ */
-          } else if ( place.subtitle.length > 0 ) {
-            mtypeIcon = '◯';
-          } 
-          mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false));
-          if ( layer.title === 'Hintergrund Informationen') {
-            mtypeIcon = '△&nbsp;informatives';
-          }
+
+          place.strokeWidth = 3;
+          mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false), layer.id, layer.title);
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
                 <a href="#" class="layer-info" data-layer-id="${layer.id}" data-layer-darkcolor="${darkcolor}">
@@ -608,8 +612,9 @@ export default {
                 </strong>
                 ${place.date_with_qualifier ? '|' : ''} 
                 ${place.location} ${place.address}${place.city ? ', '+place.city : ''}
-                 ${mtypeIcon} ${place.subtitle}
-                  </p>
+                
+                ${mtypeIcon}&nbsp;${place.subtitle}
+              </p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
                   ${place.title}
@@ -629,7 +634,7 @@ export default {
             }            
             const popup = e.popup;
             const container = popup.getElement();
-            console.log('popupopen', place.id)
+            console.log('on popupopen addEventListeners', place.id)
 
             container.querySelector('.place-info').addEventListener('click', (event) => {
               event.preventDefault();
@@ -677,10 +682,7 @@ export default {
       console.log('markersRegistry', markersRegistry.size)
       console.log('bounds per default')
 
-      console.log('layersList.value', layersList.value)
-      if (Object.keys(layersList.value).length > 0) {
-            sortLayersList();
-        }   
+  
       /*
       let bounds = [53.55, 9.95]
       bounds = L.latLngBounds(markers.getBounds())
@@ -746,6 +748,7 @@ export default {
         });
       });
       // mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+      mapInstance.value.on('overlayadd overlayremove', saveMapState);
 
       // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
@@ -764,10 +767,12 @@ export default {
 
         }
         saveMapState();
+        console.log('layersList.value', layersList.value)
+         
       })
 
       console.log('addDataToMap map mapInstance', mapInstance.value)
-
+     
       return {
         data: data,
         overlayLayers: overlayLayers.value,

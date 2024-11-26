@@ -21,7 +21,7 @@ export var LargeMarkerIcon = {
     options: {
       iconSize: [30, 30],
       iconAnchor: [15, 15],
-      popupAnchor: [0, -15]
+      popupAnchor: [0, -10]
     }
   }),
   iconSVG: function (params) {
@@ -33,7 +33,7 @@ export var LargeMarkerIcon = {
     } else if (params.mtype === 'information') {
       svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" ><path fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" d="M0.5,25.6c-0.3-0.3-0.3-0.9,0-1.2L11.4,3.5c0.3-0.3,0.9-0.3,1.2,0l10.9,20.9c0.3,0.3,0.3,0.9,0,1.2"></path></svg>`
     } else if (params.mtype === 'selbstaussage') {
-      svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 ${params.marker_width} ${params.marker_size}" xmlns="http://www.w3.org/2000/svg" ><path fill="${params.color.toString()}" fill-opacity="${params.opacity}" stroke="${params.color.toString()}" stroke-width="${params.strokeWidth ? params.strokeWidth.toString() : 1}" stroke-opacity="1" d="M0,23.5L3.9,4.9c0-.6.6-1.1,1.2-1h18.6c.6.1,1,.7,1,1.3l-3.9,18.6c0,.6-.6,1.1-1.2,1H1c-.6,0-1-.6-1-1.2Z"></path></svg>`      
+      svg = `<svg height="${params.marker_size}px" width="${params.marker_width}px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" ><path fill="${params.color.toString()}" fill-opacity="${params.opacity}" stroke="${params.color.toString()}" stroke-width="${params.strokeWidth ? params.strokeWidth.toString() : 0}" stroke-opacity="1" d="M4.4,7c0.1-0.7,0.3-2,2-2h14.6c1.5,0,2,1.2,1.9,2.3L19.6,23c0,0.6-0.6,2-2,2H2.8C1.4,25,1,24.5,1,23.8L4.4,7z"/></svg>`      
     } else {
       svg = `<svg height="${params.marker_size}" width="${params.marker_size}" viewBox="0 0 ${params.marker_width} ${params.marker_size}" xmlns="http://www.w3.org/2000/svg">${params.defs_with_gradient}<circle class="cls-1" cx="${params.marker_size / 2}" cy="${params.marker_size / 2}" r="${params.marker_size / 2}" fill="${params.color}" fill-opacity="${params.opacity}" stroke="${params.stroke}" stroke-width="${params.stroke_width}" stroke-opacity="${params.stroke_opacity}" shape-rendering="geometricPrecision"></circle></svg>`
     }
@@ -50,6 +50,9 @@ export var LargeMarkerIcon = {
       defs_with_gradient: ''
     }
     if (params.mtype === 'biography') {
+      params.marker_size = 40
+      params.marker_width = 40      
+    } else if (params.mtype === 'selbstaussage') {
       params.marker_size = 40
       params.marker_width = 40
     } else if (params.mtype === 'information') {

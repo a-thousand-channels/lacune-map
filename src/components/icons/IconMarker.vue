@@ -1,6 +1,6 @@
 <template>
     <transition>
-        <div v-if="iconData" v-html="renderIcon"></div>
+        <div v-if="iconData" v-html="renderIcon" :data-layer-id="layerId" :data-layer-title="layerTitle" :class="klass"></div>
     </transition>
 </template>
 
@@ -11,12 +11,24 @@ import { Icon } from '@/helpers/icon';
             iconData: {
                 type: Object,
                 default: null
+            },
+            layerId: {
+                type: Number,
+                default: 0
+            },
+            layerTitle: {
+                type: String,
+                default: ''
+            },
+            klass: {
+                type: String,
+                default: ''
             }
         },
         computed: {
             renderIcon() {
-                console.log('iconData', this.iconData);
-                return Icon(this.iconData);
+                // console.log('iconData', this.iconData);
+                return Icon(this.iconData,this.layerId,this.layerTitle);
             }
         }
     }

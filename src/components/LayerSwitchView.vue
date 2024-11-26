@@ -10,7 +10,9 @@
           <div class="layer-switch-item" v-for="layer in layersList" :key="layer.id">
             <input type="checkbox" :id="layer.id" :checked="layer.checked" @change="layerSwitch(layer.title)">
             <IconMarker :iconData="layer" 
-            class="layer-switch-item-icon"
+            klass="layer-switch-item-icon"
+            :layerId="layer.id"
+            :layerTitle="layer.title"
             :id="'layer-switch-item-icon-'+layer.id" />
           </div>
         </div>
@@ -24,7 +26,7 @@
         <div class="items-wrapper">
           <div class="type-filter-item" v-for="filter in filterList" :key="filter.id">
             <input type="checkbox" :id="filter.id" :checked="filter.checked" @change="filterSwitch(filter.id)">
-              <IconMarker :iconData="filter" />
+              <IconMarker :iconData="filter"  />
           </div>
         </div>
       </div>
@@ -67,37 +69,32 @@
         console.log('LayerSwitchView - onMounted');
   
         // Warten auf DOM-Update
-        await nextTick();
-        await new Promise(resolve => setTimeout(resolve, 
-        7000));        
-        const iconElements = document.querySelectorAll('svg.layer-switch-item-icon');
+        // await nextTick();
+        // await new Promise(resolve => setTimeout(resolve, 7000));        
+        const iconElements = document.querySelectorAll('.layer-switch-item-icon');
+        console.log('LayerSwitchView - iconElements', iconElements);
         if (iconElements && iconElements.length > 0) {
-          iconElements.forEach(icon => {
-            icon.addEventListener('mouseover', (event) => {
-              event.preventDefault();
+          iconElements.forEach(iconElement => {
+            const icon = iconElement.querySelector('svg');
+            iconElement.addEventListener('mouseover', (event) => {
+              icon.classList.add('active');
               let layerId = icon.getAttribute('data-layer-id');
               document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
-              event.target.parentElement.classList.add('active');
-              
             });
-            icon.addEventListener('mouseout', (event) => {
-              event.preventDefault();
+            iconElement.addEventListener('mouseout', (event) => {
+              icon.classList.remove('active');
               let layerId = icon.getAttribute('data-layer-id');
-              document.querySelector("#layer-switch-label-"+layerId).classList.remove('active');
-              event.target.parentElement.classList.remove('active');
+              document.querySelector("#layer-switch-label-"+layerId).classList.remove('active');              
             });
-            icon.addEventListener('click', (event) => {
-              event.preventDefault();
-              let layerId = icon.getAttribute('data-layer-id');
+            iconElement.addEventListener('click', (event) => {
+              const svgElement = event.target.closest('svg');
               let layerName = icon.getAttribute('data-layer-title');
-              document.querySelector("#layer-switch-label-"+layerId).classList.add('active');
-              console.log('LayerSwitchView click event', event.target)
-              let prevCheckbox = event.target.parentElement.previousElementSibling;
+              let layerId = icon.getAttribute('data-layer-id');
+              document.querySelector("#layer-switch-label-"+layerId).classList.remove('active');                
+              console.log('LayerSwitchView click event', svgElement)
+              let prevCheckbox = svgElement.parentElement.previousElementSibling;
               console.log('LayerSwitchView click event', prevCheckbox);
-              if( prevCheckbox ) {
-                  // Access checkbox properties
-                  // console.log(prevCheckbox.checked);
-                  // console.log(prevCheckbox.value);
+              if ( prevCheckbox ) {
                   prevCheckbox.checked = false;
                   layerSwitch(layerName)
               }
@@ -195,7 +192,7 @@
     }
     .items-wrapper {
       flex: 1;
-      padding: 15px 8px 5px 2px;
+      padding: 15px 5px 5px 5px;
       background-color: white;
       max-width: 70px;
       border-radius: 5px;

@@ -107,6 +107,11 @@ p.place-layer a {
 p.place-date, p.place-dates {
   margin: 0 0 0.25em;
 }
+p.place-dates svg {
+  vertical-align: middle;
+  margin-top: -4px;
+  transform: scale(0.8);
+}
 p.place-location {
   font-family: 'Courier New', Courier, monospace;
   font-size: 1.25em;
@@ -235,6 +240,7 @@ body.light-mode #map.leaflet-container .leaflet-control-attribution a {
 #map.leaflet-container .leaflet-control-layers {
   background: white;
   border: none;
+  display: none;
 }
 body.dark-mode #map.leaflet-container .leaflet-control-layers {
   background: #333;
