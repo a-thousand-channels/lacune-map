@@ -297,7 +297,7 @@
     background-color: white;
   }
   
-  .slider::before {
+  .slider::beforeXX {
     content: attr(data-value);
     position: absolute;
     top: -30px;
