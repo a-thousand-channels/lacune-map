@@ -630,6 +630,13 @@ export default {
             `
           marker.bindPopup(popupContent)
 
+
+          
+          marker.on('popupclose', (e) => {
+            const popup = e.popup;
+            const container = popup.getElement();
+            console.log('on popupclose removeEventListeners', place.id);
+          });
           marker.on('popupopen', (e) => {
             if (!e.target._map) {
               console.warn('Karte ist noch nicht bereit');
@@ -658,11 +665,9 @@ export default {
             if (placeInfo) {
               placeInfo.removeEventListener('click', placeInfoHandler);
             }
-          
-
-            
-
-            container.querySelector('.place-info').addEventListener('click', placeInfoHandler);
+            placeInfo.removeEventListener('click', placeInfoHandler);
+            placeInfo.addEventListener('click', placeInfoHandler);
+            console.log('addEventListeners place-info added', place.id);
             container.querySelector('.place-info1').addEventListener('click', (event) => {
               event.preventDefault();
               const layerTitle = event.target.getAttribute('data-layer-title');

@@ -23,7 +23,7 @@
                 {{ place.subtitle !== 'recherchiert' ? place.subtitle : '' }}                
             </p>
             <h3>
-              <a @click="openPlaceInfo1(place)">
+              <a @click="openPlaceInfo2(place)">
               {{ place.title }}
               </a>
             </h3>
@@ -125,9 +125,10 @@
       const closeOverlay = () => {
         props.layerData.value = null;
         sidebarStore.closeSidebar();
+        router.push({ path: '/' })
       };  
-      const openPlaceInfo1 = (place) => {
-        console.log('openPlaceInfo1', place);
+      const openPlaceInfo2 = (place) => {
+        console.log('openPlaceInfo2', place);
         if( PopupIsVisible(props.map,place) ) {
           props.layerData.value = null;
           sidebarStore.closeSidebar();
@@ -140,7 +141,7 @@
           router.push({ path: `/place/${place.id}` })
         }
       };
-      return { layerStore, closeOverlay, openPlaceInfo1, PopupIsVisible, placeData, sidebarStore, iconData };
+      return { layerStore, closeOverlay, openPlaceInfo2, PopupIsVisible, placeData, sidebarStore, iconData };
     }
   }
   </script>
