@@ -10,7 +10,10 @@
       <p class="place-dates">
         <strong>{{ placeData.date_with_qualifier }}</strong>
         <span v-if="placeData.date_with_qualifier"> | </span><span v-if="placeData.location.length > 0">{{ placeData.location }},</span> {{ placeData.address}} {{ placeData.city }}
-        <span class="" v-html="getMtypeIcon(placeData)"></span>&nbsp;<span v-if="placeData.subtitle">{{ placeData.subtitle }}</span>
+        <IconMarker :iconData="iconData(placeData, PopupIsVisible(map,placeData))"
+                klass="layer-item-icon"
+                :id="'layer-switch-item-icon-'+placeData.layer_id" />
+        <span v-if="placeData.subtitle">{{ placeData.subtitle }}</span>
       </p>
 
 
@@ -19,7 +22,7 @@
         <h2>{{ placeData.title }}</h2>
       </header>
       <div class="place-images" v-if="placeData.images">
-        <img v-for="image in placeData.images" :src="image.image_url" :alt="image.alt" :title="image.title" />
+        <img v-for="image in placeData.images" :key="image.id" :src="image.image_url" :alt="image.alt" :title="image.title" />
       </div>
       
       <p class="place-teaser" v-html="placeData.teaser"></p>
@@ -44,6 +47,11 @@ import { useLayerStore } from '@/stores/layerStore';
 import { useSidebarStore } from '@/stores/sidebarToggle';
 import { useMap } from '@/composables/useMap'
 import { useRouter } from 'vue-router';
+import { iconData } from '@/helpers/icondata';
+import { PopupIsVisible } from '@/helpers/popup';
+import IconMarker from './icons/IconMarker.vue';
+
+
 
 
 export default {
@@ -55,8 +63,15 @@ export default {
     layerData: {
         type: Object,
         default: null
-    }
+    },
+    map: {
+      type: Object,
+      required: true
+    },
   },
+  components: {
+      IconMarker
+    },  
   setup(props) {
     const router = useRouter();
     const layerStore = useLayerStore();
@@ -78,18 +93,7 @@ export default {
 
     });
     
-    const getMtypeIcon = (place) => {
-      if ( place.layer_title === 'Hintergrund Informationen') {
-        return '△&nbsp;informatives';
-      } else if ( place.subtitle === 'autobiografisch' ) {
-        return '<span class="mtypeIcon">◊</span>&nbsp;autobiografisch';
-      } else if ( place.subtitle.length > 0 ) {
-        return '◯';
-      } else {
-        return '';
-      }
-      
-    };
+  
 
     const openLayerInfo = (layer,layerDarkcolor) => {
       console.log('openLayerInfo', layer.id )
@@ -111,7 +115,7 @@ export default {
       router.push({ path: '/' })
     };
 
-    return { layerStore, closeOverlay, sidebarStore, getMtypeIcon, openLayerInfo};
+    return { layerStore, closeOverlay, sidebarStore, openLayerInfo, PopupIsVisible, iconData};
   }
 }
 </script>
@@ -131,7 +135,11 @@ export default {
     color: white;
     text-decoration: none;
   }
-
+  .layer-item-icon {
+    display: inline-block;
+    margin: -1px 5px 0 2px;
+    vertical-align: middle;
+  }
 
 /* Transition animations */
 .slide-enter-active .sidebar,

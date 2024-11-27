@@ -23,7 +23,10 @@
     />
   <PlaceView 
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
-      :placeData="placeData" :layerData="layerData" />
+      :placeData="placeData" 
+      :layerData="layerData" 
+      :map="mapInstance"
+      />
   <LayerInfoView
           v-if="mapInstance && !placeData && layerData && sidebarStore.isSidebarVisible == true"
           :layerData="layerData"
@@ -634,10 +637,13 @@ export default {
             }            
             const popup = e.popup;
             const container = popup.getElement();
-            console.log('on popupopen addEventListeners', place.id)
+            console.log('on popupopen addEventListeners', place.id);
+            console.log('on popupopen container found ', container);
+            console.log('on popupopen container place info found ', container.querySelector('.place-info'));
 
-            container.querySelector('.place-info').addEventListener('click', (event) => {
+            const placeInfoHandler = (event) => {
               event.preventDefault();
+              console.log('place-info clicked', event.target);
               const layerId = event.target.getAttribute('data-layer-id');
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
@@ -645,7 +651,18 @@ export default {
               layerStore.setLayerData(layerTitle, layerDarkcolor, placeId );
               place.layer_title = layerTitle;
               openPlaceInfo(place);
-            });
+            };
+
+
+            const placeInfo = container.querySelector('.place-info');
+            if (placeInfo) {
+              placeInfo.removeEventListener('click', placeInfoHandler);
+            }
+          
+
+            
+
+            container.querySelector('.place-info').addEventListener('click', placeInfoHandler);
             container.querySelector('.place-info1').addEventListener('click', (event) => {
               event.preventDefault();
               const layerTitle = event.target.getAttribute('data-layer-title');
