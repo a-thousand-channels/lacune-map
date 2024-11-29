@@ -25,6 +25,7 @@
       v-if="placeData && sidebarStore && sidebarStore.isSidebarVisible == true"
       :placeData="placeData" 
       :layerData="layerData" 
+      :relations="relations"
       :map="mapInstance"
       />
   <LayerInfoView
@@ -90,6 +91,7 @@ export default {
     const data = ref([]);
     const placeData = ref(null);
     const places = ref([]);
+    const relations = ref([]);
     const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
@@ -695,7 +697,7 @@ export default {
         layer_group.eachLayer((layer) => {
           if (layer instanceof L.Marker) {
             // markers.addLayer(layer)
-            // allMarkers.push(layer);
+            allMarkers.push(layer);
           }
         })
         overlayLayers.value[layer.title] = layer_group
@@ -704,6 +706,34 @@ export default {
       console.log('markersRegistry', markersRegistry.size)
       console.log('bounds per default')
 
+      data.map.layer.forEach((layer) => {
+        layer.places_with_relations.forEach((r) =>  {
+          r.relations.forEach((relation) => {
+            console.log('relation from/to',relation.from.id,relation.to.id);
+            relations.value.push({
+              from: relation.from.id,
+              to: relation.to.id, 
+            })
+          });
+        });
+      });
+
+
+      places.value.forEach((place) => {
+        console.log('place',place.id);
+        let find_relation_to_id = relations.value.find(r => r.from === place.id);
+        if (find_relation_to_id) {
+          console.log('find_relation_to_id',find_relation_to_id);
+          let relation_to = places.value.find(m => m.id === parseInt(find_relation_to_id.to));
+
+          if (relation_to) {
+            console.log('relation_to',relation_to);
+            place.relation = relation_to;
+          }
+        }
+      });
+
+            
   
       /*
       let bounds = [53.55, 9.95]
@@ -827,6 +857,7 @@ export default {
         data,
         placeData,
         layerData,
+        relations,
         overlayLayers,
         visibleLayers,
         layersList,

@@ -32,7 +32,11 @@
         <div v-if="placeData.sources">Quelle(n): <span v-html="placeData.sources"></span></div>
         <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
       </div>
-      <p><button @click="closeOverlay(placeId)">Zur Karte</button></p>
+      <hr />
+      <div v-if="placeData.relation">
+        <p><button @click="goToPlace(placeData.relation)">Siehe auch: "{{ placeData.relation.title }}"</button></p>
+      </div>  
+      <p><button @click="goToPlace(placeData)">Zum Eintrag auf der Karte</button></p>
     </div>
     <div v-else class="sidebar">
       <p>... Infos zu diesem Ort können gerade nicht angezeigt werden.</p>
@@ -68,6 +72,10 @@ export default {
       type: Object,
       required: true
     },
+    relations: {
+      type: Object,
+      required: true
+    }
   },
   components: {
       IconMarker
@@ -93,8 +101,63 @@ export default {
 
     });
     
-  
+    const goToPlace = (place) => {
+      console.log('goToPlace', place.title);
 
+          sidebarStore.closeSidebar();
+          placeData.value = null;
+          if (!props.map) {
+            console.warn('props.map not available!!'); 
+          }
+          setTimeout(() => {
+            openExistingPopup(place);     
+            router.push({ path: `/` })
+          }, 200);
+
+    };
+
+    const closeAllPopups = () => {
+        if (props.map) {
+          props.map.closePopup()
+        }
+      }    
+  
+    const openExistingPopup = (place) => {
+        console.log('openExistingPopup', place.id);
+        console.log('openExistingPopup map', props.map);
+
+        if (!props.map) return;
+
+        // Alle Layer durchsuchen
+        props.map.eachLayer((layer) => {
+          // Prüfen ob es ein Marker ist und die richtige ID hat
+          if (layer instanceof L.Marker && layer.options.id === place.id) {
+            console.log('openExistingPopup', place.id);
+            
+            const isVisible = layer?.visible ?? false;
+            // Zur Position fliegen
+            props.map.flyTo(layer.getLatLng(), 16);
+            // Vorhandenes Popup öffnen
+            if (layer.getPopup()) {
+              if ( isVisible ) {
+                layer.openPopup();
+              } else {
+                console.log('Layer nicht sichtbar:', place.id);
+                layer.openPopup();
+                const popup = layer.getPopup();
+                if (popup){
+                  popup.openOn(props.map) // you'll need a reference to the L.map instance for this
+                }
+              }
+              layer.openPopup();
+            } else {
+              console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
+            }
+          } else {
+            console.warn('Kein Popup für diesen Marker gefunden:', place.id);
+          }
+        });
+      };
     const openLayerInfo = (layer,layerDarkcolor) => {
       console.log('openLayerInfo', layer.id )
       placeData.value = null;
@@ -115,7 +178,7 @@ export default {
       router.push({ path: '/' })
     };
 
-    return { layerStore, closeOverlay, sidebarStore, openLayerInfo, PopupIsVisible, iconData};
+    return { layerStore, closeOverlay, sidebarStore, openLayerInfo, PopupIsVisible, iconData, goToPlace, openExistingPopup, closeAllPopups};
   }
 }
 </script>
