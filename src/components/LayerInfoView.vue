@@ -85,43 +85,91 @@
       }
 
       const openExistingPopup = (place) => {
-        console.log('openExistingPopup', place.id);
+        console.log('openExistingPopup called for', place.id);
         console.log('openExistingPopup map', props.map);
 
         if (!props.map) return;
 
+       
+
         // Alle Layer durchsuchen
         props.map.eachLayer((layer) => {
+          if (layer instanceof L.MarkerClusterGroup) {
+            layer.refreshClusters();
+          } 
           // Prüfen ob es ein Marker ist und die richtige ID hat
           if (layer instanceof L.Marker && layer.options.id === place.id) {
-            console.log('openExistingPopup', place.id);
             
             const isVisible = layer?.visible ?? false;
             // Zur Position fliegen
+            
             props.map.flyTo(layer.getLatLng(), 16);
             // Vorhandenes Popup öffnen
+
             if (layer.getPopup()) {
               if ( isVisible ) {
+                console.log('Layer ist sichtbar:', place.id);
                 layer.openPopup();
               } else {
                 console.log('Layer nicht sichtbar:', place.id);
-                layer.openPopup();
-                const popup = layer.getPopup();
-                if (popup){
-                  popup.openOn(props.map) // you'll need a reference to the L.map instance for this
+
+                const cluster = findParentCluster(layer);
+                console.log('Check Cluster gefunden:', cluster);
+
+                if (cluster && cluster !== layer) {
+                  console.log('Cluster gefunden:', cluster);
+                  setTimeout(() => {
+                    cluster.spiderfy();
+                  }, 1000);                    
+                } else {
+                  console.log('Kein Cluster gefunden:', cluster);
                 }
+                layer.openPopup();
               }
-              layer.openPopup();
             } else {
               console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
             }
-          } else {
-            console.warn('Kein Popup für diesen Marker gefunden:', place.id);
           }
         });
       };
 
-  
+      const findParentCluster = (layer) => {
+        console.log('Suche Parent Cluster für:', layer);
+        console.log('Suche Parent Cluster in:', props.map);
+        if (!props.map) return null;
+      
+        try {
+          // Alle Layer der Karte durchgehen
+          let parentCluster = null;
+          props.map.eachLayer((mapLayer) => {
+            // Prüfen ob es sich um eine MarkerClusterGroup handelt
+            if (mapLayer instanceof L.MarkerClusterGroup) {
+              console.log('mapLayer:', mapLayer);
+              // Alle Cluster dieser Gruppe durchgehen
+              parentCluster = mapLayer.getVisibleParent(layer);
+              /*
+              mapLayer.eachLayer((cluster) => {
+                if (cluster instanceof L.MarkerCluster) {
+                  console.log('mapLayer cluster:', cluster);
+
+                  // Prüfen ob unser Layer in diesem Cluster ist
+                  const childMarkers = cluster.getAllChildMarkers();
+                  if (childMarkers.includes(layer)) {
+                    parentCluster = cluster;
+                  }
+                }
+              });
+              */
+            }
+          });
+          
+          console.log('Gefundener Parent Cluster:', parentCluster);
+          return parentCluster;
+        } catch (error) {
+          console.error('Fehler beim Suchen des Parent Clusters:', error);
+          return null;
+        }
+      };
       const closeOverlay = () => {
         props.layerData.value = null;
         sidebarStore.closeSidebar();
@@ -136,7 +184,7 @@
           if (!props.map) {
             console.warn('props.map not available!!'); 
           }
-          closeAllPopups();
+          // closeAllPopups();
           openExistingPopup(place);      
           router.push({ path: `/place/${place.id}` })
         }
