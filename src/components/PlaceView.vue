@@ -144,12 +144,7 @@ export default {
               } else {
                 console.log('Layer nicht sichtbar:', place.id);
                 layer.openPopup();
-                const popup = layer.getPopup();
-                if (popup){
-                  popup.openOn(props.map) // you'll need a reference to the L.map instance for this
-                }
               }
-              layer.openPopup();
             } else {
               console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
             }
