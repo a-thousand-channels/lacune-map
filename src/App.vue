@@ -3,7 +3,6 @@
     <h1> <router-link to="/">Lacune</router-link></h1>
     <div class="nav">
       <router-link to="/place/968">Info</router-link>
-       
       <router-link to="/about">About</router-link>
     </div>
   </header>
@@ -14,32 +13,20 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import AboutView from './views/AboutView.vue';
-import { useMap } from '@/composables/useMap'
 
 
 
 export default {
   name: 'App',
   components: {
-    HomeView,
-    AboutView,
     RouterLink,
     RouterView    
   },
   setup() {
-    const { focusMarkerById, markersRegistry } = useMap();
-    const flyTo = (placeId) => {
-      if (placeId)  {
-        console.log('focusMarkerById', placeId );
-        console.log('markersRegistry', markersRegistry.size );
-        // router.push({ name: 'home' });
-        focusMarkerById(placeId)      
-      } else {
-        console.log('no placeId' );
-      }
-    };
+    console.log('App setup');
+  
 
-    return { flyTo };
+    return {  };
   }
 }
 </script>

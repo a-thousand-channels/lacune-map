@@ -2,11 +2,12 @@
   <Transition name="slide">
     <div class="sidebar" v-if="placeData" >
       <button class="close" @click="closeOverlay()">&times;</button>
-      <p class="place-layer" :style="{ backgroundColor: layerStore.layerDarkcolor }">
+      <p class="place-layer" :style="{ backgroundColor: placeData.layer_color }">
         <a class="layer-info">
           {{ placeData.layer_title }} 
         </a>
       </p>
+
       <p class="place-dates">
         <strong>{{ placeData.date_with_qualifier }}</strong>
         <span v-if="placeData.date_with_qualifier"> | </span><span v-if="placeData.location.length > 0">{{ placeData.location }},</span> {{ placeData.address}} {{ placeData.city }}

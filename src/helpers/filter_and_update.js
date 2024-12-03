@@ -16,6 +16,12 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
 
     console.log("---------------------");
     console.log("filterSummary Number of markers in visiblelayer:", visibleLayers[layerName].getLayers().length);
+
+    if (layerName === 'Hintergrund Informationen') {
+      return;
+    }
+
+
     // console.log("filterSummary Number of markers in overlaylayer:", overlayLayers[layerName].getLayers().length);
 
 

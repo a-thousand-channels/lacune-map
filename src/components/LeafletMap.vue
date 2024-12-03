@@ -288,12 +288,6 @@ export default {
       console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
       sidebarStore.openSidebar();
       console.log('sidebarStore.isSidebarVisible', sidebarStore.isSidebarVisible)
-      /*
-      router.push({ 
-        name: 'placeInfo', 
-        params: { layerId: layerId.toString(), placeId: placeId.toString() } 
-      });
-      */
       router.push({ path: `/place/${place.id}` })
 
     };
@@ -559,8 +553,13 @@ export default {
 
           } else if ( layer.color == '#f0d875' ) {
             darkcolor = '#d1b132';
+          } else if ( layer.color == '#75b8f0' ) {
+            darkcolor = '#5a8fc0';
+          } else if ( layer.color == '#f07575' ) {
+            darkcolor = '#c46060';
           }
-           
+          place.layer_title = layer.title;
+          place.layer_color = darkcolor;
           places.value.push(place)
           const icon = LargeMarkerIcon.create({ color: darkcolor, mtype: mtype })
           const marker = L.marker([place.lat, place.lon], { icon: icon, id: place.id, data: place })
@@ -838,19 +837,22 @@ export default {
     console.log('addDataToMap selectedYear', selectedYear)
 
     watch(
-      () => route.query.placeId, (placeId) => {
-        // If the placeId query param is present, find the corresponding place and open the overlay
-        if (placeId) {
-          const place = places.value.find(p => p.id === placeId)
-          if (place) {
-            placeData.value = place
-            isOverlayOpen.value = true
-          }
-        } else {
-          isOverlayOpen.value = false
-          placeData.value = null
+      () => route.params.placeId, (newId) => {
+        console.log('route.params.placeId', newId)
+        // openPlaceInfo(newId)
+        console.log('places', places.value)
+        let place = places.value.find(p => p.id === Number(newId))
+        if (place) {
+          console.log('place', place)
+          placeData.value = place;
+          console.log('placeData', placeData.value)
+          console.log('placeData', placeData.value.lat)
+          console.log('placeData', placeData.value.lon)
+          sidebarStore.openSidebar();
+          mapInstance.value.flyTo([placeData.value.lat,placeData.value.lon], 16, { paddingTopLeft: [200, 0], paddingBottomRight: [0, 0] });
+
         }
-      }
+      }, { immediate: true }
     )
 
     return {
