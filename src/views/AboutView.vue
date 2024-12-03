@@ -15,10 +15,10 @@
       <li><strike>Inhaltseite zu einem Orte (Link aus den Popups)</strike></li>
       <li><strike>Einzelansicht als Overlay links neben der Karte</strike></li>
       <li><strike>Einzelansicht hübscher setzen.</strike></li>
-      <li><strike> Timeslider Funktionalität</strike></li>
+      <li><strike>Timeslider Funktionalität</strike></li>
       <li><strike>Bilder</strike></li>
       <li><strike>Loader-Kreisel bis alle Daten geladen sind.</strike></li>
-      <li>TODO: Relations einbauen.</li>
+      <li><strike>Relations einbauen.</strike></li>
       <li><strike>Schöneres Layer-Auswahl-Menu oben rechts mit Farbe</strike></li>
       <li><strike>In Arbeit: Deeplinks für einzelne Orte!</strike></li>
       <li><strike>Link aus der Layerinfoseite zu einem Ort fliegt an die entsprechende Stelle und öffnet das Popup</strike></li>
@@ -28,9 +28,9 @@
       <li><strike>Bug: Cluster aus vergangenen Einträgen wird nicht weiß angezeigt.</strike></li>
       <li><strike>Bug: Darkmode Karte wird manchmal über die historischen Karten gelegt</strike></li>
       <li><strike>Bug: Sidebar wechsel im MAC</strike></li>
-      <li>TODO: Timeline beschränken von 1920-1990</li>
-      <li>Bug: Peformance verbessern</li>
-      <li>Impressum/Datenschutz/Credits Seite</li>
+      <li><strike>Timeline beschränken von 1920-1990</strike></li>
+      <li><strike>Bug: Peformance verbessern</strike></li>
+      <li>Impressum/Datenschutz/Credits Seite?</li>
     </ul>
     <br/>
     <p>Fragen</p>

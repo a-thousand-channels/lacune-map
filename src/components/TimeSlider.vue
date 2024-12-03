@@ -242,7 +242,7 @@
   <style scoped>
 
   .slider-container {
-    position: fixed;
+    position: absolute;
     bottom: 60px;
     left: 52%;
     transform: translateX(-50%);
