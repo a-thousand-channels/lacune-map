@@ -1,11 +1,12 @@
 // composables/usemapElement.js
-import { ref, reactive, provide, inject } from 'vue'
+import { shallowRef, ref, reactive, provide, inject } from 'vue'
 import L from 'leaflet'
 
 
 export const useMap = () => {
   const mapInstanceSymbol = Symbol('mapInstance')
-  const mapInstance = inject(mapInstanceSymbol, ref(null))
+  // const mapInstance = inject(mapInstanceSymbol, ref(null))
+  const mapInstance = shallowRef(null)
   const isMapReady = ref(false)
   const markersRegistrySymbol = Symbol('markersRegistry')
   const markersRegistry = reactive(inject(markersRegistrySymbol, new Map()))  
@@ -26,21 +27,19 @@ export const useMap = () => {
       maxBounds: [[ 53.76414148051871, 9.408416748046877 ], [ 53.39070404547524, 10.681457519531252 ]],
       ...options
     }
-    console.log(mapElement);
-      mapInstance.value = L.map(mapElement, defaultOptions)
-      
+    console.log("------------------------");
+    console.log("mapElement called", mapElement);
+    mapInstance.value = L.map(mapElement, defaultOptions)
+    mapInstance.value.attributionControl.setPrefix("");
+    mapInstance.value.setView(centerCoordinates, zoomLevel);
+    isMapReady.value = true
+    console.log('isMapReady??', isMapReady.value)
 
-      mapInstance.value.attributionControl.setPrefix("");
-      mapInstance.value.setView(centerCoordinates, zoomLevel);
+    // Provide the map instance and markers registry to child components
+    provide(mapInstanceSymbol, mapInstance)
+    provide(markersRegistrySymbol, markersRegistry)
 
-      isMapReady.value = true
-      console.log('isMapReady??', isMapReady.value)
-
-      // Provide the map instance and markers registry to child components
-      provide(mapInstanceSymbol, mapInstance)
-      provide(markersRegistrySymbol, markersRegistry)
-
-      return mapInstance.value
+    return mapInstance.value
   }
 
 

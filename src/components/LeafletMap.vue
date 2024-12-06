@@ -801,7 +801,7 @@ export default {
         });
       });
       // mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
-      mapInstance.value.on('overlayadd overlayremove', saveMapState);
+      mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
 
       // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {
