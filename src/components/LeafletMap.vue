@@ -748,12 +748,12 @@ export default {
 
 
       basemaps.value = {
-        'Aktuelle Hamburg Karte (Dark)': hamburg_dark_mode,
         'Historische Hamburg Karte 1930er': wmsLayerHamburg1930s,
         'Historische Hamburg Karte 1950er': wmsLayerHamburg1950s,
         'Historische Hamburg Karte 1960er': wmsLayerHamburg1960s,
         'Historische Hamburg Karte 1970er': wmsLayerHamburg1970s,
-        'Historische Hamburg Karte 1980er': wmsLayerHamburg1980s
+        'Historische Hamburg Karte 1980er': wmsLayerHamburg1980s,
+        'Aktuelle Hamburg Karte (Dark)': hamburg_dark_mode
       }
       const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
       console.log('map', mapInstance.value)      
