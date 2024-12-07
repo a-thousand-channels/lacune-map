@@ -1,8 +1,26 @@
 <template>
   <div id="about" class="content">
-    <h1>About</h1>
-    <p>Credits/Impressum?</p>
+    <h1>Lacune </h1>
+    <h2>Impressum</h2>
+    <p>
+      Heike Schader<br>
+      <a href="mailto:">E-Mail HIER!</a><br>
+      Anschrift: HIER<br>
+    </p>
+    <p>
+      Die Produktion dieser Karte wurde durch A Thousand Channels unterstützt.
+      A Thousand Channels ist eine queere Mapping Platform. A Thousand Channels sind Thomas Böker, Dafne Jaramillo, Ulf Treger<br />
+      @a-thousand-channels (Insta etc)
+    </p>
+      
+    <p>
+      Die dunkle Hintergrundkarte wurde unter Verwendung von Geodaten von Openstreetmap und Mitwirkenden erstellt. Die historischen Hamburg-Karten aus den 1920er bis 1980er Jahren werden vom Landesbetrieb Geoinformation und Vermessung der Stadt Hamburg unter einer "Deutschland Namensnennung 2.0" Datenlizenz zur Verfügung gestellt.
+    </p>
+
     <hr />
+    <h2>Datenschutz</h2>  
+    <p>...</p>
+      <hr />
     <h2>TODOs</h2>
     <p>Was erledigt ist, in Arbeit ist oder noch gemacht werden muss:</p>
     <ul>

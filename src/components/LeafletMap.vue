@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="" class="">
     <button
       id="mapcontrol-center"
       title="Karte zentrieren"
@@ -8,6 +8,10 @@
     >
       <CenterMapIcon />
     </button>
+    <div id="about-link">
+      Lacune, 2024
+      <router-link to="/about">Impressum & Datenschutz</router-link>
+    </div>
   </div>
   <TimeSlider 
       v-model="selectedYear"
@@ -603,7 +607,7 @@ export default {
           let mtypeIcon = '';
 
           place.strokeWidth = 3;
-          mtypeIcon = Icon(iconData(place, PopupIsVisible(mapInstance.value,place) ? true : false), layer.id, layer.title);
+          mtypeIcon = Icon(iconData(place, true));
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
                 <a href="#" class="layer-info" data-layer-id="${layer.id}" data-layer-darkcolor="${darkcolor}">
@@ -925,6 +929,7 @@ export default {
   color: #a8a803;
 }
 #mapcontrol-center {
+  
   left: 12px;
   position: absolute;
   bottom: 50px;
@@ -939,7 +944,6 @@ export default {
 body.dark-mode #mapcontrol-center {
   background-color: #444;
   border: 2px solid #111;
-  
 }
 
 #mapcontrol-center svg path.path-content {
@@ -947,5 +951,20 @@ body.dark-mode #mapcontrol-center {
 }
 body.dark-mode #mapcontrol-center svg path.path-content {
   fill: #888;
+}
+
+#about-link {
+  left: 12px;
+  position: absolute;
+  bottom:0;
+  z-index: 9998;
+  margin-left: 15px;
+  margin-bottom: 9px;
+  color: #333;
+  text-shadow: 0 0 1px black;
+}
+body.dark-mode  #about-link {
+  color: #aaa;
+  text-shadow: 0 0 1px white;
 }
 </style>

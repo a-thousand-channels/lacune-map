@@ -3,7 +3,7 @@
     <h1> <router-link to="/">Lacune</router-link></h1>
     <div class="nav">
       <router-link to="/place/968">Info</router-link>
-      <router-link to="/about">About</router-link>
+
     </div>
   </header>
   <router-view></router-view>
