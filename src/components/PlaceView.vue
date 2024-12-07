@@ -9,7 +9,7 @@
       </p>
 
       <p class="place-dates">
-        <strong>{{ placeData.date_with_qualifier }}</strong>
+        <strong>{{ placeData.date_with_qualifier ? placeData.date_with_qualifier : 'Lacune Karte' }}</strong>
         <span v-if="placeData.date_with_qualifier"> | </span><span v-if="placeData.location.length > 0">{{ placeData.location }},</span> {{ placeData.address}} {{ placeData.city }}
         <IconMarker :iconData="iconData(placeData, PopupIsVisible(map,placeData))"
                 klass="layer-item-icon"

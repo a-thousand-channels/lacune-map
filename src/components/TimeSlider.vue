@@ -94,6 +94,14 @@
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
+      let wmsLayerHamburg1940s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1940s',
+      layers: 'jahrgang_1940-1950',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       name: 'Hamburg 1950s',
       layers: 'jahrgang_1950-1960',
@@ -126,7 +134,14 @@
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })      
-
+      let wmsLayerHamburg1990s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1990s',
+      layers: 'jahrgang_1990-2000',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })
 
       function disableSlider(event) {
         const sliderContainer = document.querySelector('.slider-container');
@@ -170,16 +185,21 @@
         const currentBaselayer = getActiveBaselayerName(props.map);
         console.log('Current baselayer:', currentBaselayer);        
         props.map.eachLayer(layer => {
-          if (layer instanceof L.TileLayer.WMS) {
+          // if (layer instanceof L.TileLayer.WMS) {
             if (layer.options.name !== currentBaselayer) {
               props.map.removeLayer(layer);
             }
-          }
+          //}
         });
-        if (value < 1950 ) {
-          console.log('TimeSlider < 1950')
+        if (value < 1940 ) {
+          console.log('TimeSlider < 1940')
           if (currentBaselayer !== 'Hamburg 1930s') {
             wmsLayerHamburg1930s.addTo(props.map);
+          }
+        } else if (value < 1950 ) {
+          console.log('TimeSlider < 1950')
+          if (currentBaselayer !== 'Hamburg 1940s') {
+            wmsLayerHamburg1940s.addTo(props.map);
           }
         } else if (value < 1960) {
           console.log('TimeSlider < 1960')
@@ -196,10 +216,15 @@
           if (currentBaselayer !== 'Hamburg 1970s') {
             wmsLayerHamburg1970s.addTo(props.map);
           }
-        } else {
-          console.log('TimeSlider > 1980')
+        } else if (value < 1990) {
+          console.log('TimeSlider < 1990')
           if (currentBaselayer !== 'Hamburg 1980s') {
             wmsLayerHamburg1980s.addTo(props.map);
+          }
+        } else {
+          console.log('TimeSlider < 1999')
+          if (currentBaselayer !== 'Hamburg 1990s') {
+            wmsLayerHamburg1990s.addTo(props.map);
           }
         }
          // Layer Control aktualisieren
@@ -250,6 +275,7 @@
     max-width: 800px;
     text-align: center;
     z-index: 1000;
+    pointer-events: none;
   }
   
   .slider {
@@ -260,11 +286,16 @@
     outline: none;
     opacity: 0.4;
     transition: opacity 0.2s;
-    box-shadow: 0 0 0 #888
+    box-shadow: 0 0 0 #888;
+    padding: 1px;
+    cursor: pointer;
+    border: 4px solid white;
+    pointer-events: visible; 
   }  
   .dark-mode .slider {
     background: #aaa;
     box-shadow: 0 0 4px black;
+    border: 4px solid #333;
   }
   div.slider-container.active .slider{
     opacity: 1;
@@ -316,6 +347,14 @@
     text-shadow: 0 0 3px white;
     display: inline;
   }
+  .dark-mode #yearDisplay {
+    color: #aaa;
+    text-shadow: 0 0 3px black;
+  }
+  div.slider-container.active #yearDisplay {
+    font-weight: bold;
+    transition: 0.5s all;
+  }  
   #disableSlider {
     display: inline-block;
     border: 1px solid #444;
@@ -328,9 +367,11 @@
     margin-left: 5px;
     transition: 0.5s all ease;
     opacity: 0;
+    pointer-events: visible;
   }
   #disableSlider.active {
     opacity: 1;
+    background: white;
   }
   #disableSlider.active:hover {
     cursor: pointer;
@@ -339,12 +380,8 @@
     color: #CC0000;
     transition: 0.5s all ease;
   }
-  .dark-mode #yearDisplay {
-    color: #aaa;
-    text-shadow: 0 0 3px black;
-  }
-  div.slider-container.active #yearDisplay {
-    font-weight: bold;
-    transition: 0.5s all;
+  .dark-mode #disableSlider.active {
+    opacity: 1;
+    background: #222;
   }
   </style>

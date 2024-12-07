@@ -57,8 +57,9 @@ h2 {
   font-size: 3em;
   font-weight: normal;
   color: #c6c600;
-  margin: 0.25rem 0 0.25rem 0;
+  margin: 0.25rem 0 0.25rem -3px;
   font-weight: normal;
+  word-break: break-all;  
 }
 h2.layer-title {
   /*
@@ -186,7 +187,7 @@ hr {
 @media (min-width: 768px) {
   .sidebar {
     position: fixed;
-    width: 520px;
+    width: 575px;
     padding: 50px 30px 60px;  
   }
 }

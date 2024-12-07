@@ -137,6 +137,14 @@ export default {
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
       })
+      let wmsLayerHamburg1940s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1940s',
+      layers: 'jahrgang_1940-1950',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })      
     let wmsLayerHamburg1950s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
       name: 'Hamburg 1950s',
       layers: 'jahrgang_1950-1960',
@@ -169,7 +177,15 @@ export default {
       maxZoom: 20,     
       attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
       })
-
+      
+      let wmsLayerHamburg1990s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      name: 'Hamburg 1990s',
+      layers: 'jahrgang_1990-2000',
+      transparent: true,
+      minZoom: 10,
+      maxZoom: 20,     
+      attribution: 'Karte: LGV Hamburg, Lizenz <a href="https://www.govdata.de/dl-de/by-2-0"> dl-de/by-2-0</a>'
+      })
     // Watcher für sortedLayersList
     watch(sortedLayersList, (newValue) => {
       if (newValue && Object.keys(newValue).length > 7) {
@@ -188,6 +204,8 @@ export default {
         console.log('savedBasemap', savedBasemap);
         if (savedBasemap === 'Hamburg 1930s') {
           wmsLayerHamburg1930s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1940s') {
+          wmsLayerHamburg1940s.addTo(mapInstance.value);
         } else if (savedBasemap === 'Hamburg 1950s') {
           wmsLayerHamburg1950s.addTo(mapInstance.value);
         } else if (savedBasemap === 'Hamburg 1960s') {
@@ -196,6 +214,8 @@ export default {
           wmsLayerHamburg1970s.addTo(mapInstance.value);
         } else if (savedBasemap === 'Hamburg 1980s') {
           wmsLayerHamburg1980s.addTo(mapInstance.value);
+        } else if (savedBasemap === 'Hamburg 1990s') {
+          wmsLayerHamburg1990s.addTo(mapInstance.value);
         } else {
           hamburg_dark_mode.addTo(mapInstance.value)
           document.body.classList.add('dark-mode');
@@ -607,7 +627,7 @@ export default {
           let mtypeIcon = '';
 
           place.strokeWidth = 3;
-          mtypeIcon = Icon(iconData(place, true));
+          mtypeIcon = Icon(iconData(place, true),layer.id,layer.title);
           const popupContent = `
               <p class="place-layer" style="background-color: ${darkcolor}">
                 <a href="#" class="layer-info" data-layer-id="${layer.id}" data-layer-darkcolor="${darkcolor}">
@@ -617,7 +637,7 @@ export default {
               
               <p class="place-dates">
                 <strong>
-                  ${place.date_with_qualifier ? place.date_with_qualifier : ''} 
+                  ${place.date_with_qualifier ? place.date_with_qualifier : 'Lacune Karte'} 
                 </strong>
                 ${place.date_with_qualifier ? '|' : ''} 
                 ${place.location} ${place.address}${place.city ? ', '+place.city : ''}
@@ -754,10 +774,12 @@ export default {
 
       basemaps.value = {
         'Historische Hamburg Karte 1930er': wmsLayerHamburg1930s,
+        'Historische Hamburg Karte 1940er': wmsLayerHamburg1940s,
         'Historische Hamburg Karte 1950er': wmsLayerHamburg1950s,
         'Historische Hamburg Karte 1960er': wmsLayerHamburg1960s,
         'Historische Hamburg Karte 1970er': wmsLayerHamburg1970s,
         'Historische Hamburg Karte 1980er': wmsLayerHamburg1980s,
+        'Historische Hamburg Karte 1990er': wmsLayerHamburg1990s,
         'Aktuelle Hamburg Karte (Dark)': hamburg_dark_mode
       }
       const layerControl = L.control.layers(basemaps.value, overlayLayers.value, { collapsed: true })
@@ -956,9 +978,9 @@ body.dark-mode #mapcontrol-center svg path.path-content {
 #about-link {
   left: 12px;
   position: absolute;
-  bottom:0;
+  bottom: 10px;
   z-index: 9998;
-  margin-left: 15px;
+  margin-left: 2px;
   margin-bottom: 9px;
   color: #333;
   text-shadow: 0 0 1px black;
@@ -966,5 +988,10 @@ body.dark-mode #mapcontrol-center svg path.path-content {
 body.dark-mode  #about-link {
   color: #aaa;
   text-shadow: 0 0 1px white;
+}
+@media (min-width: 768px) {
+  #about-link {
+    bottom: 0;
+  }
 }
 </style>

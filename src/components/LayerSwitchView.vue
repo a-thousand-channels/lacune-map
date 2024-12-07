@@ -173,7 +173,7 @@
       width: auto;
       position: relative;
       background-color: transparent;
-      right: 8px;
+      right: 11px;
       margin-top: 10px;
       padding: 15px 0 10px 3px;
       display: flex;

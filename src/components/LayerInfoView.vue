@@ -16,7 +16,7 @@
           <li v-for="place in layerData.places" :key="place.id">
             <p class="place-dates" style="font-size: 0.86em">
             
-                <strong>{{ place.date_with_qualifier }}</strong>
+                <strong>{{ place.date_with_qualifier ? place.date_with_qualifier : 'Lacune Karte' }}</strong>
                 <IconMarker :iconData="iconData(place, PopupIsVisible(map,place))"
                 klass="layer-item-icon"
                 :id="'layer-switch-item-icon-'+layerData.id" />              
@@ -47,7 +47,9 @@
   import { PopupIsVisible } from '@/helpers/popup';
   import IconMarker from './icons/IconMarker.vue';
   import { Icon } from 'leaflet';
-
+  import L from 'leaflet'
+  import 'leaflet.markercluster' // Import MarkerCluster script
+  import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
   
   export default {
     props: {
@@ -95,7 +97,8 @@
         // Alle Layer durchsuchen
         props.map.eachLayer((layer) => {
           if (layer instanceof L.MarkerClusterGroup) {
-            layer.refreshClusters();
+           // layer.refreshClusters();
+           console.log('XCheck Cluster gefunden:', layer);  
           } 
           // Prüfen ob es ein Marker ist und die richtige ID hat
           if (layer instanceof L.Marker && layer.options.id === place.id) {
