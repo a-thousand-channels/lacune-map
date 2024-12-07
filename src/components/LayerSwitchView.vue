@@ -73,6 +73,11 @@
         // await new Promise(resolve => setTimeout(resolve, 7000));        
         const iconElements = document.querySelectorAll('.layer-switch-item-icon');
         console.log('LayerSwitchView - iconElements', iconElements);
+
+        console.log('LayerSwitchView - visibleLayers', props.visibleLayers);
+        console.log('LayerSwitchView - layersList', props.layersList);
+
+
         if (iconElements && iconElements.length > 0) {
           iconElements.forEach(iconElement => {
             const icon = iconElement.querySelector('svg');
@@ -111,7 +116,7 @@
             console.warn('layerSwitch Ungültige Layer-Parameter:', layerName);
             return;
           }
-
+          
           const layer = props.layersList[layerName];
           layer.checked = !layer.checked;
 
@@ -120,7 +125,6 @@
           } else {
             props.map.removeLayer(props.overlayLayers[layerName]);
           }
-
           console.log('layerSwitch Layer Status geändert:', layerName, layer.checked);
         } catch (error) {
           console.error('layerSwitch Fehler beim Layer-Switch:', error);

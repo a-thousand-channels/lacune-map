@@ -234,6 +234,7 @@ export default {
       localStorage.setItem('mapCenter', JSON.stringify([newCenter.lat, newCenter.lng]))
       localStorage.setItem('mapZoom', newZoom.toString())
       localStorage.setItem('mapLayers', JSON.stringify(visibleOverlayLayers))
+      console.log('saveMapState visibleOverlayLayers', visibleOverlayLayers)
       localStorage.setItem('basemap', visibleBasemap)
       console.log('saveMapState mapZoom', newZoom);
     }
@@ -774,9 +775,11 @@ export default {
           }
         })
       } else {
+        console.log('add all layers to map')
         Object.keys(overlayLayers.value).forEach((layerName) => {
           overlayLayers.value[layerName].addTo(mapInstance.value)
           visibleLayers.value[layerName] = overlayLayers.value[layerName]
+          layersList.value[layerName].checked = true
         })
       }
       
