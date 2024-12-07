@@ -30,6 +30,9 @@
       <li><strike>Bug: Sidebar wechsel im MAC</strike></li>
       <li><strike>Timeline beschränken von 1920-1990</strike></li>
       <li><strike>Bug: Peformance verbessern</strike></li>
+      <li><strike>Bug: Peformance verbessern</strike></li>
+      <li>Bug: Cluster aufklappen per Klick aus der Seitenleiste</li>
+      <li>Bug: </li>
       <li>Impressum/Datenschutz/Credits Seite?</li>
     </ul>
     <br/>
