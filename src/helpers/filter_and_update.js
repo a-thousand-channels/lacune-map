@@ -4,40 +4,34 @@ let backupLayers = [];
 
 export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) {
   
-
   selectedYear == '' ? 9999 : selectedYear;
   console.log("Timeline: filterMarkers",selectedYear);
   console.log("Timeline: overlayLayers", overlayLayers);
   console.log("Timeline: visibleLayers", visibleLayers);
 
-
   // viz
   Object.keys(visibleLayers).forEach((layerName,index) => {
 
     console.log("---------------------");
-    console.log("filterSummary Number of markers in visiblelayer:", visibleLayers[layerName].getLayers().length);
+    console.log("filterSummary markers:",layerName,visibleLayers[layerName].getLayers().length);
 
-    if ( (layerName === 'Hintergrund Informationen') || ( layerName === 'Biografisches') ) {
+    if ( (layerName === 'Hintergrund Informationen') ) {
+      // let this layer untouched 
       return;
     }
-
-
     // console.log("filterSummary Number of markers in overlaylayer:", overlayLayers[layerName].getLayers().length);
-
 
     let layer = visibleLayers[layerName];
     // console.log("Timeline: layer", layer);
      // Manuelles Klonen des Layers
     if ( backupLayers[index] === undefined ) {
-      console.log("init backup layer---------------------");
+      // console.log("init backup layer",layerName);
       backupLayers[index] = layer.getLayers();
     } else {
-      console.log("clear layers");
+      // console.log("clear layers");
       layer.clearLayers();
       layer.addLayers(backupLayers[index]);
     }
-
-
     // console.log("filterSummary Number of markers in backuplayer:",backupLayerMarkers.length);    
 
     let filterSummary = {
@@ -52,10 +46,18 @@ export function filter_and_update(map,visibleLayers,overlayLayers,selectedYear) 
      
       layer.eachLayer((marker) => {
         if (marker instanceof L.Marker) {
-          // console.log("marker.data",marker.options.data.title,marker.options.data.startdate);
-          filterSummary.sum += 1;
-          let markercopy = marker;
-          checkForDates(map, overlayLayers, layer, markercopy, filterSummary);
+
+          if ( layerName === 'Biografisches') {
+            layer.removeLayer(marker);
+          } else {
+            // console.log("marker.data",marker.options.data.title,marker.options.data.startdate);
+            filterSummary.sum += 1;
+            let markercopy = marker;
+            checkForDates(map, overlayLayers, layer, markercopy, filterSummary);
+
+          }
+
+          
           
         }
       });

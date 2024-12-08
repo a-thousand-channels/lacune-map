@@ -54,7 +54,8 @@ button.close {
 }
 h2 {
   line-height: 1.2;
-  font-size: 3em;
+  font-size: 2.5em;
+  letter-spacing: -0.03em;
   font-weight: normal;
   color: #c6c600;
   margin: 0.25rem 0 0.25rem -3px;
@@ -184,16 +185,16 @@ hr {
   transform: translateX(0%);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
   .sidebar {
     position: fixed;
-    width: 575px;
+    width: 475px;
     padding: 50px 30px 60px;  
   }
 }
 @media (min-width: 1168px) {
   .sidebar {
-    width: 720px;
+    width: 650px;
     padding: 50px 40px 60px;  
   }
 }

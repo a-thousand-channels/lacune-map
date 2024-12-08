@@ -144,6 +144,8 @@
       })
 
       function disableSlider(event) {
+
+        document.querySelector("#layer-switch").style.display = "flex";
         const sliderContainer = document.querySelector('.slider-container');
         sliderContainer.classList.remove('active');
         const disableSlider = document.querySelector('#disableSlider');
@@ -162,6 +164,8 @@
       }
   
       function updateSlider(event) {
+
+        document.querySelector("#layer-switch").style.display = "none";
         const value = Number(event.target.value)
         const sliderContainer = document.querySelector('.slider-container');
         sliderContainer.classList.add('active');
@@ -227,6 +231,7 @@
             wmsLayerHamburg1990s.addTo(props.map);
           }
         }
+
          // Layer Control aktualisieren
         if (props.map.layerControl) {
           console.log('LayerControl:', props.map.layerControl);

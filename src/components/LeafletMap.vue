@@ -240,8 +240,8 @@ export default {
       // Check which layers are currently visible
       mapInstance.value.eachLayer((layer) => {
         Object.keys(overlayLayers.value).forEach((layerName) => {
-          // console.log('overlayLayers', layerName);
           if (layer === overlayLayers.value[layerName]) {
+            console.log('overlayLayers', layerName, true);
             visibleOverlayLayers[layerName] = true
           }
         })
@@ -735,7 +735,7 @@ export default {
       data.map.layer.forEach((layer) => {
         layer.places_with_relations.forEach((r) =>  {
           r.relations.forEach((relation) => {
-            console.log('relation from/to',relation.from.id,relation.to.id);
+            // console.log('relation from/to',relation.from.id,relation.to.id);
             relations.value.push({
               from: relation.from.id,
               to: relation.to.id, 

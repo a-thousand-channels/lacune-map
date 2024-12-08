@@ -211,6 +211,9 @@
       background-color: #333;
       border: 2px solid #222;
     }
+    .layer-switch-item-icon {
+      cursor: pointer;
+    }
     .layer-switch-item svg.active circle,
     .layer-switch-item-icon.active circle,
     .layer-switch-item:hover svg circle, 
