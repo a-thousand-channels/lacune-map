@@ -185,11 +185,11 @@
         const currentBaselayer = getActiveBaselayerName(props.map);
         console.log('Current baselayer:', currentBaselayer);        
         props.map.eachLayer(layer => {
-          // if (layer instanceof L.TileLayer.WMS) {
+          if (layer instanceof L.TileLayer) {
             if (layer.options.name !== currentBaselayer) {
               props.map.removeLayer(layer);
             }
-          //}
+          }
         });
         if (value < 1940 ) {
           console.log('TimeSlider < 1940')

@@ -746,14 +746,11 @@ export default {
 
 
       places.value.forEach((place) => {
-        console.log('place',place.id);
         let find_relation_to_id = relations.value.find(r => r.from === place.id);
         if (find_relation_to_id) {
-          console.log('find_relation_to_id',find_relation_to_id);
           let relation_to = places.value.find(m => m.id === parseInt(find_relation_to_id.to));
-
           if (relation_to) {
-            console.log('relation_to',relation_to);
+            // console.log('relation_to',relation_to);
             place.relation = relation_to;
           }
         }
