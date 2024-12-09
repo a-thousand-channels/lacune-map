@@ -268,34 +268,7 @@ export default {
       // console.log('saveMapState visibleOverlayLayers', visibleOverlayLayers)
       localStorage.setItem('basemap', visibleBasemap)
       console.log('saveMapState mapZoom', newZoom);
-    }
-    var lastZoom;
-    console.log('setTooltipDisplay')
-    /*
-    const setTooltipDisplay = () => {
-      var tooltipThreshold = 17;
-      var zoom =  mapInstance.value.getZoom();
-      if (zoom < tooltipThreshold && (!lastZoom || lastZoom >= tooltipThreshold)) {
-         mapInstance.value.eachLayer(function(l) {
-            if (l.getTooltip()) {
-                var tooltip = l.getTooltip();
-                l.unbindTooltip().bindTooltip(tooltip, {
-                    permanent: false
-                })
-            }
-        })
-      } else if (zoom >= tooltipThreshold && (!lastZoom || lastZoom < tooltipThreshold)) {
-         mapInstance.value.eachLayer(function(l) {
-            if (l.getTooltip()) {
-                var tooltip = l.getTooltip();
-                l.unbindTooltip().bindTooltip(tooltip, {
-                    permanent: true
-                })
-            }
-        });
-      }
-      lastZoom = zoom;
-    }*/
+    } 
 
     const centerMap = () => {
       console.log('Call centerMap')
@@ -308,7 +281,6 @@ export default {
       layer.color = layerDarkcolor
       placeData.value = null;
       layerData.value = layer
-      console.log('openLayerInfo', layerData.value.color)
       // router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
       sidebarStore.openSidebar();
     };
@@ -330,6 +302,7 @@ export default {
       disableClusteringAtZoom: 20,
       spiderfyOnMaxZoom: true,
       */
+      removeOutsideVisibleBounds: false,
       showCoverageOnHover: false,
       animate: true,
 
@@ -697,8 +670,8 @@ export default {
             const popup = e.popup;
             const container = popup.getElement();
             console.log('on popupopen addEventListeners', place.id);
-            console.log('on popupopen container found ', container);
-            console.log('on popupopen container place info found ', container.querySelector('.place-info'));
+            // console.log('on popupopen container found ', container);
+            // console.log('on popupopen container place info found ', container.querySelector('.place-info'));
 
             const placeInfoHandler = (event) => {
               event.preventDefault();
@@ -736,7 +709,8 @@ export default {
               const layerTitle = event.target.getAttribute('data-layer-title');
               const layerDarkcolor = event.target.getAttribute('data-layer-darkcolor');
               const placeId = event.target.getAttribute('data-place-id');
-              layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);              
+              layerStore.setLayerData(layerTitle, layerDarkcolor, placeId);     
+              mapInstance.value.closePopup()         
               openLayerInfo(layer,layerDarkcolor);
             }); 
           });       
@@ -839,8 +813,9 @@ export default {
       console.log("markerId",markerId);
       if (markerId) {
         console.log("focus marker", markerId);
-        focusMarker(markerId);
+        // focusMarker(markerId);
       }         
+      /*
       mapInstance.value.on('zoomstart', () => {
         mapInstance.value.eachLayer((layer) => {
           if (layer.closePopup) {
@@ -851,8 +826,9 @@ export default {
           }           
         });
       });
-      // mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+      */
       mapInstance.value.on('overlayadd overlayremove moveend', saveMapState);
+      // mapInstance.value.on('overlayadd overlayremove', saveMapState);
 
       // mapInstance.value.on('zoomend', setTooltipDisplay);
       mapInstance.value.on('baselayerchange', function(e) {

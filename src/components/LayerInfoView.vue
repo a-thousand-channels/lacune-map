@@ -49,6 +49,8 @@
   import IconMarker from './icons/IconMarker.vue';
   import { Icon } from 'leaflet';
   import L from 'leaflet'
+  import 'leaflet.markercluster' // Import MarkerCluster script
+  import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'  
 
   
   export default {
@@ -59,6 +61,7 @@
       },
       map: {
         type: Object,
+        default: null,
         required: true
       },      
       layerDarkcolor: {
@@ -77,7 +80,7 @@
       const route = useRoute()          
 
       onMounted(() => {
-        console.log('layerId', props.layerData.id);
+        console.log('Mounted LayerInforView for Layer ', props.layerData.id);
       });
      
       const closeAllPopups = () => {
@@ -92,93 +95,91 @@
 
         if (!props.map) return;
 
-     
-
+        
+        
         // Alle Layer durchsuchen
         props.map.eachLayer((layer) => {
-          if (layer instanceof L.MarkerClusterGroup && layer.options.id === place.id) {
-           // layer.refreshClusters();
-           console.log('XCheck Cluster gefunden:', layer);  
-           // props.map.flyTo(layer.getLatLng(), 16);
-           /*
-           const cluster = findParentCluster(layer);
-           console.log('Check Cluster gefunden:', cluster);
-            */
-           const childs = layer.getAllChildMarkers().length;
-           console.log('Check Cluster Kinder:', childs);
-
-          //  cluster.spiderfy();
-          } 
           
-          // Prüfen ob es ein Marker ist und die richtige ID hat
-          if (layer instanceof L.Marker && layer.options.id === place.id) {
-            console.log('Check layer:', layer);  
-            const isVisible = layer?.visible ?? false;
-            // Zur Position fliegen
-            props.map.flyTo(layer.getLatLng(), 16);
+          if ( layer.options.id === undefined ) {
+            console.log('haslayer?', props.map.hasLayer(layer));
+            console.log('Check layer UNDEFINED leaflet ID', layer._leaflet_id); 
+            console.log('Check layer childcluster:', layer._childClusters ); 
+            if ( layer._childClusters !== undefined ) {
+              console.log('Check MarkerClusterGroup:', layer);  
+              const clusterChildMarkers = layer.getAllChildMarkers();
+              console.log('Check MarkerClusterGroup:', clusterChildMarkers);
+              clusterChildMarkers.forEach((childMarker) => {
+                console.log('Check MarkerClusterGroup:', childMarker.options.id);  
+                if ( childMarker.options.id === place.id) {
+                  console.log('Check MarkerClusterGroup:', childMarker);  
+                  props.map.flyTo(layer.getLatLng(), 16);                
 
-            const parentCluster = layer.__parent;
-            if (parentCluster) {
-              console.log('Check Parent Cluster gefunden:', parentCluster);
-              // Zoom to cluster bounds
-              // props.map.fitBounds(parentCluster.getBounds())
-              setTimeout(() => {
-                parentCluster.spiderfy();
-                layer.openPopup();
-              }, 1000);                
-            }            
-            // Vorhandenes Popup öffnen
-            if (layer.getPopup()) {
-              if ( isVisible ) {
-                console.log('Layer ist sichtbar:', place.id);
-                layer.openPopup();
+                  // show popup of a clustered marker in an unspidered (open) cluster
+                  setTimeout(() => {
+                    layer.spiderfy();
+                    setTimeout(() => {
+                      childMarker.openPopup();              
+                    }, 500);   
+                  }, 500);      
+                }
+              });
+
+            }
+            console.log('--------------------------------------------');
+          }
+
+          if ( layer.options.id === place.id) {
+            console.log('Check layer:', layer.options.id);  
+
+           
+
+            if (layer instanceof L.Marker && layer.options.id === place.id) {
+              console.log('Check layer:', layer);  
+              const isVisible = layer?.visible ?? false;
+              // Zur Position fliegen
+              if (isVisible) {
+                // props.map.flyTo(layer.getLatLng(), 16);                 
               } else {
                 console.log('Layer nicht sichtbar:', place.id);
-                layer.openPopup();
               }
-            } else {
-              console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
+              props.map.flyTo(layer.getLatLng(), 16);                 
+              const parentCluster = layer.__parent;
+              if (parentCluster) {
+                console.log('Check layer:', layer);
+                console.log('Check layer childclusters:', layer.__parent._childClusters.length);
+                // console.log('parentCluster:', parentCluster);  
+
+                // show popup of a clustered marker in a spidered (open) cluster
+                if ( layer.__parent._childClusters.length === 0 ) {
+                  console.log('Check Parent Cluster gefunden:', place.id);
+                  // Zoom to cluster bounds
+                  setTimeout(() => {
+                    // parentCluster.spiderfy();
+                    setTimeout(() => {
+                      layer.openPopup();              
+                    }, 300);   
+                  }, 500);         
+                  return;
+                }
+              }          
+              // Vorhandenes Popup öffnen
+              if (layer.getPopup()) {
+                if ( isVisible ) {
+                  console.log('Layer ist sichtbar:', place.id);
+                  layer.openPopup();
+                } else {
+                  console.log('Layer nicht sichtbar:', place.id);
+                  layer.openPopup();
+                }
+              } else {
+                console.warn('Kein Popup für diesen Marker sichtbar:', place.id);
+              }
+                    
             }
           }
         });
       };
 
-      const findParentCluster = (layer) => {
-        
-        console.log('Suche Parent Cluster für:', layer);
-        console.log('Suche Parent Cluster in:', props.map);
-        if (!props.map) return null;
-        try {
-          return;
-          // Alle Layer der Karte durchgehen
-          let parentCluster = null;
-          props.map.eachLayer((mapLayer) => {
-            // Prüfen ob es sich um eine MarkerClusterGroup handelt
-            if (mapLayer instanceof L.MarkerClusterGroup) {
-              console.log('Check ClusterGroup gefunden:', mapLayer);
-              // Alle Cluster dieser Gruppe durchgehen
-              mapLayer.eachLayer((cluster) => {
-                console.log('Check for Cluster:', cluster);
-                if (cluster instanceof L.MarkerCluster) {
-                  console.log('Check MarkerCluster gefunden:', cluster);
-                  // Prüfen ob unser Layer in diesem Cluster ist
-                  console.log('Check Cluster Kinder:', cluster.getAllChildMarkers());
-                  const childMarkers = cluster.getAllChildMarkers();
-                  if (childMarkers.includes(layer)) {
-                    parentCluster = cluster;
-                  }
-                }
-              });
-            }
-          });
-          
-          console.log('Gefundener Parent Cluster:', parentCluster);
-          return parentCluster;
-        } catch (error) {
-          console.error('Fehler beim Suchen des Parent Clusters:', error);
-          return null;
-        }
-      };
       const closeOverlay = () => {
         props.layerData.value = null;
         sidebarStore.closeSidebar();

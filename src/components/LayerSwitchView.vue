@@ -72,10 +72,9 @@
         // await nextTick();
         // await new Promise(resolve => setTimeout(resolve, 7000));        
         const iconElements = document.querySelectorAll('.layer-switch-item-icon');
-        console.log('LayerSwitchView - iconElements', iconElements);
-
-        console.log('LayerSwitchView - visibleLayers', props.visibleLayers);
-        console.log('LayerSwitchView - layersList', props.layersList);
+        // console.log('LayerSwitchView - iconElements', iconElements);
+        // console.log('LayerSwitchView - visibleLayers', props.visibleLayers);
+        // console.log('LayerSwitchView - layersList', props.layersList);
 
 
         if (iconElements && iconElements.length > 0) {

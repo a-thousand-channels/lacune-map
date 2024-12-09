@@ -139,7 +139,7 @@ export default {
             
             const isVisible = layer?.visible ?? false;
             // Zur Position fliegen
-            props.map.flyTo(layer.getLatLng(), 16);
+            props.map.flyTo(layer.getLatLng(), 16, { paddingTopLeft: [500, 500], paddingBottomRight: [0, 0] });
             // Vorhandenes Popup öffnen
             if (layer.getPopup()) {
               if ( isVisible ) {
