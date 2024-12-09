@@ -124,7 +124,7 @@ export default {
 
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
         attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
-        maxZoom: 17,
+        maxZoom: 18,
         detectRetina: false,
         tileSize: 256
       })
