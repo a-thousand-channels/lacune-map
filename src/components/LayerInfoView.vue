@@ -91,41 +91,35 @@
 
       const openExistingPopup = (place) => {
         console.log('openExistingPopup called for', place.id);
-        console.log('openExistingPopup map', props.map);
+        // console.log('openExistingPopup map', props.map);
 
         if (!props.map) return;
-
-        
-        
-        // Alle Layer durchsuchen
         props.map.eachLayer((layer) => {
           
           if ( layer.options.id === undefined ) {
-            console.log('haslayer?', props.map.hasLayer(layer));
-            console.log('Check layer UNDEFINED leaflet ID', layer._leaflet_id); 
-            console.log('Check layer childcluster:', layer._childClusters ); 
+            // console.log('Check layer UNDEFINED leaflet ID', layer._leaflet_id); 
             if ( layer._childClusters !== undefined ) {
-              console.log('Check MarkerClusterGroup:', layer);  
+              // console.log('Check layer childcluster:', layer._childClusters ); 
               const clusterChildMarkers = layer.getAllChildMarkers();
-              console.log('Check MarkerClusterGroup:', clusterChildMarkers);
+              // console.log('Check MarkerClusterGroup:', clusterChildMarkers);
               clusterChildMarkers.forEach((childMarker) => {
-                console.log('Check MarkerClusterGroup:', childMarker.options.id);  
+                // console.log('Check MarkerClusterGroup:', childMarker.options.id);  
                 if ( childMarker.options.id === place.id) {
                   console.log('Check MarkerClusterGroup:', childMarker);  
-                  props.map.flyTo(layer.getLatLng(), 16);                
-
+                  
                   // show popup of a clustered marker in an unspidered (open) cluster
                   setTimeout(() => {
                     layer.spiderfy();
                     setTimeout(() => {
                       childMarker.openPopup();              
                     }, 500);   
-                  }, 500);      
+                  }, 1500);      
+                  console.log('--------------------------------------------');
+                  props.map.flyTo(layer.getLatLng(), 16);                
                 }
               });
 
             }
-            console.log('--------------------------------------------');
           }
 
           if ( layer.options.id === place.id) {
