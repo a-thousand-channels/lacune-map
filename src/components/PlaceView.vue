@@ -89,6 +89,7 @@ export default {
    //  const placeData = ref(null);
     const { focusMarkerById } = useMap()
     const placeData = props.placeData;
+    const layerData = ref(null);
 
     onMounted(() => {
       console.log('place.id', props.placeData.id);
@@ -156,9 +157,12 @@ export default {
         });
       };
     const openLayerInfo = (layer,layerDarkcolor) => {
+      sidebarStore.closeSidebar();    
       console.log('openLayerInfo', layer.id )
-      placeData.value = null;
       console.log('openLayerInfo',layer.color)
+      placeData.value = null;
+      layerData.value = layer;
+      sidebarStore.openSidebar();
       // router.push({ name: 'layerInfo', params: { layerId: layerId.toString() } });
     };
     const closeOverlay = (placeId) => {
@@ -175,7 +179,7 @@ export default {
       router.push({ path: '/' })
     };
 
-    return { layerStore, closeOverlay, sidebarStore, openLayerInfo, PopupIsVisible, iconData, goToPlace, openExistingPopup, closeAllPopups};
+    return { layerStore, closeOverlay, sidebarStore, openLayerInfo, PopupIsVisible, iconData, layerData, goToPlace, openExistingPopup, closeAllPopups};
   }
 }
 </script>

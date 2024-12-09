@@ -24,7 +24,7 @@ const router = createRouter({
     },
     { 
       path: '/layer/:layerId', 
-      name: 'layerInfo', 
+      name: 'LayerInfo', 
       component: HomeView,
       props: true
     }

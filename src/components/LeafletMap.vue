@@ -96,6 +96,7 @@ export default {
     const placeData = ref(null);
     const places = ref([]);
     const relations = ref([]);
+    const layers = ref([]);
     const layerData = ref(null);
     const layerStore = useLayerStore();    
     const sidebarStore = useSidebarStore();    
@@ -225,9 +226,15 @@ export default {
         loadJSONData(mapElement)
       }
     })
-
+    let lastCallTime = Date.now();
     const saveMapState = () => {
-      console.log('saveMapState called')
+      const now = Date.now();
+      if ( ( now - lastCallTime ) < 1000) { // 1 Sekunde
+        console.log('saveMapState skipped after delay',( now - lastCallTime ))
+        return;
+      }      
+      console.log('saveMapState passed after delay',( now - lastCallTime ))
+      lastCallTime = now;
       const newCenter = mapInstance.value.getCenter()
       const newZoom = mapInstance.value.getZoom()
       const visibleOverlayLayers = {}
@@ -241,7 +248,7 @@ export default {
       mapInstance.value.eachLayer((layer) => {
         Object.keys(overlayLayers.value).forEach((layerName) => {
           if (layer === overlayLayers.value[layerName]) {
-            console.log('overlayLayers', layerName, true);
+            // console.log('overlayLayers', layerName, true);
             visibleOverlayLayers[layerName] = true
           }
         })
@@ -258,7 +265,7 @@ export default {
       localStorage.setItem('mapCenter', JSON.stringify([newCenter.lat, newCenter.lng]))
       localStorage.setItem('mapZoom', newZoom.toString())
       localStorage.setItem('mapLayers', JSON.stringify(visibleOverlayLayers))
-      console.log('saveMapState visibleOverlayLayers', visibleOverlayLayers)
+      // console.log('saveMapState visibleOverlayLayers', visibleOverlayLayers)
       localStorage.setItem('basemap', visibleBasemap)
       console.log('saveMapState mapZoom', newZoom);
     }
@@ -319,6 +326,10 @@ export default {
     const markerclusterSettings = {
       chunkedLoading: true,
       maxClusterRadius: 0,
+      /*
+      disableClusteringAtZoom: 20,
+      spiderfyOnMaxZoom: true,
+      */
       showCoverageOnHover: false,
       animate: true,
 
@@ -562,6 +573,21 @@ export default {
           places: layer.places.length, 
           checked: visibleLayers[layer.id] 
         };
+        let darkcolor = layer.color;
+        if ( layer.color == '#b1f075') {
+          darkcolor = '#92c460';
+
+        } else if ( layer.color == '#f0d875' ) {
+          darkcolor = '#d1b132';
+        } else if ( layer.color == '#75b8f0' ) {
+          darkcolor = '#5a8fc0';
+        } else if ( layer.color == '#f07575' ) {
+          darkcolor = '#c46060';
+        } else {
+          darkcolor = layer.color;
+        }       
+        layer.color = darkcolor;
+        layers.value.push(layer)
       
         layer.places.forEach((place) => {
           let mtype = 'place'
@@ -572,17 +598,7 @@ export default {
           } else if (layer.title === 'Hintergrund Informationen') {
             mtype = 'information';
           }
-          let darkcolor = layer.color;
-          if ( layer.color == '#b1f075') {
-            darkcolor = '#92c460';
-
-          } else if ( layer.color == '#f0d875' ) {
-            darkcolor = '#d1b132';
-          } else if ( layer.color == '#75b8f0' ) {
-            darkcolor = '#5a8fc0';
-          } else if ( layer.color == '#f07575' ) {
-            darkcolor = '#c46060';
-          }
+         
           place.layer_title = layer.title;
           place.layer_color = darkcolor;
           places.value.push(place)
@@ -884,12 +900,23 @@ export default {
           console.log('placeData', placeData.value.lat)
           console.log('placeData', placeData.value.lon)
           sidebarStore.openSidebar();
-          mapInstance.value.flyTo([placeData.value.lat,placeData.value.lon], 16, { paddingTopLeft: [200, 0], paddingBottomRight: [0, 0] });
-
+          mapInstance.value.flyTo([placeData.value.lat,placeData.value.lon], 16, { paddingTopLeft: [800, 800], paddingBottomRight: [0, 0] });
         }
       }, { immediate: true }
     )
-
+    watch(
+      () => route.params.layerId, (newId) => {
+        console.log('route.params.layerId', newId)
+        console.log('layers', layers.value)
+        let layer = layers.value.find(l => l.id === newId)
+        if (layer) {
+          console.log('layer', layer)
+          openLayerInfo(layer,layer.color);
+        } else {
+          console.log('layer not found', newId)
+        }
+      }, { immediate: true }
+    )
     return {
         mapElement,
         mapInstance,
