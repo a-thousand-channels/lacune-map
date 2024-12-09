@@ -28,6 +28,7 @@
       
       <p class="place-teaser" v-html="placeData.teaser"></p>
       <div class="place-text" v-html="placeData.text"></div>
+      <span v-if="placeData.audiolink.length > 0" v-html="placeData.audiolink"></span>
       <hr />
       <div class="place-source">
         <div v-if="placeData.sources">Quelle(n): <span v-html="placeData.sources"></span></div>

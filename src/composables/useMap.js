@@ -6,7 +6,7 @@ import L from 'leaflet'
 export const useMap = () => {
   const mapInstanceSymbol = Symbol('mapInstance')
   // const mapInstance = inject(mapInstanceSymbol, ref(null))
-  const mapInstance = shallowRef(null)
+  const mapInstance = inject(mapInstanceSymbol, shallowRef(null))
   const isMapReady = ref(false)
   const markersRegistrySymbol = Symbol('markersRegistry')
   const markersRegistry = reactive(inject(markersRegistrySymbol, new Map()))  
