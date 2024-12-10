@@ -1,14 +1,75 @@
-name: Testing and deployment
+name: Staging and production deployment
 
 on:
   push:
     branches:
       - main
+      - production
 
 jobs:
-  deploy-run:
-    runs-on: ${{ matrix.os }}
-    name: Deploy
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Your existing test steps from the original workflow would go here
+      - name: Placeholder for existing test steps
+        run: echo "Your existing test steps would go here"
+
+  deploy-production:
+    # needs: test  # This ensures deployment only happens after tests pass
+    if: github.ref == 'refs/heads/production'  # Only run this job for production branch
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vue3 project
+        run: npm run build
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          
+      - name: Deploy to remote server
+        run: |
+          rsync -avz --delete dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/project
+
+      - name: Send deployment notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: Lacune Map production deployment complete
+          body: |
+            A new deployment to production has been completed.
+            
+            Branch: production
+            Commit: ${{ github.sha }}
+            Timestamp: ${{ github.event.head_commit.timestamp }}
+            
+            Changes:
+            ${{ github.event.head_commit.message }}
+          from: ${{ secrets.MAIL_FROM }}
+          to: ${{ secrets.MAIL_TO }}
+          secure: true
+
+  deploy-staging:
+    # needs: test  # This ensures deployment only happens after tests pass
+    if: github.ref == 'refs/heads/main'  # Only run this job for main branch
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -22,15 +83,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout code 📔
         uses: actions/checkout@master
 
-      - name: Setup node env
+      - name: Setup node env 🪑
         uses: actions/setup-node@v2.1.2
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Print node-version
+      - name: Print node-version 🖨
         run: node -v
 
       - name: Install dependencies 📦
