@@ -43,7 +43,7 @@ jobs:
           
       - name: Deploy to remote server
         run: |
-          rsync -avz --delete dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/project
+          rsync -avz --delete dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/virtual/ut/lacune-map.de
 
       - name: Send deployment notification
         uses: dawidd6/action-send-mail@v3
