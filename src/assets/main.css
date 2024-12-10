@@ -75,6 +75,10 @@ p {
   margin: 0 0 1rem 0;
   line-height: 1.5;
 }
+ul {
+  margin: 0 0 1rem 0;
+
+}
 p.small {
   font-size: 1em;
   line-height: 1.5;
