@@ -52,7 +52,7 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: [Lacune Map] Production Deployment completed
+          subject: Lacune Map Production Deployment completed
           body: |
             Es gibt ein Update für die Lacune Map.
             Ein neues Production Deployment wurde erfolgreich abgeschlossen. :)
