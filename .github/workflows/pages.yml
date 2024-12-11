@@ -52,16 +52,21 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: Lacune Map production deployment complete
+          subject: [Lacune Map] Production Deployment completed
           body: |
-            A new deployment to production has been completed.
-            
-            Branch: production
-            Commit: ${{ github.sha }}
-            Timestamp: ${{ github.event.head_commit.timestamp }}
+            Es gibt ein Update für die Lacune Map.
+            Ein neues Production Deployment wurde erfolgreich abgeschlossen. :)
+
+            There is an update for the Lacune Map.
+            A new production deployment has been successfully completed. :)
+
+            Lg, A Thousand Channels
             
             Changes:
             ${{ github.event.head_commit.message }}
+            Commit: ${{ github.sha }}
+            Timestamp: ${{ github.event.head_commit.timestamp }}
+            
           from: ${{ secrets.MAIL_FROM }}
           to: ${{ secrets.MAIL_TO }}
           secure: true
