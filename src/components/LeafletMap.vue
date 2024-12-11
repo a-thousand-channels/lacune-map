@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, watch, ref, toRaw } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLayerStore } from '@/stores/layerStore';
 import { useSidebarStore } from '@/stores/sidebarToggle';
@@ -75,7 +75,6 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet.markercluster' // Import MarkerCluster script
 import 'leaflet.markercluster.placementstrategies/dist/leaflet-markercluster.placementstrategies'
-// import { defaultTo } from 'cypress/types/lodash'
 
 
 export default {
@@ -89,7 +88,7 @@ export default {
   },
   setup() {
     const mapElement = ref(null)  // This is the DOM element reference
-    const { mapInstance, initMap, registerMarker, markersRegistry } = useMap()  // This contains the Leaflet map instance
+    const { mapInstance, initMap } = useMap()  // This contains the Leaflet map instance
     const router = useRouter();
     const route = useRoute()    
     const data = ref([]);
@@ -103,12 +102,10 @@ export default {
     const { focusMarkerById } = useMap()
     const minYear = ref(0);
     const maxYear = ref(2024);
-    // Create Metalayer object
     const overlayLayers = ref({})
     const visibleLayers = ref({})
     const layersList = ref({})
     const sortedLayersList = ref({})
-
     let savedLayers = JSON.parse(localStorage.getItem('mapLayers')) || {}
     const basemaps = ref({})
     let savedBasemap = localStorage.getItem('basemap') || ''
@@ -121,8 +118,32 @@ export default {
     const selectedYear = ref() // initial value
     const allMarkers = [];
 
-    L.Browser.retina = false
+    L.Browser.retina = false;
 
+   
+    L.Popup.prototype._animateZoom = function (e) {
+      console.log('L.Popup.prototype._animateZoom')
+      if (!this._map) {
+            return;
+      }      
+      var pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center),
+          anchor = this._getAnchor();
+      L.DomUtil.setPosition(this._container, pos.add(anchor));
+    }
+    
+    L.Marker.prototype._animateZoom = function (opt) {
+      try {
+        if (!this._map) {
+            return;
+        }
+        const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round();
+        this._setPos(pos);
+      } catch (error) {
+        console.error('Error in L.Marker.prototype._animateZoom', error)
+      }
+      
+    }      
+    
     let hamburg_dark_mode = L.tileLayer('https://tiles.3plusx.io/hamburg/darkmode/{z}/{x}/{y}{r}.png', {
         attribution: 'Karte: UT/3+x, Geodaten: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap + Mitwirkende</a>',
         maxZoom: 18,
@@ -714,8 +735,7 @@ export default {
               openLayerInfo(layer,layerDarkcolor);
             }); 
           });       
-          layer_group.addLayer(marker);
-          registerMarker(place.id, [place.lat, place.lon],popupContent)
+          toRaw(layer_group).addLayer(toRaw(marker));
         })
         
         // Transfer markers from FeatureGroup to MarkerClusterGroup
@@ -728,7 +748,6 @@ export default {
         overlayLayers.value[layer.title] = layer_group
         // mapInstance.value.addLayer(layer_group)
       })
-      console.log('markersRegistry', markersRegistry.size)
       console.log('bounds per default')
 
       data.map.layer.forEach((layer) => {
@@ -754,19 +773,6 @@ export default {
           }
         }
       });
-
-            
-  
-      /*
-      let bounds = [53.55, 9.95]
-      bounds = L.latLngBounds(markers.getBounds())
-      console.log('bounds', bounds)
-      const padding = 0.1 // 10% padding
-      const paddedBounds = bounds.pad(padding)
-      // mapInstance.value.fitBounds(paddedBounds)
-      // mapInstance.value.setView(centerCoordinates, zoomLevel)
-      */ 
-
 
       basemaps.value = {
         'Historische Hamburg Karte 1930er': wmsLayerHamburg1930s,
