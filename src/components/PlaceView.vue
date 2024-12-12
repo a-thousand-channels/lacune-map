@@ -133,6 +133,27 @@ export default {
 
         // Alle Layer durchsuchen
         props.map.eachLayer((layer) => {
+
+          if ( layer.options.id === undefined ) {
+            if ( layer._childClusters !== undefined ) {
+              const clusterChildMarkers = layer.getAllChildMarkers();
+              clusterChildMarkers.forEach((childMarker) => {
+                if ( childMarker.options.id === place.id) {
+                  console.log('Check MarkerClusterGroup:', childMarker);  
+                  setTimeout(() => {
+                    layer.spiderfy();
+                    setTimeout(() => {
+                      childMarker.openPopup();              
+                    }, 500);   
+                  }, 1500);      
+                  console.log('--------------------------------------------');
+                  props.map.flyTo(layer.getLatLng(), 16);                
+                }
+              });
+
+            }
+          }
+
           // Prüfen ob es ein Marker ist und die richtige ID hat
           if (layer instanceof L.Marker && layer.options.id === place.id) {
             console.log('openExistingPopup', place.id);
