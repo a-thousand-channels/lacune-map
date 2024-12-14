@@ -660,8 +660,7 @@ export default {
                 ${place.date_with_qualifier ? '|' : ''} 
                 ${place.location} ${place.address}${place.city ? ', '+place.city : ''}
                 
-                <span class="nobr">${mtypeIcon}&nbsp;${place.subtitle}</span>
-                ${imageIcon}${audioIcon}
+                <span class="nobr">${mtypeIcon} ${place.subtitle}</span>${imageIcon}${audioIcon}
               </p>
               <h3 title="${place.title}">
                 <a href="#" class="place-info" data-layer-id="${layer.id}" data-layer-title="${layer.title}" data-layer-darkcolor="${darkcolor}" data-place-id="${place.id}">
@@ -810,8 +809,6 @@ export default {
           layersList.value[layerName].checked = true
         })
       }
-      
-
       
       const urlParams = new URLSearchParams(window.location.search);
       const markerId = urlParams.get('marker');

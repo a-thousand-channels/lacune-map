@@ -36,23 +36,33 @@ export const useMap = () => {
     provide(mapInstanceSymbol, mapInstance)
 
     return mapInstance.value
-
-  
+ 
   }
-
-
 
   const focusMarkerById = (id, zoom = 18) => {
     console.log('focusMarkerById', id)
     console.log('isMapReady', isMapReady.value)
     console.log('mapInstance', mapInstance.value) 
+    if (isMapReady.value && mapInstance.value) {   
+      console.log('markersRegistry', markersRegistry.size)
+      const marker = markersRegistry.get(id)
+      if (!marker) {
+        console.warn(`No marker found for ID: ${id}`)
+        return
+      }
+      console.log('marker found', marker)
+
+      marker.setStyle?.({ color: '#ff3333' })
+      const latLng = marker.getLatLng()
+      mapInstance.value.setView(latLng, zoom)
+    }    
   }
 
- 
-  return {
+   return {
     mapInstance,
     isMapReady,
-    initMap
+    initMap,
+    focusMarkerById
   }
 };
 

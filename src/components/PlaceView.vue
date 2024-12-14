@@ -20,7 +20,7 @@
 
 
       <header>
-        <h2>{{ placeData.title }}</h2>
+        <h2 v-html="placeData.title"></h2>
       </header>
       <div class="place-images" v-if="placeData.images">
         <img v-for="image in placeData.images" :key="image.id" :src="image.image_url" :alt="image.alt" :title="image.title" />
@@ -32,7 +32,7 @@
       <hr />
       <div class="place-source">
         <div v-if="placeData.sources">Quelle(n): <span v-html="placeData.sources"></span></div>
-        <p class="small">Zitiervorschlag: {{ placeData.layer_title }}: {{placeData.title}}. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
+        <p class="small">Zitiervorschlag: <span v-html="placeData.layer_title"></span>: <span v-html="placeData.title"></span>. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
       </div>
       <hr />
       <div v-if="placeData.relation">
@@ -145,7 +145,7 @@ export default {
                     setTimeout(() => {
                       childMarker.openPopup();              
                     }, 500);   
-                  }, 1500);      
+                  }, 1200);      
                   console.log('--------------------------------------------');
                   props.map.flyTo(layer.getLatLng(), 16);                
                 }
