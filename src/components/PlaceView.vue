@@ -32,7 +32,7 @@
       <hr />
       <div class="place-source">
         <div v-if="placeData.sources">Quelle(n): <span v-html="placeData.sources"></span></div>
-        <p class="small">Zitiervorschlag: <span v-html="placeData.layer_title"></span>: <span v-html="placeData.title"></span>. Heike Schader: Lacune, ein Projekt für mehr Sichbarkeit und Erinnerung. 2024</p>
+        <p class="small">Zitiervorschlag: <span v-html="placeData.layer_title"></span>: <span v-html="placeData.title"></span>. Heike Schader: Lacune, ein Projekt für mehr Sichtbarkeit und Erinnerung. 2024</p>
       </div>
       <hr />
       <div v-if="placeData.relation">
