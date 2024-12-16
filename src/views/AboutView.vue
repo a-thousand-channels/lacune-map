@@ -6,7 +6,7 @@
     <p>
       Heike Schader<br>
       E-Mail: <a href="mailto:info@lacune-map.de">info@lacune-map.de</a><br>
-      Anschrift: c/o Bildwechsel Kultur- und Medienzentrum für Frauen e.V., Kirchenallee 25, 20099 Hamburg
+      Anschrift: Lacune, Eckermannstraße 4, 21423 Winsen
     </p>
     <p>
       Die Produktion dieser Karte wurde durch A Thousand Channels unterstützt.
@@ -17,7 +17,7 @@
       
     <p>
       <em>
-      Die dunkle Hintergrundkarte wurde für dieses Projekt gestaltet und basiert auf Geodaten von <a href="https://www.openstreetmap.org/copyright" target="_blank">Openstreetmap und Mitwirkenden</a>. 
+      Die dunkle Hintergrundkarte wurde für dieses Projekt gestaltet und basiert auf Geodaten von <a href="https://www.openstreetmap.org/copyright" target="_blank">Openstreetmap und Mitwirkenden</a>. Design von Ulf Treger.
       <br />
       Die historischen Hamburg-Karten aus den 1920er bis 1980er Jahren werden vom Landesbetrieb Geoinformation und Vermessung der Stadt Hamburg unter einer "<a href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Deutschland Namensnennung 2.0</a>" Datenlizenz als <a href="https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?REQUEST=GetCapabilities&SERVICE=WMS" target="_blank">Web Map Service (WMS)</a> zur Verfügung gestellt.
       </em>
