@@ -1006,4 +1006,15 @@ body.dark-mode  #about-link {
     bottom: 0;
   }
 }
+#about-link a {
+  color: #666;
+  text-shadow: 0 0 1px black;
+}
+#about-link a:hover {
+ text-decoration: underline
+}
+body.dark-mode #about-link a {
+  color: #aaa;
+  text-shadow: 0 0 1px white;
+}
 </style>

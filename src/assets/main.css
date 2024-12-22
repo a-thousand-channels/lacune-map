@@ -229,20 +229,29 @@ input.leaflet-control-layers-selector[disabled=""] + span {
 
   color: #aaa;
 }
+#map.leaflet-container {
+  font-size: 0.9rem;
+}
 #map.leaflet-container a {
   color: #c6c600;
 }
 #map.leaflet-container .leaflet-control-attribution {
   color: silver;
   background: transparent;
-  margin: 0;
+  margin: 0 10px 10px 0;
+  text-shadow: 0 0 4px white;  
 }
+body.dark-mode #map.leaflet-container .leaflet-control-attribution {
+  text-shadow: 0 0 4px #333;  
+}
+
 #map.leaflet-container .leaflet-control-attribution a {
   color: silver;
 }
 body.light-mode #map.leaflet-container .leaflet-control-attribution,
 body.light-mode #map.leaflet-container .leaflet-control-attribution a {
   color: #666;
+  background-color: rgba(255,255,255,0.8);
 }
 
 #map.leaflet-container a.leaflet-popup-close-button {
