@@ -60,16 +60,16 @@
       Hosting der Hintergrundkarten
     </h3>
     <p>
-      Die Hintergrundkarte "Aktuelle Hamburg Karte (Dark)" wird extern auf einem Server bei folgendem Anbieter gehostet:
-      3plusx vertreten durch Ulf Treger, Gaußstraße 25b, 22765 Hamburg
+      Die Hintergrundkarte "Aktuelle Hamburg Karte (Dark)" wird extern auf einem Server bei folgendem Anbieter gehostet:<br />
+      3plusx vertreten durch Ulf Treger, Gaußstraße 25b, 22765 Hamburg, https://www.3plusx.io
     </p>
     <p>
       A Thousand Channels hat haben einen Vertrag mit 3plusx über Auftragsverarbeitung abgeschlossen. Dieser Vertrag stellt sicher, dass personenbezogene Daten der Besucher*innen nur nach Anweisung und unter Einhaltung der DSVGO erfolgt. Das Logging auf diesem Server ist allerdings deaktiviert, daher werden die Aufrufe der Hintergrundkarte dort nicht protokolliert. 
     </p>
     <p>
-      Die historischen Hintergundkarten werden extern über eine Webmap-Service durch einen Server der 
-      Freien und Hansestadt Hamburg bereitgetellt. Zuständig für diesen Service ist der 
-      Landesbetrieb Geoinformation und Vermessung (LGV) Hamburg, Neuenfelder Straße 19, D-21109 Hamburg
+      Die <em>historischen Hintergundkarten</em> werden über einen Webmap-Service durch einen Server der 
+      Freien und Hansestadt Hamburg bereitgestellt. Zuständig für diesen Service ist der 
+      Landesbetrieb Geoinformation und Vermessung (LGV) Hamburg, Neuenfelder Straße 19, D-21109 Hamburg<br />
       Zum Umgang der Daten, die bei Benutzung dieses Service erhoben werden, siehe bitte die Datenschutzerklärung des Geoportals des LGV: 
       https://geoportal-hamburg.de/resources/Datenschutzerkl%C3%A4rung_Masterportal_Rollout.pdf
     </p>
