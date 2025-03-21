@@ -1,3 +1,5 @@
+![Screenshot of the Lacune Map with the title in bold letters in den center](https://github.com/a-thousand-channels/lacune-map/blob/main/public/lacune-map-og-image.png)
+
 # Lakune Karte
 
 Preview: **https://a-thousand-channels.github.io/lacune-map/**
