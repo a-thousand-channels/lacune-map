@@ -187,7 +187,8 @@ hr {
   background: rgba(0, 0, 0, 0.4);
   display: block;
   z-index: 10000;
-  overflow: auto
+  overflow: auto;
+  max-height: 85vh;
 }
 
 #splash-content {
@@ -222,15 +223,15 @@ hr {
   padding: 0 40px
 }
 #splash-content p {
-  font-size: 1.2em;
+  font-size: 0.9em;
   padding: 0 40px
 }
 @media (min-width: 768px) {
   #splash-content h2 {
-    font-size: 5.5em;
+    font-size: 4.5em;
   }
   #splash-content p {
-    font-size: 1.3em;
+    font-size: 1.1em;
   }
 }
 /* ---------------------------------- */

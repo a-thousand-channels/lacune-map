@@ -152,6 +152,7 @@ ul.nav-splash svg {svg {
     gap: 20px;
     li {
       width: 48%;
+      margin-bottom: 0;
     }
 
     padding: 0 45px;
