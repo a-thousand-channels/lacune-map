@@ -73,7 +73,7 @@ export default {
     const openSplash = () => {
       const splash = document.getElementById('splash');
       if (splash) {
-        splash.style.display = 'flex';
+        splash.style.display = 'block ';
       } 
       localStorage.setItem('splashClosed', 'false');
       console.log('Splash opened and state saved to localStorage');
