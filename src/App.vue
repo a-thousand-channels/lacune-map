@@ -1,11 +1,48 @@
 <template>
-  <header>
-    <h1> <router-link to="/">Lacune</router-link></h1>
+  <header id="header">
+    <h1>
+      <router-link to="/" custom v-slot="{ navigate }" >
+        <span @click="() => { openSplash(); navigate(); }">
+            Lacune
+        </span>
+      </router-link>
+    </h1>
     <div class="nav">
       <router-link to="/place/968">Info</router-link>
-
     </div>
   </header>
+  <div id="splash">
+    <div id="splash-content">
+      <button class="close" id="close-splash" @click="closeSplash">&times;</button>
+      <header>
+        <h2>Lacune</h2>
+        <p><em>Ein Projekt für mehr Sichbarkeit und Erinnerung</em></p>
+      </header>
+      <p>Lacune zeigt die Vielzahl und die Unterschiedlichkeit lesbischen* Lebens in Hamburg seit 1900. Die digitale Karte füllt Lücken in vorhandenen Perspektiven und fügt Möglichkeiten eines Blicks auf die Vergangenheit hinzu. Mit Lacune werden Orte, Personen und Erfahrungen festgehalten, um sie so vor dem Vergessen zu bewahren.</p>
+      <p><button  @click="closeSplash">Zur Karte</button></p>
+      <hr />
+      <ul class="nav nav-splash">
+        <li><router-link to="/place/968">
+          <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            Info
+          </router-link>
+        </li>
+        <li><router-link to="/place/1054">
+                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            Entstehungsgeschichte</router-link></li>
+        <li><router-link to="/place/1081">
+                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            Die Vergangenheit ist konstruiert</router-link></li>
+        <li><router-link to="/place/942">
+                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            Selbstbezeichnungen ...</router-link></li>
+      </ul>
+    </div>  
+  </div>
   <router-view></router-view>
 </template>
 
@@ -25,14 +62,29 @@ export default {
   setup() {
     console.log('App setup');
   
-
-    return {  };
+    const closeSplash = () => {
+      const splash = document.getElementById('splash');
+      if (splash) {
+        splash.style.display = 'none';
+      } 
+      localStorage.setItem('splashClosed', 'true');
+      console.log('Splash closed and state saved to localStorage');
+    }; 
+    const openSplash = () => {
+      const splash = document.getElementById('splash');
+      if (splash) {
+        splash.style.display = 'flex';
+      } 
+      localStorage.setItem('splashClosed', 'false');
+      console.log('Splash opened and state saved to localStorage');
+    };     
+    return { closeSplash, openSplash  };
   }
 }
 </script>
 
 <style scoped>
-header {
+header#header {
   line-height: 1;
   height: 40px;
   padding: 0.55rem 1rem 0;
@@ -42,20 +94,18 @@ header {
   justify-content: space-between;
 }
 @media (min-width: 768px) {
-  header {
+  header#header {
   }
 }
-
-
-header h1 {
+header#header h1 {
   line-height: 1;
   font-size: 20px;
 }
-header h1 a {
+header#header h1 a {
   color: #444;
   text-decoration: none;
 }
-header div.nav {
+header#header div.nav {
   line-height: 1;
   font-size: 20px;
 }
@@ -82,5 +132,42 @@ nav a.router-link-exact-active:hover {
 
 nav a:first-of-type {
   border: 0;
+}
+
+ul.nav-splash {
+  margin: 0;
+  list-style: none;
+  padding: 0 30px;
+  li { margin-bottom: 10px}
+}
+ul.nav-splash svg {svg {
+    vertical-align: middle;
+  }
+  vertical-align: middle;
+}
+@media (min-width: 768px) {
+  ul.nav-splash {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    li {
+      width: 48%;
+    }
+
+    padding: 0 45px;
+  }
+
+}
+@media (min-width: 1324px) {
+  ul.nav-splash {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 45px;
+    gap: 10px;
+    li {
+      width: auto;
+    }    
+  }
+
 }
 </style>
