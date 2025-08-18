@@ -23,23 +23,37 @@
       <hr />
       <ul class="nav nav-splash">
         <li><router-link to="/place/968">
+          <span>
           <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
             <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
-            Info
+          </span>
+            <span> Über das Projekt</span>
           </router-link>
         </li>
         <li><router-link to="/place/1054">
-                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
-            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
-            Entstehungsgeschichte</router-link></li>
+          <span>
+            <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+              <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            </span>
+              <span>Entstehungsgeschichte</span>
+          </router-link>
+        </li>
         <li><router-link to="/place/1081">
-                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
-            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
-            Die Vergangenheit ist konstruiert</router-link></li>
+          <span>
+            <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+              <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+            </span>
+            <span>Vergangenheit ist konstruiert</span>
+          </router-link>
+        </li>
         <li><router-link to="/place/942">
-                    <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
-            <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
-            Selbstbezeichnungen ...</router-link></li>
+          <span>
+            <svg height="27" width="21" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" data-layer-id="0" data-layer-title="Informationen"><title> </title>
+              <path fill="#5a8fc0" fill-opacity="1" stroke="#5a8fc0" stroke-width="3" stroke-opacity="1" d="M23.3,24.2L12.6,3.7c-0.3-0.3-0.9-0.3-1.2,0L1.7,24.2c-0.3,0.3-0.4,1,0,1.2c0.6,0.2,21.3,0.4,21.6,0C23.5,25,23.6,24.5,23.3,24.2z"></path></svg>
+          </span>
+          <span>Selbstbezeichnungen …</span>
+          </router-link>
+        </li>
       </ul>
     </div>  
   </div>
@@ -138,21 +152,39 @@ ul.nav-splash {
   margin: 0;
   list-style: none;
   padding: 0 30px;
-  li { margin-bottom: 10px}
-}
-ul.nav-splash svg {svg {
-    vertical-align: middle;
+  li { 
+    margin-bottom: 10px; font-size: 1.2em;
+    a {
+      display: flex;
+      align-items: flex-start;
+      padding: 0;
+      span { display: block; padding-left: 0.5em; line-height: 1.3;
+        svg {
+          width: 30px;
+        }
+      }
+    }
   }
-  vertical-align: middle;
 }
+
 @media (min-width: 768px) {
   ul.nav-splash {
     display: flex;
     flex-wrap: wrap;
+    justify-content: start;
     gap: 20px;
     li {
       width: 48%;
-      margin-bottom: 0;
+      margin: 0 20px 0 0;
+      font-size: 1.3em;
+      a {
+        border: 0px solid #5a8fc0;
+        padding: 0.2em 0.5em;
+        border-radius: 2px;
+      }
+      a:hover {
+        background-color: hsla(165, 9%, 82%, 0.35);
+      }
     }
 
     padding: 0 45px;
@@ -161,12 +193,12 @@ ul.nav-splash svg {svg {
 }
 @media (min-width: 1324px) {
   ul.nav-splash {
-    display: flex;
-    justify-content: space-between;
     padding: 0 45px;
     gap: 10px;
     li {
       width: auto;
+      margin: 0 10px 0 0;
+      font-size: 1.4em;
     }    
   }
 
