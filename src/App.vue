@@ -172,14 +172,15 @@ ul.nav-splash {
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
-    gap: 20px;
+    gap: 10px;
+    padding: 0 45px;
     li {
-      width: 48%;
-      margin: 0 20px 0 0;
+      width: auto;
+      margin: 0 5px 0 0;
       font-size: 1.3em;
       a {
         border: 0px solid #5a8fc0;
-        padding: 0.2em 0.5em;
+        padding: 0.2em 0.5em 0.2em 0;
         border-radius: 2px;
       }
       a:hover {
@@ -187,14 +188,12 @@ ul.nav-splash {
       }
     }
 
-    padding: 0 45px;
   }
 
 }
 @media (min-width: 1324px) {
   ul.nav-splash {
-    padding: 0 45px;
-    gap: 10px;
+    gap: 15px;
     li {
       width: auto;
       margin: 0 10px 0 0;

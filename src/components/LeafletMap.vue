@@ -967,7 +967,7 @@ export default {
   left: 12px;
   position: absolute;
   bottom: 50px;
-  z-index: 9999;
+  z-index: 9997;
   background-color: white;
   padding: 4px 4px 1px;
   border: none;
