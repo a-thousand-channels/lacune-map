@@ -19,7 +19,7 @@
         <p><em>Ein Projekt für mehr Sichbarkeit und Erinnerung</em></p>
       </header>
       <p>Lacune zeigt die Vielzahl und die Unterschiedlichkeit lesbischen* Lebens in Hamburg seit 1900. Die digitale Karte füllt Lücken in vorhandenen Perspektiven und fügt Möglichkeiten eines Blicks auf die Vergangenheit hinzu. Mit Lacune werden Orte, Personen und Erfahrungen festgehalten, um sie so vor dem Vergessen zu bewahren.</p>
-      <p><button  @click="closeSplash">Karte</button></p>
+      <p><button  @click="closeSplash">Zur Karte</button></p>
       <hr />
       <ul class="nav nav-splash">
         <li><router-link to="/place/968">
@@ -55,6 +55,7 @@
           </router-link>
         </li>
       </ul>
+      <p class="small">Ein Projekt von Heike Schader. Mit Unterstützung von <a href="https://www.a-thousand-channels.xyz/" target="_blank" title="Zur Website der Plattform" rel="noopener">A Thousand Channels</a>, ein queere Mappingplattform.</p>
     </div>  
   </div>
   <router-view></router-view>
