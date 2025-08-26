@@ -55,7 +55,7 @@
           </router-link>
         </li>
       </ul>
-      <p class="small">Ein Projekt von Heike Schader. Mit Unterstützung von <a href="https://www.a-thousand-channels.xyz/" target="_blank" title="Zur Website der Plattform" rel="noopener">A Thousand Channels</a>, ein queere Mappingplattform.</p>
+      <p class="small">Ein Projekt von Heike Schader. Mit Unterstützung von <a href="https://www.a-thousand-channels.xyz/" target="_blank" title="Zur Website der Plattform" rel="noopener">A Thousand Channels</a>, eine queere Mappingplattform.</p>
     </div>  
   </div>
   <router-view></router-view>
