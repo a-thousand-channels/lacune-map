@@ -16,7 +16,7 @@
       <button class="close" id="close-splash" @click="closeSplash">&times;</button>
       <header>
         <h2>Lacune</h2>
-        <p><em>Ein Projekt für mehr Sichbarkeit und Erinnerung</em></p>
+        <p><em>Ein Projekt für mehr Sichtbarkeit und Erinnerung</em></p>
       </header>
       <p>Lacune zeigt die Vielzahl und die Unterschiedlichkeit lesbischen* Lebens in Hamburg seit 1900. Die digitale Karte füllt Lücken in vorhandenen Perspektiven und fügt Möglichkeiten eines Blicks auf die Vergangenheit hinzu. Mit Lacune werden Orte, Personen und Erfahrungen festgehalten, um sie so vor dem Vergessen zu bewahren.</p>
       <p><button  @click="closeSplash">Zur Karte</button></p>
