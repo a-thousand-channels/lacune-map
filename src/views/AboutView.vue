@@ -1,7 +1,7 @@
 <template>
   <div id="about" class="content">
     <h1>Lacune </h1>
-    <p>Ein Projekt für mehr Sichbarkeit und Erinnerung</p>
+    <p>Ein Projekt für mehr Sichtbarkeit und Erinnerung</p>
     <h2>Impressum</h2>
     <p>
       Heike Schader<br>
